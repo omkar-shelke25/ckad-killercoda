@@ -1,10 +1,9 @@
-\{
+{
   "title": "CKAD: Network Policy Restriction",
   "description": "Practice configuring a pod to comply with an existing Kubernetes NetworkPolicy in the ckad-netpol namespace.",
   "details": {
     "intro": {
       "text": "intro.md",
-      "foreground": "foreground.sh",
       "background": "step1/background.sh"
     },
     "steps": [

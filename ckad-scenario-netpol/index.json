@@ -1,0 +1,33 @@
+{
+  "title": "CKAD: Network Policy Restriction",
+  "description": "Practice configuring a pod to comply with an existing Kubernetes NetworkPolicy in the ckad-netpol namespace.",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "foreground": "foreground.sh",
+      "background": "background.sh"
+    },
+    "steps": [
+      {
+        "title": "Modify app-pod Labels",
+        "text": "step1/step1.md"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "environment": {
+    "showdashboard": true,
+    "dashboards": [
+      {
+        "name": "Kubernetes Dashboard",
+        "port": 8443
+      }
+    ],
+    "uilayout": "terminal"
+  },
+  "backend": {
+    "imageid": "kubernetes"
+  }
+}

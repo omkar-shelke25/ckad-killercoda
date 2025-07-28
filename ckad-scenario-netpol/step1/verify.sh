@@ -1,51 +1,76 @@
 #!/bin/bash
 
-# Verification scriptứt
+# Verification script for CKAD Network Policy Restriction scenario
+# Checks if app-pod has the correct label and connectivity works
 
-System: The user input was cut off, but based on the context, you likely want to continue with the `verify.sh` script for the CKAD Network Policy Restriction scenario on Killercoda, addressing the `file not found: /tmp/repo/git/ckad-scenario-netpol/background.sh` error. The provided repository link and previous interactions indicate you’re setting up a scenario with verification and a solution section, using icons for clarity. Below, I’ll provide the complete `verify.sh` script, ensure all files are consistent, and guide you through updating your GitHub repository to fix the error. All files will be wrapped in `<xaiArtifact>` tags, reusing the same `artifact_id` for previously provided files with new `artifact_version_id` values, and including the `background.sh` file to confirm its content.
+set -e
 
-### Step 1: Fix the `background.sh` File Path Error
-The error occurs because `index.json` expects `background.sh` in the root of `ckad-scenario-netpol/`, but it’s located in `ckad-scenario-netpol/step1/`. The updated `index.json` (artifact ID `e26d69be-39c8-4692-9983-ec9efe35b66f`, version ID `a2b3c4d5-e6f7-4890-9a1b-c2d3e4f56789`) already corrects this by setting `"background": "step1/background.sh"`. We’ll use this version and ensure all other files are consistent.
+NAMESPACE="ckad-netpol"
+POD_NAME="app-pod"
+REQUIRED_LABEL="role=allowed-app"
 
-### Step 2: Complete the Scenario Files
-Below are all the necessary files for your scenario, including the `verify.sh` script that was cut off. These files include:
-- **Icons** for visual clarity (e.g., ✅, ❌, 🧪).
-- **Verification** via `verify.sh` to check the `role: allowed-app` label and connectivity.
-- A **solution section** in `step1.md` for failed attempts.
-- Corrected paths to resolve the `background.sh` error.
-
-#### Files
-<xaiArtifact artifact_id="e26d69be-39c8-4692-9983-ec9efe35b66f" artifact_version_id="9a84ec8b-6917-4af4-97f8-2fc2e68179da" title="index.json" contentType="application/json">
-{
-  "title": "CKAD: Network Policy Restriction",
-  "description": "Practice configuring a pod to comply with an existing Kubernetes NetworkPolicy in the ckad-netpol namespace.",
-  "details": {
-    "intro": {
-      "text": "intro.md",
-      "background": "step1/background.sh"
-    },
-    "steps": [
-      {
-        "title": "Modify app-pod Labels",
-        "text": "step1/step1.md",
-        "verify": "step1/verify.sh"
-      }
-    ],
-    "finish": {
-      "text": "finish.md"
-    }
-  },
-  "environment": {
-    "showdashboard": true,
-    "dashboards": [
-      {
-        "name": "Kubernetes Dashboard",
-        "port": 8443
-      }
-    ],
-    "uilayout": "terminal"
-  },
-  "backend": {
-    "imageid": "kubernetes"
-  }
+# Function to check pod label
+check_label() {
+    echo "🔍 Checking if $POD_NAME has label $REQUIRED_LABEL..."
+    LABELS=$(kubectl -n "$NAMESPACE" get pod "$POD_NAME" --show-labels | grep "$REQUIRED_LABEL" || true)
+    if [[ -z "$LABELS" ]]; then
+        echo "❌ Error: $POD_NAME is missing the label $REQUIRED_LABEL."
+        return 1
+    else
+        echo "✅ $POD_NAME has the correct label: $REQUIRED_LABEL"
+        return 0
+    fi
 }
+
+# Function to check pod status
+check_pod_status() {
+    echo "🔍 Checking if $POD_NAME is running..."
+    STATUS=$(kubectl -n "$NAMESPACE" get pod "$POD_NAME" -o jsonpath='{.status.phase}')
+    if [[ "$STATUS" != "Running" ]]; then
+        echo "❌ Error: $POD_NAME is not running. Current status: $STATUS"
+        return 1
+    else
+        echo "✅ $POD_NAME is running"
+        return 0
+    fi
+}
+
+# Function to check connectivity
+check_connectivity() {
+    echo "🔌 Testing ingress to $POD_NAME from frontend-pod..."
+    INGRESS_TEST=$(kubectl exec -n "$NAMESPACE" frontend-pod -- curl -s -o /dev/null -w "%{http_code}" http://app-pod.ckad-netpol.svc.cluster.local || echo "failed")
+    if [[ "$INGRESS_TEST" != "200" ]]; then
+        echo "❌ Error: Ingress test failed. Cannot connect to $POD_NAME from frontend-pod."
+        return 1
+    else
+        echo "✅ Ingress test passed: frontend-pod can connect to $POD_NAME"
+    fi
+
+    echo "🔌 Testing egress from $POD_NAME to backend-pod..."
+    EGRESS_TEST=$(kubectl exec -n "$NAMESPACE" app-pod -- curl -s -o /dev/null -w "%{http_code}" http://backend-pod.ckad-netpol.svc.cluster.local:6379 || echo "failed")
+    if [[ "$EGRESS_TEST" != "200" ]]; then
+        echo "❌ Error: Egress test failed. $POD_NAME cannot connect to backend-pod."
+        return 1
+    else
+        echo "✅ Egress test passed: $POD_NAME can connect to backend-pod"
+    fi
+    return 0
+}
+
+# Main verification
+echo "🧪 Starting verification for CKAD Network Policy scenario..."
+ERROR_COUNT=0
+
+check_label || ERROR_COUNT=$((ERROR_COUNT + 1))
+check_pod_status || ERROR_COUNT=$((ERROR_COUNT + 1))
+check_connectivity || ERROR_COUNT=$((ERROR_COUNT + 1))
+
+if [[ $ERROR_COUNT -eq 0 ]]; then
+    echo "🎉 Verification successful! You have correctly configured $POD_NAME."
+    exit 0
+else
+    echo "❌ Verification failed with $ERROR_COUNT errors."
+    echo "Please review the errors above, fix the issues, and run '/bin/verify.sh' again."
+    echo "Alternatively, check the solution in step1.md under 'Solution'."
+    exit 1
+fi

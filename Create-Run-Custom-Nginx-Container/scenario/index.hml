@@ -1,1 +1,9 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Custom Nginx</title>
+</head>
+<body>
+    <h1>Welcome to Custom Nginx Container!</h1>
+</body>
+</html>

@@ -15,7 +15,10 @@
     },
     "assets": {
       "host01": [
-        {"file": "index.html", "target": "~/scenario"}
+        {
+          "file": "index.html",
+          "target": "~/scenario"
+        }
       ]
     },
     "verify": [
@@ -28,12 +31,7 @@
       {
         "title": "Task",
         "text": "instruction.md",
-        "verify": [
-          {
-            "file": "verify.sh",
-            "timeout": 30
-          }
-        ]
+        "verify": "verify.sh"
       },
       {
         "title": "Solution",

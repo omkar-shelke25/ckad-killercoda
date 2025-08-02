@@ -1,8 +1,8 @@
 {
   "title": "Create and Run a Custom Nginx Container",
-  "description": "Build a Docker image with a custom Nginx configuration and run it as a container.",
+  "description": "Build a Docker image from scratch and run a custom Nginx container as a mock exam question.",
   "difficulty": "Moderate",
-  "time": "15 minutes",
+  "time": "20 minutes",
   "details": {
     "intro": {
       "text": "instruction.md"
@@ -11,10 +11,7 @@
       "text": "finish.md"
     },
     "assets": {
-      "host01": [
-        {"file": "Dockerfile", "target": "~/scenario"},
-        {"file": "index.html", "target": "~/scenario"}
-      ]
+      "host01": []
     },
     "verify": [
       {

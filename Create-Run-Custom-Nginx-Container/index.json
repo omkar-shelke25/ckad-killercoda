@@ -3,6 +3,9 @@
   "description": "Build a Docker image from scratch and run a custom Nginx container as a mock exam question.",
   "difficulty": "Moderate",
   "time": "20 minutes",
+  "backend": {
+    "imageid": "ubuntu"
+  },
   "details": {
     "intro": {
       "text": "instruction.md"

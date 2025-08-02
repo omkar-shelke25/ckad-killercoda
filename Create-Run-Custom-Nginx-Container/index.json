@@ -15,8 +15,7 @@
     },
     "assets": {
       "host01": [
-        {"file": "index.html", "target": "~/scenario"},
-        {"file": "solution.md", "target": "~/scenario"}
+        {"file": "index.html", "target": "~/scenario"}
       ]
     },
     "verify": [
@@ -27,7 +26,7 @@
     ],
     "steps": [
       {
-        "title": "Setup",
+        "title": "Task",
         "text": "instruction.md",
         "verify": [
           {
@@ -35,6 +34,10 @@
             "timeout": 30
           }
         ]
+      },
+      {
+        "title": "Solution",
+        "text": "solution.md"
       }
     ]
   }

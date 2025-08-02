@@ -1,10 +1,13 @@
-# 🎉 Well Done!
+# 🎉 Lab Complete!
 
-You have successfully completed a mock Docker exam question! Here's what you accomplished:
-- ✍️ Created a `Dockerfile` using `nginx:1.27-alpine`.
-- 📜 Created a custom `index.html` with the required content.
-- 🛠 Built a Docker image named `custom-nginx:latest`.
-- 🚀 Ran a container named `my-nginx` with correct port mapping.
-- ✅ Verified the web server at `http://localhost:8080`.
+✅ You successfully built and ran a custom Nginx container!
 
-You're ready for the Docker certification! Keep practicing to master containerization! 🌟
+You learned how to:
+- Write a Dockerfile for a web server
+- Build and tag a Docker image
+- Run a container and expose it on a custom port
+- Use `curl` to verify web service output
+
+🔁 Want to practice more? Try modifying the HTML, using a different base image, or creating a multi-stage Dockerfile.
+
+Thanks for completing the mock exam — you're one step closer to certification! 🚀

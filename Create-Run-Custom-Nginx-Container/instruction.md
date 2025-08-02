@@ -1,8 +1,7 @@
 # 🐳 Create and Run a Custom Nginx Container
 
 ## 🎯 Scenario Goal
-As a DevOps engineer, you must create a custom Nginx web server using Docker. Your task is to build a Docker image from scratch and run a container that serves a custom web page. This lab simulates a Docker certification exam question, requiring you to create all necessary files without guidance.
-
+As a DevOps engineer, you must create a custom Nginx web server using Docker. Your task is to build a Docker image from scratch and run a container that serves a custom web page.
 ### 📋 Tasks
 1. ✍️ **Create the Dockerfile**:
    - Create a `Dockerfile` in the `~/scenario` directory.

@@ -17,9 +17,16 @@
       "host01": [
         {
           "file": "index.html",
-          "target": "scenario/index.html"
+          "target": "/root/index.html"
+        },
+        {
+          "inline": "mkdir -p /root/scenario && mv /root/index.html /root/scenario/index.html",
+          "target": "/root/init.sh"
         }
       ]
+    },
+    "initialize": {
+      "host01": "/bin/bash /root/init.sh"
     },
     "verify": [
       {

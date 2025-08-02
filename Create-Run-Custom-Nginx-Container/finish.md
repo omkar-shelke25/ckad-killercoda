@@ -8,6 +8,4 @@ You learned how to:
 - Run a container and expose it on a custom port
 - Use `curl` to verify web service output
 
-🔁 Want to practice more? Try modifying the HTML, using a different base image, or creating a multi-stage Dockerfile.
-
 Thanks for completing the mock exam — you're one step closer to certification! 🚀

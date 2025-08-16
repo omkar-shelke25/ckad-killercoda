@@ -33,9 +33,10 @@ Create a script file **/opt/mars/qos-check.sh** that lists all Pod names and the
 | pod3  | Burstable |
 
 ### Solution
-<button onclick="document.getElementById('solution').style.display='block';this.style.display='none'">🔍 Show Solution</button>
 
-<div id="solution" style="display:none;">
+<details>
+<summary>Click to view Solution</summary>
+
 
 #### Deployment Configuration
 The `app-server-deployment.yaml` file defines a Deployment in the `mars` namespace with 3 replicas using the `nginx:1.21` image. Resource requests and limits are set to ensure the **Burstable** QoS class.
@@ -87,4 +88,5 @@ echo 'kubectl get pods -n mars -o custom-columns=NAME:.metadata.name,QOS:.status
 
 This will output the Pod names and their QoS classes in the specified format.
 
-</div>
+
+</details>

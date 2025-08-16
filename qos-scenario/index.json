@@ -20,5 +20,8 @@
   },
   "backend": {
     "imageid": "kubernetes-kubeadm-2nodes"
+  },
+  "init": {
+    "scripts": ["foreground.sh"]
   }
 }

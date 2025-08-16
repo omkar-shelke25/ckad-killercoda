@@ -1,8 +1,8 @@
 # CKAD Exam Practice Question
 
-**Time Limit**: 8 minutes  
-**Weightage**: 8
-**Context**: kubernetes-cluster
+- **Time Limit**: 8 minutes  
+- **Weightage**: 8
+- **Context**: kubernetes-cluster
 
 ## Instructions
 - Read the complete question carefully

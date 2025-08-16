@@ -1,0 +1,24 @@
+{
+  "title": "CKAD Practice: QoS Classes and Resource Management",
+  "description": "CKAD exam-style question on QoS configuration - 8 points weightage",
+  "difficulty": "Intermediate",
+  "time": "8 minutes",
+  "details": {
+    "intro": {
+      "text": "intro.md"
+    },
+    "steps": [
+      {
+        "title": "Complete All Tasks (Weightage: 8 points)",
+        "text": "step1/text.md",
+        "verify": "step1/verify.sh"
+      }
+    ],
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

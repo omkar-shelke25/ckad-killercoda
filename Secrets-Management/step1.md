@@ -9,6 +9,7 @@ A Deployment named `db-client` exists in the `banking` namespace. It currently u
 **Create a Secret named `db-secret` in the `banking` namespace with:**
 - DB_USER=bankadmin
 - DB_PASS=securePass123
+- DB_HOST=mysql-service
 
 **Update the `db-client` Deployment so that the environment variables `DB_USER` and `DB_PASS` are loaded from the Secret instead of plain values.**
 
@@ -50,7 +51,13 @@ kubectl edit deployment db-client -n banking
 #              name: db-secret
 #              key: DB_PASS
 #        - name: DB_HOST
-#          value: mysql-service
+#          valueFrom:
+#            secretKeyRef:
+#              name: db-secret
+#              key: DB_HOST
+               
+                
+                   
 ```
 
 **Alternative Method 2: Apply new YAML**
@@ -87,7 +94,10 @@ spec:
               name: db-secret
               key: DB_PASS
         - name: DB_HOST
-          value: mysql-service
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DB_HOST
 EOF
 ```
 

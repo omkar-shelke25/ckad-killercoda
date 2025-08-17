@@ -1,0 +1,22 @@
+{
+  "title": "Kubernetes Secrets - Database Credentials Management",
+  "description": "Replace hardcoded database credentials with Kubernetes Secrets",
+  "details": {
+    "steps": [
+      {
+        "title": "Database Credentials Security Challenge",
+        "text": "step1.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

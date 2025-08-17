@@ -5,7 +5,7 @@
     "steps": [
       {
         "title": "Database Credentials Security Challenge",
-        "text": "step1.md"
+        "text": "step1.md",
         "verify": "verify.sh"
       }
     ],

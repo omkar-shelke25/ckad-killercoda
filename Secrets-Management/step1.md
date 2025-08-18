@@ -31,6 +31,7 @@ Try to solve this yourself first, then check the solution if needed:
 kubectl create secret generic db-secret \
   --from-literal=DB_USER=bankadmin \
   --from-literal=DB_PASS=securePass123 \
+  --from-literal=DB_HOST=mysql-service
   -n banking
 ```
 

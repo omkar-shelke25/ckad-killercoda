@@ -11,7 +11,7 @@ A Deployment named `db-client` exists in the `banking` namespace. It currently u
 - DB_PASS=securePass123
 - DB_HOST=mysql-service
 
-**Update the `db-client` Deployment so that the environment variables `DB_USER` and `DB_PASS` are loaded from the Secret instead of plain values.**
+**Update the `db-client` Deployment so that the environment variables `DB_USER`,`DB_PASS` & `DB_HOST` are loaded from the Secret instead of plain values.**
 
 **Ensure the updated Pods are running with the new configuration.**
 

@@ -1,6 +1,6 @@
 # Database Credentials Security Challenge
 
-## **Question (Weightage: 7)**
+## **Question (Weightage: 4)**
 
 A Deployment named `db-client` exists in the `banking` namespace. It currently uses hardcoded environment variables for database credentials.
 

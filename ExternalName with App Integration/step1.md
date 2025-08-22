@@ -1,19 +1,24 @@
+---
 
 📦 **Kubernetes Challenge**
 🌐 **Networking – ExternalName Service**
 
-🔹 Question: ExternalName with App Integration
+---
 
-In the store namespace, a frontend Pod (frontend-pod) is deployed that tries to reach its backend using the DNS name backend-service.
+🔹 **Question: ExternalName with App Integration**
 
-The backend, however, is not running inside the cluster. It is hosted at the external domain backend.prod.internal.
+In the **store** namespace, a `frontend` Pod (`frontend-pod`) is deployed that tries to reach its backend using the DNS name **backend-service**.
 
-Your task:
+The backend, however, is not running inside the cluster. It is hosted at the external domain **backend.prod.internal**.
 
-* Create a Service named backend-service in the store namespace.
-* The service should be of type ExternalName.
-* It should resolve DNS queries to backend.prod.internal.
-* Ensure that the Pod frontend-pod can reach this external backend via the service DNS backend-service.store.svc.cluster.local.
+---
+
+📝 **Your Task**
+
+🔧 Create a **Service** named `backend-service` in the `store` namespace.
+📌 The service should be of type **ExternalName**.
+🌍 It should resolve DNS queries to **backend.prod.internal**.
+✅ Ensure that the Pod `frontend-pod` can reach this external backend via the service DNS: **backend-service.store.svc.cluster.local**
 
 
 ---

@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Secure Nginx on Port 80 (NET_BIND_SERVICE)",
+  "description": "Create an Nginx Deployment that can bind to port 80 without running as root, using Linux capabilities.",
+  "details": {
+    "steps": [
+      {
+        "title": "Nginx Deployment with NET_BIND_SERVICE",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

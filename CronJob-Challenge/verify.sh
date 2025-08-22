@@ -1,37 +1,73 @@
 #!/bin/bash
+set -euo pipefail
 
-# Check if CronJob exists
-if ! kubectl get cronjob task-cron -n batch &>/dev/null; then
-    echo "❌ CronJob 'task-cron' not found in 'batch' namespace"
-    exit 1
-fi
+NS="batch"
+NAME="task-cron"
 
-# Verify schedule
-SCHEDULE=$(kubectl get cronjob task-cron -n batch -o jsonpath='{.spec.schedule}')
-if [ "$SCHEDULE" != "*/5 * * * *" ]; then
-    echo "❌ Schedule is '$SCHEDULE', expected '*/5 * * * *'"
-    exit 1
-fi
+pass() { echo "✅ $1"; }
+fail() { echo "❌ $1"; exit 1; }
 
-# Verify completions
-COMPLETIONS=$(kubectl get cronjob task-cron -n batch -o jsonpath='{.spec.jobTemplate.spec.completions}')
-if [ "$COMPLETIONS" != "4" ]; then
-    echo "❌ Completions is '$COMPLETIONS', expected '4'"
-    exit 1
-fi
+# 1) Namespace exists
+kubectl get ns "${NS}" >/dev/null 2>&1 || fail "Namespace '${NS}' not found."
 
-# Verify parallelism
-PARALLELISM=$(kubectl get cronjob task-cron -n batch -o jsonpath='{.spec.jobTemplate.spec.parallelism}')
-if [ "$PARALLELISM" != "2" ]; then
-    echo "❌ Parallelism is '$PARALLELISM', expected '2'"
-    exit 1
-fi
+# 2) CronJob exists
+kubectl get cronjob "${NAME}" -n "${NS}" >/dev/null 2>&1 || fail "CronJob '${NAME}' not found in namespace '${NS}'."
 
-# Verify ttlSecondsAfterFinished
-TTL=$(kubectl get cronjob task-cron -n batch -o jsonpath='{.spec.jobTemplate.spec.ttlSecondsAfterFinished}')
-if [ "$TTL" != "120" ]; then
-    echo "❌ ttlSecondsAfterFinished is '$TTL', expected '120'"
-    exit 1
-fi
+# Helper to fetch jsonpaths safely
+jp() {
+  kubectl get cronjob "${NAME}" -n "${NS}" -o jsonpath="$1" 2>/dev/null
+}
 
-echo "✅ Verification successful! CronJob 'task-cron' is correctly configured."
+# 3) Schedule
+SCHEDULE="$(jp '{.spec.schedule}')"
+[ "${SCHEDULE}" = "*/5 * * * *" ] || fail "Schedule is '${SCHEDULE}', expected '*/5 * * * *'."
+pass "Schedule set to every 5 minutes."
+
+# 4) Job-level fields
+BACKOFF_LIMIT="$(jp '{.spec.jobTemplate.spec.backoffLimit}')"
+[ "${BACKOFF_LIMIT}" = "2" ] || fail "backoffLimit is '${BACKOFF_LIMIT}', expected '2'."
+pass "backoffLimit=2"
+
+COMPLETIONS="$(jp '{.spec.jobTemplate.spec.completions}')"
+[ "${COMPLETIONS}" = "4" ] || fail "completions is '${COMPLETIONS}', expected '4'."
+pass "completions=4"
+
+PARALLELISM="$(jp '{.spec.jobTemplate.spec.parallelism}')"
+[ "${PARALLELISM}" = "2" ] || fail "parallelism is '${PARALLELISM}', expected '2'."
+pass "parallelism=2"
+
+TTL="$(jp '{.spec.jobTemplate.spec.ttlSecondsAfterFinished}')"
+[ "${TTL}" = "120" ] || fail "ttlSecondsAfterFinished is '${TTL}', expected '120'."
+pass "ttlSecondsAfterFinished=120"
+
+# 5) Pod template fields
+RESTART_POLICY="$(jp '{.spec.jobTemplate.spec.template.spec.restartPolicy}')"
+[ "${RESTART_POLICY}" = "Never" ] || fail "restartPolicy is '${RESTART_POLICY}', expected 'Never'."
+pass "restartPolicy=Never"
+
+ADS="$(jp '{.spec.jobTemplate.spec.template.spec.activeDeadlineSeconds}')"
+[ "${ADS}" = "40" ] || fail "activeDeadlineSeconds is '${ADS}', expected '40'."
+pass "activeDeadlineSeconds=40"
+
+IMAGE="$(jp '{.spec.jobTemplate.spec.template.spec.containers[0].image}')"
+[ "${IMAGE}" = "busybox" ] || fail "container image is '${IMAGE}', expected 'busybox'."
+pass "container image=busybox"
+
+# 6) Command/Args check: accept either .command or .args, but content must include:
+# - echo Processing
+# - sleep 30
+CMD_AND_ARGS="$(kubectl get cronjob "${NAME}" -n "${NS}" \
+  -o jsonpath='{.spec.jobTemplate.spec.template.spec.containers[0].command[*]} {.spec.jobTemplate.spec.template.spec.containers[0].args[*]}')"
+
+# Normalize multiple spaces
+CMD_AND_ARGS="$(echo "${CMD_AND_ARGS}" | tr -s ' ')"
+
+echo "${CMD_AND_ARGS}" | grep -qiE '(^|[[:space:]])echo[[:space:]]+Processing([[:space:]]|$)' \
+  || fail "command/args must include: echo Processing"
+
+echo "${CMD_AND_ARGS}" | grep -qiE '(^|[[:space:]])sleep[[:space:]]+30([[:space:]]|$)' \
+  || fail "command/args must include: sleep 30"
+
+pass "command/args include 'echo Processing' and 'sleep 30'."
+
+echo "✅ Verification successful! CronJob '${NAME}' in namespace '${NS}' is correctly configured."

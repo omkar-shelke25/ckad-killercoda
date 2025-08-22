@@ -45,7 +45,7 @@ spec:
           containers:
           - name: task
             image: busybox
-            command: ["/bin/sh", "-c", "echo Processing && sleep 100"]
+            command: ["/bin/sh", "-c", "echo Processing && sleep 30"]
           restartPolicy: Never
           activeDeadlineSeconds: 40
 ```

@@ -1,0 +1,23 @@
+{
+  "title": "Kubernetes CronJob Challenge",
+  "description": "Create and configure a CronJob with specific execution rules.",
+  "details": {
+    "steps": [
+      {
+        "title": "CronJob Configuration Challenge",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

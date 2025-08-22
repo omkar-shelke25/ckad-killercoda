@@ -1,0 +1,23 @@
+{
+  "title": "Kubernetes Services - ExternalName Integration",
+  "description": "Configure an ExternalName Service to allow a frontend Pod to reach an external backend via cluster DNS.",
+  "details": {
+    "steps": [
+      {
+        "title": "ExternalName Service Challenge",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

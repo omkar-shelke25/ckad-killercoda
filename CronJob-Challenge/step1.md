@@ -9,7 +9,7 @@ In the `batch` namespace, create a **CronJob** named `task-cron` with the follow
 * Command:
 
   ```bash
-  /bin/sh -c "echo Processing && sleep 100"
+  /bin/sh -c "echo Processing && sleep 30"
   ```
 * The Job should **fail if it runs longer than 40 seconds**
 * Limit retries to **2** before the Job is marked as failed

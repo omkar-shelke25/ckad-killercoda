@@ -1,21 +1,22 @@
 # Nginx Deployment with NET_BIND_SERVICE
 
-A Deployment needs to run Nginx serving HTTP on port 80 inside the `web` namespace.  
+A Deployment needs to run **Nginx** serving HTTP on **port 80** inside the `web` namespace.
 The application team should not run containers as root, but the Pods must still be able to bind to port 80.
 
 ## Task
 
 Create a Deployment named **nginx-web** that:
-- Runs **2 replicas** using the image **nginx:1.25-alpine**.
-- Exposes **container port 80**.
-- Ensures the container runs as **UID 101**.
-- **Prevents privilege escalation** and **runs as non-root**.
-- Grants **only** the `NET_BIND_SERVICE` capability so the container can bind to port 80.
-- Verify that the Pods reach **Ready** state.
+
+* Runs **2 replicas** using the image **nginx:1.25-alpine**
+* Exposes **container port 80**
+* Ensures the container runs as **UID 101**
+* **Prevents privilege escalation** and **runs as non-root**
+* Grants **only** the `NET_BIND_SERVICE` capability so the container can bind to port 80
+* Verify that the Pods reach **Ready** state
 
 ---
 
-## (Optional) Example Solution
+## Solution (expand to view)
 
 <details>
 <summary>Click to view YAML</summary>
@@ -50,3 +51,8 @@ spec:
           capabilities:
             drop: ["ALL"]
             add: ["NET_BIND_SERVICE"]
+```
+
+</details>
+
+

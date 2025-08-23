@@ -1,0 +1,21 @@
+{
+  "title": "CKAD: Migrate a Single Pod Across Namespaces (Prime → Mars)",
+  "description": "Only one pod must be moved from prime to mars without disturbing the other five.",
+  "details": {
+    "steps": [
+      {
+        "title": "Migrate the out-of-place pod to mars",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": { "imageid": "kubernetes-kubeadm-2nodes" }
+}

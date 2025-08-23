@@ -27,12 +27,12 @@ Try to solve this yourself first, then check the solution if needed:
 apiVersion: v1
 kind: Pod
 metadata:
-name: pod1
-namespace: default
+  name: pod1
+  namespace: default
 spec:
-containers:
-- name: pod1-container
-  image: httpd:2.4.41-alpine
+  containers:
+  - name: pod1-container
+    image: httpd:2.4.41-alpine
 ```
 
 ```bash

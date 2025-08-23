@@ -1,0 +1,23 @@
+{
+  "title": "NetworkPolicy: Allow Only Frontend to Backend (TCP/80)",
+  "description": "Restrict access to a backend Pod so that only Pods labeled role=frontend may connect on port 80.",
+  "details": {
+    "steps": [
+      {
+        "title": "Lock Backend to Only Frontend Pods",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

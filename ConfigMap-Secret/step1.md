@@ -1,34 +1,27 @@
 # Externalize Runtime Configuration (ConfigMap + Secret → Env)
 
-Your platform team requires application owners to externalize configuration. A service running in `apps` needs a database endpoint (non‑sensitive) and a third‑party API credential (sensitive). The application reads both **only via environment variables** at runtime.
+Platform policy requires configuration to be externalized. A workload in `apps` needs a database endpoint (non‑sensitive) and a third‑party API credential (sensitive). The workload reads both **only via environment variables** at runtime.
 
 ## Task
 
-Work only in the `apps` namespace:
+Work only in the `apps` namespace and implement the following:
 
-- Provide the database endpoint via a **ConfigMap**.  
-  Use a key name that reflects the property it sets and the production endpoint:
+- **ConfigMap**  
+  Create a ConfigMap named **`app-config`** with the key **`database.url`** set to:  
   `postgres://db.example.com:5432/production`  
-  *Note: This URL contains no credentials; secrets are stored separately.*
+  *Note: No credentials in this URL; credentials are managed separately.*
 
-- Provide the API credential via a **Secret**.  
-  Use the value: `s3cr3t-ap1-k3y-f0r-pr0d`.
+- **Secret**  
+  Create a Secret named **`api-credentials`** with the key **`api.key`** set to:  
+  `s3cr3t-ap1-k3y-f0r-pr0d`
 
-- Run a Pod that **remains running** using image `busybox:1.36`.  
-  The application expects the variables to be named:
-  - `DATABASE_URL` ← from the ConfigMap key for the database URL
-  - `API_KEY`      ← from the Secret key for the API credential
+- **Pod**  
+  Create a Pod named **`app-pod`** using image **`busybox:1.36`** that remains running.  
+  Expose the configuration as environment variables:
+  - **`DATABASE_URL`** ← from ConfigMap `app-config` key **`database.url`**
+  - **`API_KEY`**      ← from Secret `api-credentials` key **`api.key`**
 
-- Do not mount files; consume **via env vars**.
-
-### Acceptance criteria
-
-- A **ConfigMap** exists that exposes the database URL under a property‑style key.
-- A **Secret** exists that exposes the API key under a property‑style key.
-- A Pod named `app-pod` in `apps`:
-  - uses `busybox:1.36` and stays running,
-  - has `DATABASE_URL` sourced from the ConfigMap key,
-  - has `API_KEY` sourced from the Secret key.
+- Do not mount files; consume **via env vars** only.
 
 ---
 
@@ -37,24 +30,22 @@ Work only in the `apps` namespace:
 <details>
 <summary>Click to view YAML</summary>
 
+```bash
+kubectl -n apps create configmap app-config \
+  --from-literal=database.url='postgres://db.example.com:5432/production'
+```
+```bash
+kubectl -n apps create secret generic api-credentials \
+  --from-literal=api.key='s3cr3t-ap1-k3y-f0r-pr0d'
+```
+```bash
+kubectl -n apps run app-pod \
+  --image=busybox:1.36 \
+  --command -- sh -c "tail -f /dev/null" \
+  --dry-run=client -o yaml > pod.yaml
+```
+
 ```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: app-config
-  namespace: apps
-data:
-  database.url: postgres://db.example.com:5432/production
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: api-credentials
-  namespace: apps
-type: Opaque
-stringData:
-  api.key: s3cr3t-ap1-k3y-f0r-pr0d
----
 apiVersion: v1
 kind: Pod
 metadata:

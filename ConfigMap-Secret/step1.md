@@ -1,6 +1,6 @@
 # Externalize Runtime Configuration (ConfigMap + Secret → Env)
 
-Platform policy requires configuration to be externalized. A workload in `apps` needs a database endpoint (non‑sensitive) and a third‑party API credential (sensitive). The workload reads both **only via environment variables** at runtime.
+A workload in `apps` needs a database endpoint (non‑sensitive) and a third‑party API credential (sensitive). The workload reads both **only via environment variables** at runtime.
 
 ## Task
 

@@ -1,0 +1,21 @@
+{
+  "title": "CKAD: Pod Creation + Status Script (httpd:2.4.41-alpine)",
+  "description": "Create a Pod with exact names and image, and provide a kubectl script that prints its status.",
+  "details": {
+    "steps": [
+      {
+        "title": "Create Pod and Status Script",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": { "imageid": "kubernetes-kubeadm-2nodes" }
+}

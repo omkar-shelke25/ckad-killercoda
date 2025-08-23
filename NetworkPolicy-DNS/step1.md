@@ -42,5 +42,5 @@ spec:
   - ports:
     - protocol: UDP
       port: 53  # allow DNS only
-
+```
 </details>

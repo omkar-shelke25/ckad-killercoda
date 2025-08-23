@@ -1,0 +1,21 @@
+{
+  "title": "CKAD: Pod & Container SecurityContext (Non-Root + ReadOnlyRootFS)",
+  "description": "Enforce least-privilege by running as a non-root user at Pod level and making the container root filesystem read-only.",
+  "details": {
+    "steps": [
+      {
+        "title": "Configure Pod and Container Security Contexts",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": { "imageid": "kubernetes-kubeadm-2nodes" }
+}

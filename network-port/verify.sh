@@ -29,16 +29,22 @@ SEL="$(kubectl -n "$NS" get networkpolicy "$NP" -o jsonpath='{.spec.podSelector.
 ING_COUNT="$(kubectl -n "$NS" get networkpolicy "$NP" -o jsonpath='{.spec.ingress[*]}' | wc -w | tr -d ' ')"
 [ "$ING_COUNT" -ge 1 ] || fail "Expected ingress rules defined."
 
-JSON="$(kubectl -n "$NS" get networkpolicy "$NP" -o json)"
+# Use more robust checks with jsonpath instead of grep
+# Check for port 80 rule
+PORT_80_EXISTS="$(kubectl -n "$NS" get networkpolicy "$NP" -o jsonpath='{.spec.ingress[*].ports[?(@.port==80)]}')"
+[ -n "$PORT_80_EXISTS" ] || fail "Expected port 80 in ingress rules."
 
-# Check rule for 80/TCP from role=frontend
-echo "$JSON" | grep -q '"port": *80' || fail "Expected port 80 in ingress rules."
-echo "$JSON" | grep -q '"protocol": *"TCP"' || true
-echo "$JSON" | grep -q '"matchLabels": *{ *"role": *"frontend" *}' || fail "Expected from pods with role=frontend for port 80."
+# Check for port 443 rule  
+PORT_443_EXISTS="$(kubectl -n "$NS" get networkpolicy "$NP" -o jsonpath='{.spec.ingress[*].ports[?(@.port==443)]}')"
+[ -n "$PORT_443_EXISTS" ] || fail "Expected port 443 in ingress rules."
 
-# Check rule for 443/TCP from role=admin
-echo "$JSON" | grep -q '"port": *443' || fail "Expected port 443 in ingress rules."
-echo "$JSON" | grep -q '"matchLabels": *{ *"role": *"admin" *}' || fail "Expected from pods with role=admin for port 443."
+# Check for frontend role selector (more flexible approach)
+FRONTEND_RULE="$(kubectl -n "$NS" get networkpolicy "$NP" -o jsonpath='{.spec.ingress[*].from[*].podSelector.matchLabels.role}' | tr ' ' '\n' | grep -c '^frontend$' || echo 0)"
+[ "$FRONTEND_RULE" -gt 0 ] || fail "Expected from pods with role=frontend."
+
+# Check for admin role selector
+ADMIN_RULE="$(kubectl -n "$NS" get networkpolicy "$NP" -o jsonpath='{.spec.ingress[*].from[*].podSelector.matchLabels.role}' | tr ' ' '\n' | grep -c '^admin$' || echo 0)"
+[ "$ADMIN_RULE" -gt 0 ] || fail "Expected from pods with role=admin."
 
 pass "NetworkPolicy structure looks correct."
 

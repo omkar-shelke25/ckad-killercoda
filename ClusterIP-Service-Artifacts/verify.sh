@@ -36,17 +36,29 @@ PROTO="$(kubectl -n "$NS" get svc "$SVC" -o jsonpath='{.spec.ports[0].protocol}'
 [ "$PROTO" = "TCP" ] || fail "Service protocol is '$PROTO', expected 'TCP'."
 pass "Service configured correctly (3333→80/TCP with correct selector)."
 
-# Artifacts exist and look sane
+# Artifact: HTML must exist, be non-empty, look like HTML, and contain no kubectl noise
 [ -f "$ART_HTML" ] || fail "Missing artifact: $ART_HTML"
 [ -s "$ART_HTML" ] || fail "Artifact is empty: $ART_HTML"
-# try to find some nginx/html-ish content
-grep -qiE "nginx|html|welcome" "$ART_HTML" || echo "ℹ️ Note: $ART_HTML content not matched, continuing."
 
+# Reject common kubectl noise (stderr mixed into file)
+NOISE_RE='(pod .* deleted|If you do not see a command prompt|attached|Defaulted container|Waiting for pod|Session ended|Use Ctrl-C|command terminated)'
+if grep -qiE "$NOISE_RE" "$ART_HTML"; then
+  fail "$ART_HTML contains kubectl noise (stderr). Recreate with: ... > $ART_HTML 2>/dev/null"
+fi
+
+# Must look like HTML/nginx output
+if ! grep -qiE '<html|<head|<title|nginx' "$ART_HTML"; then
+  echo "ℹ️ Note: $ART_HTML does not match typical HTML/nginx markers; continuing."
+fi
+pass "HTML artifact looks clean (no kubectl noise)."
+
+# Artifact: LOG must exist, be non-empty, and contain a GET line; also ensure no kubectl noise
 [ -f "$ART_LOG" ] || fail "Missing artifact: $ART_LOG"
 [ -s "$ART_LOG" ] || fail "Artifact is empty: $ART_LOG"
-# look for a GET access line
-grep -qi "GET /" "$ART_LOG" || echo "ℹ️ Note: 'GET /' not found in $ART_LOG, log format may differ."
+if grep -qiE "$NOISE_RE" "$ART_LOG"; then
+  fail "$ART_LOG contains kubectl noise (stderr). Save logs with: kubectl -n $NS logs $POD > $ART_LOG 2>/dev/null"
+fi
+grep -qi "GET /" "$ART_LOG" || echo "ℹ️ Note: 'GET /' not found in $ART_LOG; log format may differ."
+pass "Log artifact present and appears valid."
 
-pass "Artifacts found and non-empty."
-
-echo "✅ Verification successful! Pod, Service, and artifacts meet requirements."
+echo "✅ Verification successful! Pod, Service, and clean artifacts meet requirements."

@@ -20,7 +20,7 @@ Try to solve this yourself first, then check the solution if needed:
 <details>
 <summary>Click to view Solution</summary>
 
-# 1) Pod with label project=plt-6cc-api
+ 1) **Pod with label project=plt-6cc-api**
 ```bash
 kubectl -n pluto run project-plt-6cc-api \
   --image=nginx:1.17.3-alpine \
@@ -29,7 +29,7 @@ kubectl -n pluto run project-plt-6cc-api \
 ```
 
 
-# 2) ClusterIP Service: port 3333 -> targetPort 80/TCP
+ 2) **ClusterIP Service: port 3333 -> targetPort 80/TCP**
 ```bash
 kubectl -n pluto expose pod project-plt-6cc-api \
   --name=project-plt-6cc-svc \

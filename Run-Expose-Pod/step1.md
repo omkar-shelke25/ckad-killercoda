@@ -41,7 +41,7 @@ kubectl -n ops run data-mining \
   --labels=app=crypto-mining \
   --expose \
   --restart=Never
-```bash
+```
 
 </details>
 

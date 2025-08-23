@@ -1,6 +1,6 @@
-# Config as Files Challenge
-Welcome to the CKAD Config-as-Files Challenge 🚀
+# Config as Files — CKAD Challenge
+Welcome to the CKAD Config-as-Files task 🚀
 
-In this scenario, you’ll wire application configuration strictly as **files** inside the container, avoiding common pitfalls (like env vars or wrong keys) that break startup.
+A web workload is being validated in `apps`. The process startup checks for **files**, not environment variables. Provide configuration strictly as mounted files and ensure the Pods become Ready.
 
-Click **Start Scenario** to begin!
+Click **Start Scenario** to begin.

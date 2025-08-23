@@ -22,11 +22,6 @@ The team prefers **imperative** creation (one-liner is acceptable), but YAML is 
 2. Expose it with a **Service** named `data-mining` on port `80`.
 3. Confirm the Service resolves to the Pod (endpoints present).
 
-> Hints
-> - If your command accidentally creates a Deployment, you’ll fail the checks.
-> - Labels must match the Service selector, or you’ll have 0 endpoints.
-> - Using `--expose` with `kubectl run` is acceptable.
-
 ---
 
 ## ✅ Solution (expand)

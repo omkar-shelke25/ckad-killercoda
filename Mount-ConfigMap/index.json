@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Mount ConfigMap as Files in a Deployment",
+  "description": "Create a ConfigMap and mount it as files in a Deployment running in the apps namespace.",
+  "details": {
+    "steps": [
+      {
+        "title": "Create ConfigMap and Deployment",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

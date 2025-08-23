@@ -1,0 +1,23 @@
+{
+  "title": "NetworkPolicy: Cross-Namespace Egress to a Target Pod",
+  "description": "Allow egress only from a specific source Pod to a target Pod in another namespace on TCP/80.",
+  "details": {
+    "steps": [
+      {
+        "title": "Allow Egress to a Pod in Another Namespace",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

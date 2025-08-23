@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Externalize Runtime Config (ConfigMap + Secret → Env)",
+  "description": "Provide non-sensitive config via ConfigMap and sensitive data via Secret, and consume both as environment variables in a Pod.",
+  "details": {
+    "steps": [
+      {
+        "title": "Externalize Configuration to Env Vars",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

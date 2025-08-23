@@ -43,6 +43,9 @@ kubectl -n pluto expose pod project-plt-6cc-api \
 3) **Functional check & artifacts**
 - Run a temporary client Pod and directly fetch the Service:
   ```bash
+  kubectl -n pluto run svc-tester --image=busybox:1.36 --restart=Never --command -- sh -c "sleep 3600"
+  ```
+  ```bash
   kubectl -n pluto run tmp-client --rm -i --restart=Never --image=busybox:1.36 \
     -- wget -qO- http://project-plt-6cc-svc:3333/ > /opt/course/10/service_test.html
   ```

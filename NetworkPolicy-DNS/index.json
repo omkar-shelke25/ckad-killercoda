@@ -1,0 +1,23 @@
+{
+  "title": "Kubernetes NetworkPolicy – DNS-Only Egress",
+  "description": "Deny all ingress/egress to a specific Pod, allowing only outbound DNS on UDP/53.",
+  "details": {
+    "steps": [
+      {
+        "title": "Lock Down a Pod: Allow Only DNS Egress",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

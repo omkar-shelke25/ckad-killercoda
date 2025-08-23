@@ -22,6 +22,9 @@ Try to solve this yourself first, then check the solution if needed:
 <details>
 <summary>Click to view Solution</summary>
 
+```bash
+k run po pod1 --image httpd:2.4.41-alpine --dry-run=client -oyaml > 1.yaml
+```
 
 ```yaml
 apiVersion: v1
@@ -37,5 +40,5 @@ spec:
 
 ```bash
 echo "kubectl get pod pod1 -n default -o jsonpath='{.status.phase}'" > /opt/course/2/pod1-status-command.sh
-```
+
 </details>

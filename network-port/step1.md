@@ -29,6 +29,7 @@ Try to solve this yourself first, then check the solution if needed:
 
 <details>
 <summary>Click to view Solution</summary>
+  
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

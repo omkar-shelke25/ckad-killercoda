@@ -1,10 +1,10 @@
 {
-  "title": "CKAD: Mount ConfigMap as Files in a Deployment",
-  "description": "Create a ConfigMap and mount it as files in a Deployment running in the apps namespace.",
+  "title": "CKAD: Config from Files",
+  "description": "Inject configuration as files via ConfigMap and mount it correctly in a Deployment within the apps namespace.",
   "details": {
     "steps": [
       {
-        "title": "Create ConfigMap and Deployment",
+        "title": "Config as Files Challenge",
         "text": "step1.md",
         "verify": "verify.sh"
       }

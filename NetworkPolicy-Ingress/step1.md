@@ -17,3 +17,23 @@ In the `netpol-demo6` namespace:
 - Use `policyTypes: ["Ingress"]`.
 - Use a `podSelector` that matches all pods in the namespace.
 - Use an `ingress.from` rule that allows peers selected by a (same-namespace) `podSelector`.
+
+### Solution
+<details>
+<summary>Click to view Solution</summary>
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: internal-only
+  namespace: netpol-demo6
+spec:
+  podSelector: {}        # select all pods in this namespace
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector: {}    # allow any pod from the same namespace
+```
+</details>

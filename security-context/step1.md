@@ -26,7 +26,7 @@ In the `security` namespace:
 - `Pod/secure-app-pod` is **Running** in `security`.
 - Inside the container:
   - `id -u` returns **1000**, and `id -g` returns **3000**.
-  - Attempting `touch /newfile` fails with **"Read-only file system"**.
+  - `kubectl exec -n security secure-app-pod -c app-container -- sh -c 'touch /newfile'` : Attempting `touch /newfile` fails with **"Read-only file system"**.
 
 ---
 
@@ -52,5 +52,10 @@ spec:
     command: ["/bin/sh","-c","sleep 3600"]
     securityContext:
       readOnlyRootFilesystem: true
+```
+
+
+```bash
+kubectl exec -n security secure-app-pod -c app-container -- sh -c 'touch /newfile'
 ```
 </details> 

@@ -23,6 +23,9 @@ Work only in the `apps` namespace and implement the following:
 
 - Do not mount files; consume **via env vars** only.
 
+> Note
+> Use sleep in the command so the container stays alive and the Pod remains Running. Example: -- sh -c "sleep 3600" (sleeps for an hour).
+
 ---
 
 ## (Optional) Reference solution

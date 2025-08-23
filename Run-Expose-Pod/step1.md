@@ -46,6 +46,7 @@ kubectl -n ops run data-mining \
 </details>
 
 <details> <summary>Imperative (two commands)</summary>
+
 ```bash
 kubectl -n ops run data-mining \
   --image=httpd:trixie \

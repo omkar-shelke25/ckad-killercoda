@@ -46,8 +46,8 @@ kubectl -n pluto expose pod project-plt-6cc-api \
   kubectl -n pluto run svc-tester --image=busybox:1.36 --restart=Never --command -- sh -c "sleep 3600"
   ```
   ```bash
-  kubectl -n pluto run tmp-client --rm -i --restart=Never --image=busybox:1.36 \
-    -- wget -qO- http://project-plt-6cc-svc:3333/ > /opt/course/10/service_test.html
+  kubectl -n pluto exec svc-tester -- sh -c "wget -qO- http://project-plt-6cc-svc:3333/" \
+  > /opt/course/10/service_test.html
   ```
 4) **Save backend pod logs to host**
 ```bash

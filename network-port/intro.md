@@ -1,8 +1,6 @@
-# NetworkPolicy: Different Sources by Port
+# Kubernetes NetworkPolicy Challenge
 
-A workload exposes two entry points and needs to enforce **distinct ingress rules** per port:
+Welcome to the Kubernetes NetworkPolicy scenario.  
+You’ll configure traffic rules for a workload that exposes multiple ports, ensuring that different sources are allowed access only to their designated ports.
 
-- Port **80** is for **frontend traffic** only.
-- Port **443** is for **admin traffic** only.
-
-Pods are pre-provisioned. Your task is to write a NetworkPolicy that selects the target pod and allows ingress **per-port** from the correct peer labels.
+Click **Start Scenario** to begin.

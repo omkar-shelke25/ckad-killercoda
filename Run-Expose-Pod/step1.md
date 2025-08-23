@@ -42,6 +42,7 @@ kubectl -n ops run data-mining \
   --expose \
   --restart=Never
 ```bash
+
 </details>
 
 <details> <summary>Imperative (two commands)</summary>

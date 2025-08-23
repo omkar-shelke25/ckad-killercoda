@@ -1,0 +1,24 @@
+{
+  "title": "Run & Expose Pod",
+  "description": "Use imperative kubectl to create a Pod and expose it as a Service in one shot. Validate labels, ports, and endpoints.",
+  "details": {
+    "steps": [
+      {
+        "title": "Run & Expose",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  },
+  "tags": ["kubernetes", "ckad", "imperative", "pod", "service"]
+}

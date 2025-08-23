@@ -21,3 +21,41 @@ In the `netpol-demo8` namespace:
 ### Notes
 - Use separate `ingress` rules to express per-port peer sets.
 - If you select by `podSelector: {}`, your policy will apply to **all** pods in the namespace; select only the intended target.
+
+
+## **Solution**
+
+Try to solve this yourself first, then check the solution if needed:
+
+<details>
+<summary>Click to view Solution</summary>
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-and-admin
+  namespace: netpol-demo8
+spec:
+  podSelector:
+    matchLabels:
+      app: multi-port
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          role: frontend
+    ports:
+    - protocol: TCP
+      port: 80
+  - from:
+    - podSelector:
+        matchLabels:
+          role: admin
+    ports:
+    - protocol: TCP
+      port: 443
+```
+
+</details>

@@ -17,17 +17,11 @@ In the `security` namespace, create a Pod named **secure-app-pod** that satisfie
   * The container must keep running (`sleep 3600`).
 * At the **container level**, ensure the root filesystem is **read-only**.
 * (Reminder: container-level security context values override Pod-level settings if they overlap.)
-
-### Validation checks
-
-* The Pod is running in the `security` namespace.
-* Running `id -u` and `id -g` inside the container returns **1000** and **3000** respectively.
 * Trying to write a file at `/` (e.g., `touch /newfile`) fails with **"Read-only file system"**.
-
 
 ---
 
-## (Optional) Reference solution
+## solution
 
 <details>
 <summary>Click to view YAML</summary>

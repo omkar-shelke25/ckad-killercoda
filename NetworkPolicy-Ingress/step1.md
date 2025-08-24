@@ -19,17 +19,7 @@ In the `netpol-demo6` namespace:
 - Use an `ingress.from` rule that allows peers selected by a (same-namespace) `podSelector`.
 
 ### Solution
-<details>
-<summary>Create NetworkPolicy using imperative command</summary>
 
-```bash  
-kubectl create networkpolicy internal-only \
-  --namespace=netpol-demo6 \
-  --pod-selector="" \
-  --ingress="" \
-  --ingress-from-selector=""
-```
-</details>
 
 <details>
 <summary>yaml File Solution</summary>

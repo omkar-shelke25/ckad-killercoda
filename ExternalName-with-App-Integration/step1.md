@@ -21,7 +21,7 @@ Try to solve this yourself first, then check the solution if needed:
 <details>
 <summary>Click to view Solution</summary>
 
-### **Step 1: Create the ExternalName Service**
+### Theory On Externam Name
 
 **Notes On External Name**
 
@@ -36,6 +36,7 @@ kubectl exec -it frontend-pod -n store -- printenv | grep URL
 ```
 ----
 
+### Imperative and Yaml Solution
 ```bash
 kubectl create service externalname backend-service \
   --external-name=backend.prod.internal \
@@ -56,7 +57,7 @@ spec:
 EOF
 ```
 
-### **Step 2: Verify the Solution**
+**Verify the Solution**
 ```bash
 # Check if service was created
 kubectl get svc -n store

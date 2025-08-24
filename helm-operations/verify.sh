@@ -3,44 +3,96 @@ set -euo pipefail
 
 NS_SER="sercury"
 NS_VEN="venus"
+TARGET_VER="21.1.23"
 
-echo "==> Creating namespaces"
-kubectl create namespace "$NS_SER" --dry-run=client -o yaml | kubectl apply -f - >/dev/null
-kubectl create namespace "$NS_VEN" --dry-run=client -o yaml | kubectl apply -f - >/dev/null
+fail(){ echo "❌ $1"; exit 1; }
+ok(){ echo "✓ $1"; }
 
-echo "==> Ensuring Helm v3 is available"
-if ! command -v helm >/dev/null 2>&1; then
-  curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+# --- prerequisites ---
+command -v helm >/dev/null 2>&1 || fail "Helm v3 not found in PATH"
+
+has_jq=false
+if command -v jq >/dev/null 2>&1; then
+  has_jq=true
 fi
 
-echo "==> Adding Bitnami repo"
-helm repo add bitnami https://charts.bitnami.com/bitnami >/dev/null 2>&1 || true
-helm repo update >/dev/null 2>&1 || true
-
-APIV1_VER="18.2.5"
-APIV2_VER="18.2.6"
-
-echo "==> Seeding releases in '$NS_SER' (no --wait for speed)"
-# 1) apiv1 at 18.2.5 (to be deleted)
-if ! helm status internal-issue-report-apiv1 -n "$NS_SER" >/dev/null 2>&1; then
-  echo " -> Installing internal-issue-report-apiv1 (bitnami/nginx $APIV1_VER)"
-  helm install internal-issue-report-apiv1 bitnami/nginx \
-    -n "$NS_SER" --version "$APIV1_VER" >/dev/null 2>&1 || true
+# --- 1) apiv1 deleted in sercury ---
+if helm status internal-issue-report-apiv1 -n "$NS_SER" >/dev/null 2>&1; then
+  fail "Release 'internal-issue-report-apiv1' still exists in '$NS_SER'"
+else
+  ok "'internal-issue-report-apiv1' deleted from '$NS_SER'"
 fi
 
-# 2) apiv2 at 18.2.6 (to be upgraded to 21.1.23)
-if ! helm status internal-issue-report-apiv2 -n "$NS_SER" >/dev/null 2>&1; then
-  echo " -> Installing internal-issue-report-apiv2 (bitnami/nginx $APIV2_VER)"
-  helm install internal-issue-report-apiv2 bitnami/nginx \
-    -n "$NS_SER" --version "$APIV2_VER" >/dev/null 2>&1 || true
+# --- helpers for chart/version extraction ---
+get_chart_with_jq() {
+  # prints the CHART field (e.g., nginx-21.1.23) for the exact-named release in a namespace
+  local rel="$1" ns="$2"
+  helm list -n "$ns" -o json \
+    | jq -r --arg name "$rel" '.[] | select(.name==$name) | .chart // empty'
+}
+
+get_chart_without_jq() {
+  # uses table output; CHART is the penultimate column
+  # filters to an exact name match to avoid collisions
+  local rel="$1" ns="$2"
+  helm list -n "$ns" --no-headers \
+    | awk -v r="$rel" '$1==r {print $(NF-1)}' | head -n1
+}
+
+get_values_replica_with_jq() {
+  local rel="$1" ns="$2"
+  helm get values "$rel" -n "$ns" -o json \
+    | jq -r '.replicaCount // empty'
+}
+
+get_values_replica_without_jq() {
+  local rel="$1" ns="$2"
+  helm get values "$rel" -n "$ns" -o yaml 2>/dev/null \
+    | awk '/^replicaCount:/ {print $2; exit}'
+}
+
+# --- 2) apiv2 upgraded to EXACT 21.1.23 ---
+APIV2_CHART=""
+if $has_jq; then
+  APIV2_CHART="$(get_chart_with_jq internal-issue-report-apiv2 "$NS_SER")"
+else
+  APIV2_CHART="$(get_chart_without_jq internal-issue-report-apiv2 "$NS_SER")"
 fi
 
-# 3) Do NOT precreate apache; learner will install with --set replicaCount=2
-
-echo "==> Seeding flagged release in '$NS_VEN'"
-if ! helm status vulnerabilities -n "$NS_VEN" >/dev/null 2>&1; then
-  helm install vulnerabilities bitnami/nginx -n "$NS_VEN" >/dev/null 2>&1 || true
+if [[ -z "$APIV2_CHART" ]]; then
+  fail "Could not determine chart for 'internal-issue-report-apiv2' in '$NS_SER'"
 fi
 
-echo "==> Seed complete. Current releases:"
-helm ls -A -a || true
+# Expect "nginx-21.1.23"
+if [[ "$APIV2_CHART" == "nginx-$TARGET_VER" ]]; then
+  ok "'internal-issue-report-apiv2' is at chart version $TARGET_VER"
+else
+  fail "'internal-issue-report-apiv2' is not at required chart version $TARGET_VER (found: $APIV2_CHART)"
+fi
+
+# --- 3) apache installed with replicaCount=2 via values ---
+if ! helm status internal-issue-report-apache -n "$NS_SER" >/dev/null 2>&1; then
+  fail "Release 'internal-issue-report-apache' not found in '$NS_SER'"
+fi
+
+APACHE_REPL=""
+if $has_jq; then
+  APACHE_REPL="$(get_values_replica_with_jq internal-issue-report-apache "$NS_SER")"
+else
+  APACHE_REPL="$(get_values_replica_without_jq internal-issue-report-apache "$NS_SER")"
+fi
+
+if [[ "$APACHE_REPL" == "2" ]]; then
+  ok "'internal-issue-report-apache' has replicaCount=2 via values"
+else
+  fail "'internal-issue-report-apache' does not have replicaCount=2 via values (found: ${APACHE_REPL:-unset})"
+fi
+
+# --- 4) vulnerabilities uninstalled from venus ---
+if helm status vulnerabilities -n "$NS_VEN" >/dev/null 2>&1; then
+  fail "Release 'vulnerabilities' still exists in '$NS_VEN'"
+else
+  ok "'vulnerabilities' removed from '$NS_VEN'"
+fi
+
+echo "✅ All checks passed."

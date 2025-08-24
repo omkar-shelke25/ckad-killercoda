@@ -22,6 +22,7 @@ Create a NetworkPolicy named `external-target` **in the `netpol-demo9` namespace
 <summary>Show YAML</summary>
 **Same namespace → just use podSelector.**
 **Cross namespace → use namespaceSelector + podSelector together (so you don’t accidentally allow Pods in other namespaces that reuse the same labels).**
+  
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

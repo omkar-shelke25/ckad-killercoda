@@ -14,6 +14,8 @@ Create a NetworkPolicy named `deny-all-except-dns` in the `netpol-demo2` namespa
 - **Denies all egress** from that Pod **except** UDP port **53** (DNS) to any destination.
 - Explicitly sets `policyTypes` to include **Ingress** and **Egress**.
 
+[NetworkPolicy DNS Notes](https://github.com/omkar-shelke25/ckad-killercoda/blob/main/NetworkPolicy-DNS/note.md)
+
 ---
 
 ## **Solution**

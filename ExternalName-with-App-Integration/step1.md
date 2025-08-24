@@ -23,6 +23,19 @@ Try to solve this yourself first, then check the solution if needed:
 
 ### **Step 1: Create the ExternalName Service**
 
+**Notes On External Name**
+
+An **ExternalName Service** is a special Service that works only as a **DNS alias**, with no Pods or selectors.
+It redirects traffic at the DNS level to an external hostname — no proxying, no cluster IP.
+
+Flow: `frontend-pod → backend-service.store.svc.cluster.local → CNAME → backend.prod.internal → external server`.
+You can check if the Pod has any URL environment variable with:
+
+```bash
+kubectl exec -it frontend-pod -n store -- printenv | grep URL
+```
+----
+
 ```bash
 kubectl create service externalname backend-service \
   --external-name=backend.prod.internal \

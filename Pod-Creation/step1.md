@@ -40,5 +40,7 @@ spec:
 
 ```bash
 echo "kubectl get pod pod1 -n default -o jsonpath='{.status.phase}'" > /opt/course/2/pod1-status-command.sh
+chmod +x /opt/course/2/pod1-status-command.sh
+/opt/course/2/pod1-status-command.sh
 ```
 </details>

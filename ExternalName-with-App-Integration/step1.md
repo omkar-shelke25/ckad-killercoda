@@ -21,7 +21,6 @@ Try to solve this yourself first, then check the solution if needed:
 <details>
 <summary>Click to view Solution</summary>
 
-### Theory On Externam Name
 
 **Notes On External Name**
 

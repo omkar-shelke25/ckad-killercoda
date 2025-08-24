@@ -11,7 +11,13 @@
 
 ---
 
-## Useful commands (reference)
+## **Solution**
+
+Try to solve this yourself first, then check the solution if needed:
+
+<details>
+<summary>Click to view Solution</summary>
+  
 ```bash
 # Inspect current releases
 helm ls -n sercury -a
@@ -32,3 +38,5 @@ helm install internal-issue-report-apache bitnami/apache -n sercury --set replic
 
 # Remove cross-namespace release
 helm uninstall vulnerabilities -n venus
+
+</details>

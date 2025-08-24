@@ -7,7 +7,7 @@
 1. **Delete** the release **`internal-issue-report-apiv1`** in `sercury`.
 2. **Upgrade** the release **`internal-issue-report-apiv2`** in `sercury` from bitnami/nginx **18.2.6** to **exact chart version `21.1.23`**.
 3. **Install** a new release **`internal-issue-report-apache`** in `sercury` from chart **`bitnami/apache`** with the Deployment replica count set to **2** via Helm **values** (do not edit manifests).
-4. **Find** the release named **`vulnerabilities`** and **uninstall** it (hint: it is **not** in `sercury`).
+4. **Find** the release named **`vulnerabilities`** and **uninstall** it.
 
 ---
 

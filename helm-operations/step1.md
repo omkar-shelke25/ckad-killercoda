@@ -34,6 +34,7 @@ helm search repo bitnami/nginx --versions
 helm upgrade internal-issue-report-apiv2 bitnami/nginx -n sercury --version 21.1.23
 
 # Install apache with replicas via values
+helm show values bitnami/apache | grep -i replica
 helm install internal-issue-report-apache bitnami/apache -n sercury --set replicaCount=2
 
 # Remove cross-namespace release

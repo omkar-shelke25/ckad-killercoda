@@ -39,4 +39,5 @@ helm install internal-issue-report-apache bitnami/apache -n sercury --set replic
 # Remove cross-namespace release
 helm uninstall vulnerabilities -n venus
 
+```
 </details>

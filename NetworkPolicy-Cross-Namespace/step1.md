@@ -20,6 +20,7 @@ Create a NetworkPolicy named `external-target` **in the `netpol-demo9` namespace
 
 <details>
 <summary>Show YAML</summary>
+
 **Same namespace → just use podSelector.**
 **Cross namespace → use namespaceSelector + podSelector together (so you don’t accidentally allow Pods in other namespaces that reuse the same labels).**
   

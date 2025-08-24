@@ -20,7 +20,7 @@ In the `netpol-demo6` namespace:
 
 ### Solution
 <details>
-<summary>**Create NetworkPolicy using imperative command**</summary>
+<summary>Create NetworkPolicy using imperative command</summary>
 
 ```bash  
 kubectl create networkpolicy internal-only \
@@ -32,7 +32,7 @@ kubectl create networkpolicy internal-only \
 </details>
 
 <details>
-<summary>**Yaml File Solution**</summary>
+<summary>yaml File Solution</summary>
 
 ```yaml
 apiVersion: networking.k8s.io/v1

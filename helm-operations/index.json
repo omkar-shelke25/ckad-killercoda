@@ -1,0 +1,23 @@
+{
+  "title": "Helm CKAD: Delete, Exact Upgrade, and Install with Values",
+  "description": "Perform precise Helm operations in the sercury namespace and clean up a flagged release.",
+  "details": {
+    "steps": [
+      {
+        "title": "Helm Tasks in sercury (plus a cross-namespace cleanup)",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

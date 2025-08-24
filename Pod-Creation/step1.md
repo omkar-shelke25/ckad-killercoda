@@ -13,7 +13,7 @@ Work in the **default** namespace.
 The script must use **kubectl** to print the **status phase** of Pod `pod1` in the `default` namespace  
 (e.g., `Running`, `Pending`, `Succeeded`, etc.).
 
-
+> You must run the script **/opt/course/2/pod1-status-command.sh** at least once before submission (before clicking Check).
 
 ## Solution
 

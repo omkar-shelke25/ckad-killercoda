@@ -1,32 +1,29 @@
 # Configure Pod and Container Security Contexts
 
-A new policy requires workloads to run with least privilege. A Pod must:
-- Run as a non-root user/group at the **Pod level**.
-- Have a **read-only** root filesystem at the **container level**.
+Your security team has introduced a new **least privilege policy**. One of the workloads in the `security` namespace must be updated to follow these rules.
 
-## Task
+### Background
 
-In the `security` namespace:
+* Applications should never run as root.
+* System users (UIDs < 1000) must be avoided.
+* File systems should be protected against accidental writes.
 
-- Create a Pod named **secure-app-pod**.
-- At the **Pod** level (`spec.securityContext`), ensure all containers run with:
-  - `runAsUser: 1000`
-  - `runAsGroup: 3000`
-  - (Rationale: UIDs below 1000 are typically system users; use 1000/3000 for app identity.)
-- The Pod contains one container:
-  - Name: `app-container`
-  - Image: `busybox:1.36`
-  - Command: `sleep 3600` (container must remain running)
-- At the **container** level (`securityContext`):
-  - Set `readOnlyRootFilesystem: true`
-  - (Note: Container-level settings override Pod-level ones where fields overlap.)
+### Task
 
-### Acceptance criteria
+In the `security` namespace, create a Pod named **secure-app-pod** that satisfies the following:
 
-- `Pod/secure-app-pod` is **Running** in `security`.
-- Inside the container:
-  - `id -u` returns **1000**, and `id -g` returns **3000**.
-  - `kubectl exec -n security secure-app-pod -c app-container -- sh -c 'touch /newfile'` : Attempting `touch /newfile` fails with **"Read-only file system"**.
+* At the **Pod level** (`spec.securityContext`), enforce that all containers run with a **non-root identity** (UID 1000 and GID 3000).
+* The Pod should contain a single container named **app-container** running the image `busybox:1.36`.
+  * The container must keep running (`sleep 3600`).
+* At the **container level**, ensure the root filesystem is **read-only**.
+* (Reminder: container-level security context values override Pod-level settings if they overlap.)
+
+### Validation checks
+
+* The Pod is running in the `security` namespace.
+* Running `id -u` and `id -g` inside the container returns **1000** and **3000** respectively.
+* Trying to write a file at `/` (e.g., `touch /newfile`) fails with **"Read-only file system"**.
+
 
 ---
 

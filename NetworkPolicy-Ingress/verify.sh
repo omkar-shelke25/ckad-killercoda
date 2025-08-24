@@ -1,9 +1,7 @@
 #!/bin/bash
 set -euo pipefail
-
 NS="netpol-demo6"
 NP="internal-only"
-
 pass(){ echo "✅ $1"; }
 fail(){ echo "❌ $1"; exit 1; }
 
@@ -27,10 +25,9 @@ SEL_KEYS="$(kubectl -n "$NS" get networkpolicy "$NP" -o jsonpath='{.spec.podSele
 [ "$SEL_KEYS" = "map[]" ] || [ "$SEL_KEYS" = "{}" ] || fail "spec.podSelector should select all pods ({}). Found: $SEL_KEYS"
 
 # Ingress.from should include a same-namespace podSelector
-FROM_BLOCKS="$(kubectl -n "$NS" get networkpolicy "$NP" -o jsonpath='{range .spec.ingress[*].from[*]}{.podSelector}{"
-"}{end}')"
+# Fixed: Use \n instead of literal newline in jsonpath
+FROM_BLOCKS="$(kubectl -n "$NS" get networkpolicy "$NP" -o jsonpath='{range .spec.ingress[*].from[*]}{.podSelector}{"\n"}{end}')"
 echo "$FROM_BLOCKS" | grep -q "map\[\]" || echo "$FROM_BLOCKS" | grep -q "{}" || fail "ingress.from must include a same-namespace podSelector ({})."
-
 pass "NetworkPolicy structure looks correct."
 
 # 3) Functional checks

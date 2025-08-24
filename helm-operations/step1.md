@@ -1,4 +1,4 @@
-# CKAD-Style Task: Helm Operations
+# Helm Operations
 
 **Namespace:** `sercury` (unless stated otherwise)
 

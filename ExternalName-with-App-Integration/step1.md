@@ -35,7 +35,7 @@ kubectl exec -it frontend-pod -n store -- printenv | grep URL
 ```
 ----
 
-### Imperative and Yaml Solution
+#### Imperative and Yaml Solution
 ```bash
 kubectl create service externalname backend-service \
   --external-name=backend.prod.internal \

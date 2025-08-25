@@ -11,7 +11,7 @@ A developer using ServiceAccount **`dev-user-1`** in **`project-alpha`** cannot 
 
 ---
 
-<details> <summary>Show steps</summary>
+<details> <summary>**short notes** on RBAC `resources`</summary>
 
 # 📒 RBAC Resources – Short Notes
 
@@ -39,7 +39,7 @@ A developer using ServiceAccount **`dev-user-1`** in **`project-alpha`** cannot 
 Solution (expand to view)
 <details> <summary>Show steps</summary>
 
-**short notes** on RBAC `resources`:
+
 1) Confirm the problem
 
 ```bash

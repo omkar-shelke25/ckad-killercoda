@@ -1,0 +1,23 @@
+{
+  "title": "RBAC Fix: Allow SA to List ConfigMaps",
+  "description": "Investigate and fix an RBAC Role misconfiguration preventing a ServiceAccount from listing ConfigMaps in its namespace.",
+  "details": {
+    "steps": [
+      {
+        "title": "Investigate & Fix the RBAC Role",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

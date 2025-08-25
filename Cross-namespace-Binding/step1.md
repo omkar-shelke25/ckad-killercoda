@@ -35,6 +35,7 @@ kubectl create rolebinding log-scraper-binding \
 </details>
 
 <details> <summary>Impersonation test</summary>
+  
 ```bash 
 # positive (in app-prod, subresource=log)
 kubectl auth can-i -n app-prod get pods --subresource=log \

@@ -1,0 +1,23 @@
+{
+  "title": "🔭 RBAC — Cluster-wide Node Reader (Monitoring)",
+  "description": "Grant a monitoring ServiceAccount cluster-wide read-only access to Node resources using ClusterRole and ClusterRoleBinding. Assign the SA to a Deployment and verify via impersonation.",
+  "details": {
+    "steps": [
+      {
+        "title": "ClusterRole & ClusterRoleBinding + Attach SA to Deployment",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

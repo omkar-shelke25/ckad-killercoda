@@ -11,9 +11,35 @@ A developer using ServiceAccount **`dev-user-1`** in **`project-alpha`** cannot 
 
 ---
 
+<details> <summary>Show steps</summary>
+
+# 📒 RBAC Resources – Short Notes
+
+### 🔑 Rules
+
+* Always use **plural** names in `resources` (e.g., `configmaps`, not `configmap`).
+* Names must match **API resource list** → check with:
+
+  ```bash
+  kubectl api-resources
+  ```
+* ❌ Singular / Short names (e.g., `cm`, `svc`) are invalid.
+* ✅ Always lowercase.
+
+---
+
+### ✅ Common Plural Names
+
+* Pod → `pods`
+* Service → `services`
+* ConfigMap → `configmaps`
+
+</details>
+
 Solution (expand to view)
 <details> <summary>Show steps</summary>
 
+**short notes** on RBAC `resources`:
 1) Confirm the problem
 
 ```bash
@@ -31,6 +57,9 @@ kubectl -n project-alpha get rolebinding dev-user-1-binding -o yaml
 ```
 
 Notice the Role uses resources: ["configmap"] (singular). It must be configmaps (plural).
+```bash
+kubectl api-resources | grep -i configmap  # It must be configmaps (plural).
+```
 
 3a) Fix in-place using kubectl edit
 ```bash

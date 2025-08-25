@@ -23,6 +23,11 @@ For example, giving `pods/log` access allows viewing logs without exposing the f
 This helps follow the principle of **least privilege** and improves security.
 Common uses include reading logs, exec into containers, scaling workloads, or updating status.
 
+ **tiny exam-style one-liner**:
+
+**👉 Subresources (e.g., `pods/log`, `pods/exec`, `deployments/scale`) let you grant permissions for specific actions on a resource without giving full access to the resource itself.** ✅
+
+
 </details>
 
 <details><summary>Imperative commands</summary>

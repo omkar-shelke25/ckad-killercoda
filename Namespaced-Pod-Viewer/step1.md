@@ -51,6 +51,7 @@ kubectl auth can-i list pods \
 </details>
 
 <details> <summary>YAML bundle</summary>
+  
 ```yaml  
 apiVersion: v1
 kind: ServiceAccount

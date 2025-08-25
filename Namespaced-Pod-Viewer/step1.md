@@ -39,6 +39,7 @@ kubectl create rolebinding pod-viewer-binding \
 </details>
 
 <details> <summary>Verify with impersonation</summary>
+  
 ```bash
 # Can read in dev-team-1
 kubectl auth can-i list pods \

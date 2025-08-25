@@ -1,0 +1,23 @@
+{
+  "title": "📜 RBAC — Read Pod Logs Only (Cross-namespace Binding)",
+  "description": "Create a ServiceAccount in the default namespace that can read only the logs subresource of Pods in app-prod. Bind via RoleBinding across namespaces and verify subresource permissions.",
+  "details": {
+    "steps": [
+      {
+        "title": "Task: Grant pods/log Read-Only Access",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

@@ -40,8 +40,7 @@ kubectl create clusterrolebinding node-inspector-crbinding \
   --serviceaccount monitoring:node-inspector-sa
 
 # Attach SA to Deployment (will trigger a rollout)
-kubectl -n monitoring patch deployment node-inspector-ui \
-  -p '{"spec":{"template":{"spec":{"serviceAccountName":"node-inspector-sa"}}}}'
+k set sa -n monitoring deployment/node-inspector-ui node-inspector-sa
 ```
 </details>
 

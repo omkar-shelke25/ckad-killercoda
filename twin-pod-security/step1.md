@@ -24,7 +24,8 @@ Their note says:
   - `preproc` → runs as UID **1000**  
   - `shipper` → runs as UID **2000**  
   - Pod-level `fsGroup` so they share file group ownership.
-    > **Pick any valid fsGroup (for example 1000, 2000, or any value >=1000) that allows both containers to share group file access**
+    - **Pick any valid fsGroup (for example 1000, 2000, or any value >=1000) that allows both containers to share group file access**
+    - **Choose any fsGroup between 1000–65535**
 
 ---
 

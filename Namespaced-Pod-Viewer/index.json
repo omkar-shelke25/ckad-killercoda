@@ -1,0 +1,23 @@
+{
+  "title": "🔐 RBAC — Namespaced Pod Viewer (CKAD)",
+  "description": "Create a ServiceAccount and grant least-privilege read-only access to Pods in a single namespace. Verify permissions with kubectl auth can-i.",
+  "details": {
+    "steps": [
+      {
+        "title": "Task 1: Role & RoleBinding for Pod Viewer",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

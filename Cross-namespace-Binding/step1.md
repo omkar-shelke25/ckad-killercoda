@@ -60,6 +60,8 @@ kubectl auth can-i -n app-prod list pods --subresource=log \
 kubectl auth can-i -n default get pods --subresource=log \
   --as=system:serviceaccount:default:log-scraper-sa
 ```
+</details>
+
 
 <details><summary>Minimal YAML (optional)</summary>
 

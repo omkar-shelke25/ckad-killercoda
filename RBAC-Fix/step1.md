@@ -57,12 +57,6 @@ kubectl -n project-alpha patch role config-reader \
 kubectl auth can-i list configmaps \
   --as=system:serviceaccount:project-alpha:dev-user-1 -n project-alpha
 ```
-# Optional: actually list
-
-```bash
-kubectl -n project-alpha get configmaps \
-  --as=system:serviceaccount:project-alpha:dev-user-1
-```
 
 
 </details>

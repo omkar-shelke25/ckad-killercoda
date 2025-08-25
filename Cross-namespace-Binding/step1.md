@@ -15,12 +15,17 @@ You need a ServiceAccount that can **only view Pod logs** in `app-prod`. It must
 ---
 
 ## 💡 Hints (expand)
-<details>
-<summary>Subresources Notes</summary>
+<details><summary>Subresources Notes</summary>
 
+🔑 **Subresources** in Kubernetes are special endpoints attached to main resources for specific actions (like `pods/log`, `pods/exec`, `deployments/scale`).
+They let us grant **fine-grained permissions** instead of full access to the resource.
+For example, giving `pods/log` access allows viewing logs without exposing the full Pod spec.
+This helps follow the principle of **least privilege** and improves security.
+Common uses include reading logs, exec into containers, scaling workloads, or updating status.
 
-<details>
-<summary>Imperative commands</summary>
+</details>
+
+<details><summary>Imperative commands</summary>
 
 ```bash
 kubectl create sa -n default log-scraper-sa
@@ -55,7 +60,8 @@ kubectl auth can-i -n app-prod list pods --subresource=log \
 kubectl auth can-i -n default get pods --subresource=log \
   --as=system:serviceaccount:default:log-scraper-sa
 ```
-<details> <summary>Minimal YAML (optional)</summary>
+
+<details><summary>Minimal YAML (optional)</summary>
 
 ```yaml
 apiVersion: v1
@@ -88,5 +94,6 @@ subjects:
   name: log-scraper-sa
   namespace: default
 ```
+
 </details>
 

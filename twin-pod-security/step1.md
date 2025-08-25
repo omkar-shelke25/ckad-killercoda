@@ -29,6 +29,7 @@ Their note says:
 
 
 <details> <summary>Reference Manifest (check only if stuck)</summary>
+  
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -50,4 +51,5 @@ spec:
       runAsUser: 2000
     command: ["sh","-c","sleep 1d"]
 ```
+
 </details>

@@ -16,6 +16,10 @@ You need a ServiceAccount that can **only view Pod logs** in `app-prod`. It must
 
 ## 💡 Hints (expand)
 <details>
+<summary>Subresources Notes</summary>
+
+
+<details>
 <summary>Imperative commands</summary>
 
 ```bash

@@ -35,6 +35,7 @@ kubectl create rolebinding pod-viewer-binding \
   --role=pod-reader-role \
   --serviceaccount=dev-team-1:pod-viewer-sa \
   -n dev-team-1
+```
 </details>
 
 <details> <summary>Verify with impersonation</summary>

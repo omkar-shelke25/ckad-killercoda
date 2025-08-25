@@ -27,6 +27,7 @@ Their note says:
  
     
 > **Pick any valid fsGroup (for example 1000, 2000, or any value >=1000) that allows both containers to share group file access**
+
 > **Choose any fsGroup between 1000–65535**
 
 ---

@@ -20,7 +20,7 @@ It must use a **dedicated ServiceAccount** with **cluster-wide read-only access 
 - ClusterRoleBinding: `node-inspector-crbinding`
   - `roleRef` → **ClusterRole** `node-reader-crole`
   - `subjects[0]` → **ServiceAccount** `node-inspector-sa` in namespace `monitoring`
-- Update `Deployment/node-inspector-ui` to run with `serviceAccountName: node-inspector-sa`
+- Update `deployment/node-inspector-ui` to run with `serviceAccountName: node-inspector-sa`
 
 ---
 

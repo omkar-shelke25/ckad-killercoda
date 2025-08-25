@@ -49,7 +49,7 @@ kubectl auth can-i list configmaps \
   --as=system:serviceaccount:project-alpha:dev-user-1 -n project-alpha
 ```
 
-You should see no.
+You should see below :: 
 
 2) Inspect Role and RoleBinding
 

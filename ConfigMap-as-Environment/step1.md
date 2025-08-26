@@ -16,6 +16,7 @@ Create a **ConfigMap** and expose its keys as **environment variables** in a Pod
 ---
 
 ## Try it yourself first!
+✅ Solution (expand to view)
 
 <details><summary>Short Notes on configMap </summary>
   
@@ -30,7 +31,7 @@ Create a **ConfigMap** and expose its keys as **environment variables** in a Pod
   
 </details>
 
-✅ Solution (expand to view)
+
 <details><summary>Full commands</summary>
 
 ```bash

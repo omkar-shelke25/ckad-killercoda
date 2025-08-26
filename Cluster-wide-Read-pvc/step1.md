@@ -66,10 +66,10 @@ subjects:
 <details><summary>Verify manually</summary>
   
 ```bash
-kubectl auth can-i list persistentvolumeclaims --as=sara.jones@example.com --all-namespaces
+# Answer should be 'Yes'
+kubectl auth can-i list persistentvolumeclaims --as=sara.jones@example.com -n storage-lab  #particular namespace 
+kubectl auth can-i list persistentvolumeclaims --as=sara.jones@example.com --all-namespaces  #cluster-wide
 kubectl auth can-i list storageclasses --as=sara.jones@example.com
-kubectl get pvc -A
-kubectl get sc
 ```
 
 </details>

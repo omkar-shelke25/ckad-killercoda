@@ -87,4 +87,4 @@ spec:
           name: app-config
 
 ```
-<details>
+</details>

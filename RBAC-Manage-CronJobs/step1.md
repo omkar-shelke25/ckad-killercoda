@@ -41,6 +41,7 @@ kubectl create rolebinding bind-cron-manager \
   -n batch-processing \
   --role=cronjob-lifecycle-role \
   --serviceaccount=batch-processing:cron-manager-sa
+
 </details>
 
 <details><summary>YAML</summary>

@@ -1,57 +1,45 @@
 #!/bin/bash
 set -euo pipefail
 
-pass(){ echo "[PASS] $1"; }
-fail(){ echo "[FAIL] $1"; exit 1; }
+NS="apps"
+DEP="app-workload"
+CM="app-config"
 
-ns="apps"
-cm="app-config"
-deploy="web-app"
-mountPath="/etc/appconfig"
+pass(){ echo "✅ $1"; }
+fail(){ echo "❌ $1"; exit 1; }
 
-# Namespace
-kubectl get ns "$ns" >/dev/null 2>&1 || fail "Namespace '$ns' not found."
+command -v jq >/dev/null 2>&1 || fail "jq not found. Please install jq."
 
-# ConfigMap keys/values
-kubectl -n "$ns" get configmap "$cm" >/dev/null 2>&1 || fail "ConfigMap '$cm' not found."
-mode=$(kubectl -n "$ns" get configmap "$cm" -o jsonpath='{.data.APP_MODE}' 2>/dev/null || true)
-port=$(kubectl -n "$ns" get configmap "$cm" -o jsonpath='{.data.APP_PORT}' 2>/dev/null || true)
-[[ "$mode" == "production" ]] || fail "APP_MODE must be 'production' (got '${mode:-<missing>}')."
-[[ "$port" == "8080" ]] || fail "APP_PORT must be '8080' (got '${port:-<missing>}')."
-pass "ConfigMap '$cm' contains expected keys."
+# 0) Namespace exists
+kubectl get ns "$NS" >/dev/null 2>&1 || fail "Namespace '$NS' not found."
 
-# Deployment basics
-kubectl -n "$ns" get deploy "$deploy" >/dev/null 2>&1 || fail "Deployment '$deploy' not found."
-replicas=$(kubectl -n "$ns" get deploy "$deploy" -o jsonpath='{.spec.replicas}')
-[[ "$replicas" == "2" ]] || fail "Deployment replicas should be 2 (found $replicas)."
-img=$(kubectl -n "$ns" get deploy "$deploy" -o jsonpath='{.spec.template.spec.containers[0].image}')
-[[ "$img" == nginx* ]] || fail "Container image should be 'nginx' (found '$img')."
-pass "Deployment spec is valid."
+# 1) ConfigMap exists with exact keys/values
+kubectl -n "$NS" get configmap "$CM" >/dev/null 2>&1 || fail "ConfigMap '$CM' not found in '$NS'."
+MODE=$(kubectl -n "$NS" get cm "$CM" -o jsonpath='{.data.APP_MODE}')
+PORT=$(kubectl -n "$NS" get cm "$CM" -o jsonpath='{.data.APP_PORT}')
+[[ "$MODE" == "production" ]] || fail "ConfigMap '$CM'.APP_MODE must be 'production'."
+[[ "$PORT" == "8080" ]] || fail "ConfigMap '$CM'.APP_PORT must be '8080'."
 
-# Volume from ConfigMap + mount at /etc/appconfig
-cmVolName=$(kubectl -n "$ns" get deploy "$deploy" -o jsonpath='{range .spec.template.spec.volumes[*]}{.name}{"|"}{.configMap.name}{"\n"}{end}' \
-  | awk -F'|' '$2=="app-config"{print $1; exit}')
-[[ -n "$cmVolName" ]] || fail "No volume sourced from ConfigMap 'app-config'."
+# 2) Deployment exists with 2 replicas and nginx image
+kubectl -n "$NS" get deploy "$DEP" >/dev/null 2>&1 || fail "Deployment '$DEP' not found in '$NS'."
+REPLICAS=$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.replicas}')
+[[ "$REPLICAS" == "2" ]] || fail "Deployment '$DEP' must have replicas=2."
+IMG=$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].image}')
+[[ "$IMG" == nginx:* || "$IMG" == *"/nginx:"* ]] || fail "Deployment must use an nginx image (found '$IMG')."
 
-mounted=$(kubectl -n "$ns" get deploy "$deploy" -o jsonpath='{range .spec.template.spec.containers[*].volumeMounts[*]}{.name}{"|"}{.mountPath}{"\n"}{end}' \
-  | awk -F'|' -v vol="$cmVolName" -v mnt="$mountPath" '$1==vol && $2==mnt{print "yes"}')
-[[ "$mounted" == "yes" ]] || fail "Volume '$cmVolName' is not mounted at $mountPath."
-pass "ConfigMap volume is mounted at $mountPath."
+# 3) Volume mount of ConfigMap at /etc/appconfig
+MOUNT=$(kubectl -n "$NS" get deploy "$DEP" -o json | jq -r '.spec.template.spec.containers[0].volumeMounts[] | select(.mountPath=="/etc/appconfig") | .name' | head -n1)
+[[ -n "$MOUNT" ]] || fail "Container must mount ConfigMap at /etc/appconfig."
+VOL_CM=$(kubectl -n "$NS" get deploy "$DEP" -o json | jq -r --arg v "$MOUNT" '.spec.template.spec.volumes[] | select(.name==$v) | .configMap.name')
+[[ "$VOL_CM" == "$CM" ]] || fail "Mounted volume must reference ConfigMap '$CM'."
 
-# Pods Ready and files present
-kubectl -n "$ns" rollout status deploy/"$deploy" --timeout=120s >/dev/null 2>&1 || fail "Deployment did not become Ready."
+# 4) Readiness probe checks file contents via exec
+HAS_PROBE=$(kubectl -n "$NS" get deploy "$DEP" -o json | jq -r '.spec.template.spec.containers[0].readinessProbe.exec.command | join(" ")' | grep -F "/etc/appconfig/APP_MODE" || true)
+[[ -n "$HAS_PROBE" ]] || fail "readinessProbe (exec) must validate files under /etc/appconfig."
 
-pod=$(kubectl -n "$ns" get pods -l app="$deploy" -o jsonpath='{.items[0].metadata.name}')
-[[ -n "$pod" ]] || fail "No Pod found for '$deploy'."
+# 5) (Optional) pods become Ready
+if ! kubectl -n "$NS" rollout status deploy/"$DEP" --timeout=90s >/dev/null 2>&1; then
+  fail "Deployment '$DEP' did not become Ready. Check ConfigMap values and readinessProbe."
+fi
 
-kubectl -n "$ns" exec "$pod" -- sh -c "test -f $mountPath/APP_MODE && test -f $mountPath/APP_PORT" \
-  || fail "Expected files APP_MODE and APP_PORT not found at $mountPath."
-
-val_mode=$(kubectl -n "$ns" exec "$pod" -- sh -c "cat $mountPath/APP_MODE" || true)
-val_port=$(kubectl -n "$ns" exec "$pod" -- sh -c "cat $mountPath/APP_PORT" || true)
-
-[[ "$val_mode" == "production" ]] || fail "APP_MODE file content mismatch (got '$val_mode')."
-[[ "$val_port" == "8080" ]] || fail "APP_PORT file content mismatch (got '$val_port')."
-
-pass "Pods are Ready; files exist with correct content."
-echo "All checks passed ✅"
+pass "Verification successful! Workload meets all requirements!"

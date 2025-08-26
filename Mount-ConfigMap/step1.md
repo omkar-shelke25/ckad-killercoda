@@ -39,6 +39,7 @@ kubectl -n apps create deployment app-workload \
 
 
 <details><summary>Deployment YAML (recommended)</summary>
+  
 ```yaml
 apiVersion: v1
 kind: ConfigMap

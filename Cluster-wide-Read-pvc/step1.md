@@ -27,7 +27,7 @@ kubectl create clusterrole storage-viewer-crole   --verb=get,list,watch   --reso
 
 # Bind to the human user
 kubectl create clusterrolebinding sara-storage-viewer-crbinding   --user=sara.jones@example.com   --clusterrole=storage-viewer-crole
-
+```
 </details>
 
 <details> <summary>Show YAML (apply with kubectl apply -f)</summary>

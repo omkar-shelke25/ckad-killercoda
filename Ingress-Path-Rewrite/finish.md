@@ -7,4 +7,3 @@ You configured **legacy-ingress** to expose the app at **/app** while the backen
 - ✅ Rule `legacy.example.com/app` → `legacy-svc:80`
 - ✅ Added rewrite annotation so backend sees `/`
 
-> Tip: With NGINX Ingress, regex paths and a target like `/$2` fully strip prefixes when needed. For this lab, verifying the spec and annotation is sufficient.

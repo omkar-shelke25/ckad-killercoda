@@ -18,11 +18,17 @@ Create a **ConfigMap** and expose its keys as **environment variables** in a Pod
 ## Try it yourself first!
 
 <details><summary>Short Notes on configMap </summary>
-A ConfigMap can be mounted into Pods either as environment variables or as files.
-If the application supports reading env vars, use envFrom (all keys) or configMapKeyRef (per key).
-If the application does not read env vars and instead expects configuration files, mount the ConfigMap as a volume so each key becomes a file.
-For CKAD, always check the question wording: “mount as env vars” means inject via env/envFrom, while “does not read env vars; config must be files” means use a volume mount.
+- A ConfigMap can be mounted into Pods either as environment variables or as files.
+- If the application supports reading env vars, use envFrom (all keys) or configMapKeyRef (per key).
+- If the application does not read env vars and instead expects configuration files, mount the ConfigMap as a volume so each key becomes a file.
+- For CKAD, **always check the question wording**: “mount as env vars” means inject via env/envFrom, while “does not read env vars; config must be files” means use a volume mount.
+
+✅ Both approaches = “Mount ConfigMap values as environment variables”
+- env + configMapKeyRef = selective injection.
+- envFrom + configMapRef = inject all keys.
+  
 </details>
+
 ✅ Solution (expand to view)
 <details><summary>Full commands</summary>
 

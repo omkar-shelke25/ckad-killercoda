@@ -14,7 +14,6 @@
     - `backend-config` → env `ENDPOINT`
     - `api-secret` → env `API_KEY`
 - Verify that the Pod’s environment has the expected values.
-- Bonus: Use **`/opt/env.sh`** to quickly print the values.
 
 ---
 

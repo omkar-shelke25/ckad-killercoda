@@ -46,5 +46,11 @@ EOF
 kubectl wait --for=condition=Ready pod/app-pod --timeout=60s
 kubectl exec app-pod -- sh -c 'echo APP_MODE=$APP_MODE; echo APP_VERSION=$APP_VERSION'
 
+# Or list all envs and grep
+kubectl exec app-pod -- env | grep "^APP_"
+# Expected:
+# APP_MODE=production
+# APP_VERSION=1.0
+
 ```
 </details>

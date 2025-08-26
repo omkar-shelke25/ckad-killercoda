@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: ConfigMap as Files (Mount into NGINX html)",
+  "description": "Create a ConfigMap containing HTML files and mount it into an NGINX pod at /usr/share/nginx/html.",
+  "details": {
+    "steps": [
+      {
+        "title": "Mount ConfigMap as files into a Pod",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

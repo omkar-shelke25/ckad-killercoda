@@ -1,7 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-# Prepare lab (idempotent)
-kubectl get ns apps >/dev/null 2>&1 || kubectl create namespace apps
+echo "Preparing lab environment..."
 
-echo "Use namespace 'apps'. Provide config strictly as files at /etc/appconfig."
+NS="apps"
+kubectl get ns "$NS" >/dev/null 2>&1 || kubectl create namespace "$NS"
+
+echo "Setup complete! Namespace '$NS' is ready."

@@ -1,9 +1,7 @@
-# ✅ Completed
+# 🎉 Great job!
 
-You provided configuration **as files** via ConfigMap and mounted it correctly for the workload to start:
+You deployed **2 replicas** of an **nginx** workload that reads config **as files** from `/etc/appconfig` via **ConfigMap**, and used a **readinessProbe** to ensure Pods only become Ready when the files contain the exact required values.
 
-- Keys: `APP_MODE=production`, `APP_PORT=8080`
-- Deployment: `web-app` (2 replicas), image `nginx`
-- Mount: `/etc/appconfig` (file-per-key)
-
-**Exam tip:** When a prompt hints “reads from files / not env”, think **ConfigMap volume**. Verify with `ls` + `cat` inside a Pod.
+**Key takeaways**
+- Use **ConfigMap** to provide file-based configuration without changing images.
+- Use **`readinessProbe.exec`** to gate readiness on config correctness.

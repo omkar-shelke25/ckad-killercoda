@@ -1,0 +1,23 @@
+{
+  "title": "RBAC: Manage CronJobs in a Single Namespace",
+  "description": "Grant a ServiceAccount permissions to manage CronJobs in the batch-processing namespace, but not other workload types.",
+  "details": {
+    "steps": [
+      {
+        "title": "CronJob lifecycle permissions (namespace-scoped RBAC)",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

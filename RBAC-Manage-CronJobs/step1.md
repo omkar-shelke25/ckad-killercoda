@@ -25,7 +25,7 @@ A data science team needs permissions to **manage the lifecycle of CronJobs** in
 ```bash
 
 # Namespace
-kubectl create namespace batch-processing
+
 
 # ServiceAccount
 kubectl create sa cron-manager-sa -n batch-processing

@@ -1,0 +1,23 @@
+{
+  "title": "Mount a TLS Secret in a Pod (security namespace)",
+  "description": "Create a kubernetes.io/tls Secret from a key & cert and mount it into a Pod as /etc/tls.",
+  "details": {
+    "steps": [
+      {
+        "title": "Create TLS Secret and mount it as a volume",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

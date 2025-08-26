@@ -19,13 +19,77 @@ A data science team needs permissions to **manage the lifecycle of CronJobs** in
 
 ## Try it yourself first!
 
-**Imperative hints:**
+✅ Solution (expand to view)
+<details><summary>Commands</summary>
+
 ```bash
-k create ns batch-processing
-k create sa cron-manager-sa -n batch-processing
-k create role -n batch-processing cronjob-lifecycle-role \
-  --verb get,list,watch,create,update,patch,delete \
-  --resource cronjobs.batch
-k create rolebinding -n batch-processing bind-cron-manager \
-  --role cronjob-lifecycle-role \
-  --serviceaccount batch-processing:cron-manager-sa
+
+# Namespace
+kubectl create namespace batch-processing
+
+# ServiceAccount
+kubectl create sa cron-manager-sa -n batch-processing
+
+# Role
+kubectl create role cronjob-lifecycle-role \
+  -n batch-processing \
+  --verb=get,list,watch,create,update,patch,delete \
+  --resource=cronjobs.batch
+
+# RoleBinding
+kubectl create rolebinding bind-cron-manager \
+  -n batch-processing \
+  --role=cronjob-lifecycle-role \
+  --serviceaccount=batch-processing:cron-manager-sa
+</details>
+
+<details><summary>YAML</summary>
+
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cron-manager-sa
+  namespace: batch-processing
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cronjob-lifecycle-role
+  namespace: batch-processing
+rules:
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: bind-cron-manager
+  namespace: batch-processing
+subjects:
+  - kind: ServiceAccount
+    name: cron-manager-sa
+    namespace: batch-processing
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cronjob-lifecycle-role
+```
+</details>
+
+<details><summary>Verify RBAC Permission</summary>
+  
+```bash
+# Should succeed
+kubectl auth can-i create cronjobs.batch \
+  --as=system:serviceaccount:batch-processing:cron-manager-sa \
+  -n batch-processing
+
+# Should fail
+kubectl auth can-i create pods \
+  --as=system:serviceaccount:batch-processing:cron-manager-sa \
+  -n batch-processing
+```
+
+</details>

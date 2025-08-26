@@ -46,6 +46,7 @@ kubectl create rolebinding bind-cron-manager \
 <details><summary>YAML</summary>
 
 ```yaml
+
 apiVersion: v1
 kind: ServiceAccount
 metadata:

@@ -1,0 +1,23 @@
+{
+  "title": "Ingress Path Rewrite: Serve App at /app but Forward as /",
+  "description": "Expose a root-path app under /app using an Ingress with rewrite-target annotation.",
+  "details": {
+    "steps": [
+      {
+        "title": "Create Ingress that rewrites /app to /",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

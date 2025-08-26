@@ -8,4 +8,6 @@ You created a **ConfigMap** and exposed its keys as **environment variables** in
 - ✅ Injected env vars using `envFrom` (or key-by-key with `configMapKeyRef`)
 - ✅ Verified the values inside the running container
 
-> Tip: Use `envFrom` for convenience when you want **all keys**, and `configMapKeyRef` for **explicit, per-key** control.
+> ✅ Exam Tip
+> If the question says “mount as env variables” → use envFrom or configMapKeyRef.
+> If it says “app does not read env vars; config must be files” → use volume mount from ConfigMap.

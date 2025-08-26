@@ -11,3 +11,4 @@ You created a **ConfigMap** and exposed its keys as **environment variables** in
 > ✅ Exam Tip
 > If the question says “mount as env variables” → use envFrom or configMapKeyRef.
 > If it says “app does not read env vars; config must be files” → use volume mount from ConfigMap.
+

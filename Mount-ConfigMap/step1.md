@@ -1,89 +1,90 @@
-# Config as Files
+# CKAD: Mount Config Files & Gate Readiness
 
-🔹 Question (Weightage: 4)
+## Objective
+Run an **nginx** workload in namespace **`apps`** with **2 replicas**. The container must read **two config files** from **`/etc/appconfig`** with exact contents:
+- `APP_MODE` → `production`
+- `APP_PORT` → `8080`
 
-A workload in the `apps` namespace must read configuration only from files at `/etc/appconfig`. The container image is `nginx`. The process considers startup successful only if both files exist with exact contents:
-
-* `/etc/appconfig/APP_MODE` → `production`
-* `/etc/appconfig/APP_PORT` → `8080`
-
-The app image cannot be modified and does not read environment variables.
-Operations require a Kubernetes-native approach (no hostPath, no baked-in files, no env vars).
-
-Task:
-
-In the `apps` namespace:
-
-1. Provide configuration via a Kubernetes object so that each key is rendered as an individual file under `/etc/appconfig`.
-2. Create a Deployment named `web-app` that:
-
-   * runs 2 replicas
-   * uses image `nginx`
-   * mounts the configuration read-only at `/etc/appconfig`
-3. Ensure Pods become Ready. (If files are missing/wrong, readiness will not be met.)
-
-Constraints:
-
-* Do not use env vars or `envFrom`.
-* File names and contents must be exact.
-* Assume namespace may not exist; create it if needed.
+**Constraints**
+- You **cannot modify the image**.
+- The app **does not read env vars**; config **must be files** at `/etc/appconfig`.
+- Pods must become **Ready only when both files exist with the correct values**.
+- Use **Kubernetes-native** configuration.
 
 ---
 
-Solution (expand):
-<details>
-<summary>Show solution</summary>
+## Try it yourself first!
 
-Ensure namespace:
-
-```
-kubectl create ns apps --dry-run=client -o yaml | kubectl apply -f -
-```
-
-ConfigMap with keys:
-
-```
+<details><summary>Imperative</summary>
+  
+```bash
+# ConfigMap with exact file contents
 kubectl -n apps create configmap app-config \
   --from-literal=APP_MODE=production \
   --from-literal=APP_PORT=8080
-```
 
-Deployment:
+kubectl -n apps create deployment app-workload \
+  --image=nginx:stable \
+  --replicas=2 \
+  --dry-run=client -o yaml > app-deploy.yaml
+
+#Then edit app-deploy.yaml to add:
+#The volumeMounts for /etc/appconfig
+#The volumes section referencing ConfigMap: app-config
+#The readinessProbe exec checking file contents
 
 ```
+</details>
+
+
+
+<details><summary>Deployment YAML (recommended)</summary>
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: apps
+data:
+  APP_MODE: "production"
+  APP_PORT: "8080"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web-app
+  name: app-workload
   namespace: apps
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: web-app
+      app: app-workload
   template:
     metadata:
       labels:
-        app: web-app
+        app: app-workload
     spec:
       containers:
       - name: nginx
-        image: nginx
+        image: nginx:stable
         volumeMounts:
-        - name: app-config-vol
+        - name: config
           mountPath: /etc/appconfig
           readOnly: true
+        readinessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - >
+                grep -qx "production" /etc/appconfig/APP_MODE
+                && grep -qx "8080" /etc/appconfig/APP_PORT
+          initialDelaySeconds: 2
+          periodSeconds: 5
       volumes:
-      - name: app-config-vol
+      - name: config
         configMap:
           name: app-config
-```
-
-Quick check:
 
 ```
-kubectl -n apps rollout status deploy/web-app
-POD=$(kubectl -n apps get pod -l app=web-app -o jsonpath='{.items[0].metadata.name}')
-kubectl -n apps exec "$POD" -- sh -c 'ls -1 /etc/appconfig && echo "---" && for f in /etc/appconfig/*; do echo "$f => $(cat "$f")"; done'
-```
-</details>
+<details>

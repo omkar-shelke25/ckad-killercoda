@@ -13,9 +13,8 @@ Both rules must use **`pathType: Prefix`**.
 ## Try it yourself first!
 
 ✅ Solution (expand to view)
-<details><summary>Imperative + patch (optional)</summary>
+<details><summary>YAML</summary></summary>
 
-### YAML (recommended)
 
 ```yaml
 apiVersion: networking.k8s.io/v1

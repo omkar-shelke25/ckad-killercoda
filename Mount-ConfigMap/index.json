@@ -1,10 +1,10 @@
 {
-  "title": "CKAD: Config from Files",
-  "description": "Inject configuration as files via ConfigMap and mount it correctly in a Deployment within the apps namespace.",
+  "title": "CKAD: Mount Config Files & Gate Readiness",
+  "description": "Run an nginx workload that only becomes Ready when two config files exist with exact values, provided via ConfigMap.",
   "details": {
     "steps": [
       {
-        "title": "Config as Files Challenge",
+        "title": "Provide config via ConfigMap and gate readiness on file contents",
         "text": "step1.md",
         "verify": "verify.sh"
       }

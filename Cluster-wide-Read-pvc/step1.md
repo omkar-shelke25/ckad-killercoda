@@ -12,6 +12,7 @@ A new DevOps engineer, **sara.jones@example.com**, has joined the team. Grant he
 - Create a **ClusterRoleBinding** named **`sara-storage-viewer-crbinding`**.
   - Bind the role to **User** `sara.jones@example.com`.
 
+> Do **not** use `-n <namespace>` for ClusterRole or ClusterRoleBinding; they are **cluster-scoped**.  
 > Note: For a **human user**, the subject `kind` is **User** (not ServiceAccount), and it is **not namespaced**.
 
 ---

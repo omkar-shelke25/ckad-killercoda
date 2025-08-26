@@ -16,31 +16,37 @@ Product wants **`main.example.com`** to serve the main site, but any **unknown h
 ---
 
 ## Try it yourself first!
+  
+<details><summary>✅ Solution (expand to view)</summary>
+  
+```bash 
+# 1) ConfigMap
+kubectl create cm html-config \
+  --from-literal=index.html='<h1>Welcome to Kubernetes</h1>' \
+  --from-literal=error.html='<h1>Error Page</h1>'
 
-### YAML (recommended)
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+# 2) Pod (inline YAML)
+kubectl apply -f - <<'EOF'
+apiVersion: v1
+kind: Pod
 metadata:
-  name: site-ingress
-  namespace: main
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: "/"
+  name: web-pod
 spec:
-  ingressClassName: nginx
-  defaultBackend:
-    service:
-      name: error-page-svc
-      port:
-        number: 80
-  rules:
-  - host: main.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: main-site-svc
-            port:
-              number: 80
+  containers:
+  - name: web-pod
+    image: nginx:1.29.0
+    volumeMounts:
+    - name: conf-vol
+      mountPath: /usr/share/nginx/html
+  volumes:
+  - name: conf-vol
+    configMap:
+      name: html-config
+EOF
+
+# 3) Verify
+kubectl wait --for=condition=Ready pod/web-pod --timeout=60s
+kubectl exec web-pod -- ls /usr/share/nginx/html
+kubectl exec web-pod -- sh -c 'cat /usr/share/nginx/html/index.html && echo && cat /usr/share/nginx/html/error.html'
+```
+</details> 

@@ -1,47 +1,41 @@
 #!/bin/bash
 set -euo pipefail
 
-NS="default"
-CM="html-config"
-POD="web-pod"
-IMG="nginx:1.29.0"
-HTML_DIR="/usr/share/nginx/html"
-IDX_CONTENT="<h1>Welcome to Kubernetes</h1>"
-ERR_CONTENT="<h1>Error Page</h1>"
+NS="main"
+ING="site-ingress"
+HOST="main.example.com"
+ICLASS="nginx"
+ANN_KEY="nginx.ingress.kubernetes.io/rewrite-target"
+ANN_VAL="/"
 
 pass(){ echo "✅ $1"; }
 fail(){ echo "❌ $1"; exit 1; }
 
 command -v jq >/dev/null 2>&1 || fail "jq not found. Please install jq."
 
-# 1) ConfigMap exists and has required keys
-kubectl -n "$NS" get cm "$CM" >/dev/null 2>&1 || fail "ConfigMap '$CM' not found in namespace '$NS'."
-IDX=$(kubectl -n "$NS" get cm "$CM" -o jsonpath='{.data.index\\.html}')
-ERR=$(kubectl -n "$NS" get cm "$CM" -o jsonpath='{.data.error\\.html}')
-[[ "$IDX" == "$IDX_CONTENT" ]] || fail "index.html content mismatch in ConfigMap."
-[[ "$ERR" == "$ERR_CONTENT" ]] || fail "error.html content mismatch in ConfigMap."
+# Ingress exists
+kubectl -n "$NS" get ingress "$ING" >/dev/null 2>&1 || fail "Ingress '$ING' not found in namespace '$NS'."
 
-# 2) Pod exists and uses correct image
-kubectl -n "$NS" get pod "$POD" >/dev/null 2>&1 || fail "Pod '$POD' not found in namespace '$NS'."
-PIMG=$(kubectl -n "$NS" get pod "$POD" -o jsonpath='{.spec.containers[0].image}')
-[[ "$PIMG" == "$IMG" ]] || fail "Pod image must be '$IMG' (found '$PIMG')."
+JSON=$(kubectl -n "$NS" get ingress "$ING" -o json)
 
-# 3) Pod Ready
-kubectl -n "$NS" wait --for=condition=Ready "pod/$POD" --timeout=90s >/dev/null 2>&1 || \
-  fail "Pod '$POD' did not become Ready."
+# ingressClassName
+CLASS=$(echo "$JSON" | jq -r '.spec.ingressClassName // empty')
+[[ "$CLASS" == "$ICLASS" ]] || fail "Expected ingressClassName '$ICLASS', found '${CLASS:-<none>}'"
 
-# 4) Volume mount points to ConfigMap at correct path
-JSON=$(kubectl -n "$NS" get pod "$POD" -o json)
-MOUNT_NAME=$(echo "$JSON" | jq -r '.spec.containers[0].volumeMounts[]? | select(.mountPath=="'"$HTML_DIR"'") | .name' | head -n1)
-[[ -n "$MOUNT_NAME" ]] || fail "No volumeMount at $HTML_DIR found."
-SRC_CM=$(echo "$JSON" | jq -r --arg n "$MOUNT_NAME" '.spec.volumes[]? | select(.name==$n) | .configMap.name // empty')
-[[ "$SRC_CM" == "$CM" ]] || fail "Mounted volume '$MOUNT_NAME' must reference ConfigMap '$CM'."
+# Annotation
+ANN=$(echo "$JSON" | jq -r --arg k "$ANN_KEY" '.metadata.annotations[$k] // empty')
+[[ "$ANN" == "$ANN_VAL" ]] || fail "Expected annotation '$ANN_KEY: $ANN_VAL', got '${ANN:-<none>}'"
 
-# 5) Files exist in container with correct contents
-IDX_IN=$(kubectl -n "$NS" exec "$POD" -- sh -c 'cat /usr/share/nginx/html/index.html' || true)
-ERR_IN=$(kubectl -n "$NS" exec "$POD" -- sh -c 'cat /usr/share/nginx/html/error.html' || true)
+# Host rule → main-site-svc:80 at path /
+RULE=$(echo "$JSON" | jq -r --arg host "$HOST" '
+  .spec.rules[]? | select(.host==$host) | .http.paths[]?
+  | select(.path=="/") | "\(.backend.service.name):\(.backend.service.port.number)"
+' | head -n1)
+[[ "$RULE" == "main-site-svc:80" ]] || fail "Host rule must route / on $HOST to main-site-svc:80 (found '${RULE:-<none>}')."
 
-[[ "$IDX_IN" == "$IDX_CONTENT" ]] || fail "Container index.html content mismatch."
-[[ "$ERR_IN" == "$ERR_CONTENT" ]] || fail "Container error.html content mismatch."
+# Default backend → error-page-svc:80
+DEF=$(echo "$JSON" | jq -r '.spec.defaultBackend.service.name // empty')
+DEFPORT=$(echo "$JSON" | jq -r '.spec.defaultBackend.service.port.number // empty')
+[[ "$DEF" == "error-page-svc" && "$DEFPORT" == "80" ]] || fail "Default backend must be error-page-svc:80 (found '${DEF:-<none>}':${DEFPORT:-<none>})."
 
-pass "Verification successful! ConfigMap files are correctly mounted into '$POD'."
+pass "Verification successful! Ingress '$ING' has nginx class, rewrite annotation, host rule, and a correct default backend."

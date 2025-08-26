@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: ConfigMap key → named env var (logs verification)",
+  "description": "Create a ConfigMap and use a specific key as an environment variable in a Pod; verify via logs. Includes a helper script to stream logs in the 'olly' namespace.",
+  "details": {
+    "steps": [
+      {
+        "title": "Inject ConfigMap key as env var and verify via logs",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

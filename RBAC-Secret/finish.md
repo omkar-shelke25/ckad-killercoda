@@ -3,7 +3,6 @@
 You granted **read-only access to a single Secret** using `resourceNames` in a Role.
 
 ## You accomplished
-- ✅ Created Namespace **finance** (precreated by setup)
 - ✅ Created Secret **api-key-v2**
 - ✅ Created ServiceAccount **specific-secret-reader-sa**
 - ✅ Created Role **single-secret-getter-role** with `verbs: [get]`, `resources: ["secrets"]`, and `resourceNames: ["api-key-v2"]`

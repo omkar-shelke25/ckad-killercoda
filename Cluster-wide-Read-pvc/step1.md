@@ -64,7 +64,7 @@ subjects:
 
 <details><summary>Verify manually</summary>
   
-``bash
+```bash
 kubectl auth can-i list persistentvolumeclaims --as=sara.jones@example.com --all-namespaces
 kubectl auth can-i list storageclasses --as=sara.jones@example.com
 kubectl get pvc -A

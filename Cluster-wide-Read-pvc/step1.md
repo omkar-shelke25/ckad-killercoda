@@ -16,14 +16,6 @@ A new DevOps engineer, **sara.jones@example.com**, has joined the team. Grant he
 
 ---
 
-## Try it yourself first!
-
-### Hints
-- Imperative way (one-liners) is acceptable.
-- YAML is also fine—use whichever you prefer.
-
----
-
 ## ✅ Solution (expand to view)
 
 <details>

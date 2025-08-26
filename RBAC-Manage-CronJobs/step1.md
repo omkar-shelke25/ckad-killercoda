@@ -4,7 +4,6 @@
 A data science team needs permissions to **manage the lifecycle of CronJobs** in their dedicated namespace, **`batch-processing`**, but they **must not** be able to manage other workload types like **Deployments** or **Pods** directly.
 
 ## Requirements
-- Create a new namespace called **`batch-processing`**.
 - Create a **ServiceAccount** named **`cron-manager-sa`** in **`batch-processing`**.
 - Create a **Role** named **`cronjob-lifecycle-role`** in **`batch-processing`** that allows verbs:  
   `get, list, watch, create, update, patch, delete` on **`cronjobs`** (API group **`batch`**).

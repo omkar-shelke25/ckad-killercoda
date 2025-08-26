@@ -76,6 +76,7 @@ roleRef:
   kind: Role
   name: cronjob-lifecycle-role
 ```
+
 </details>
 
 <details><summary>Verify RBAC Permission</summary>

@@ -10,9 +10,6 @@ A legacy app only serves **`/`**. You must expose it at **`legacy.example.com/ap
 - Route: **`/app`** → **legacy-svc:80**
 - Add annotation to **rewrite** the target path to `/` so the backend receives `/` (not `/app`).
 
-> Note: Different Ingress controllers implement rewrites slightly differently. This task validates the **spec** and the presence of the **rewrite annotation** commonly used by NGINX Ingress. No live controller is required to pass verification.
-
----
 
 ## Try it yourself first!
 

@@ -60,7 +60,7 @@ subjects:
 ```
 </details>
 
-</details>
+
 
 <details><summary>Verify manually</summary>
   

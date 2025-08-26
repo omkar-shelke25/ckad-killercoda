@@ -1,0 +1,23 @@
+{
+  "title": "Ingress with Default Backend (Catch-all / Custom 404)",
+  "description": "Configure an Ingress that routes main.example.com to main-site-svc and sends all unmatched traffic to a default backend (error-page-svc).",
+  "details": {
+    "steps": [
+      {
+        "title": "Create Ingress with nginx class, rewrite annotation, and a default backend",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

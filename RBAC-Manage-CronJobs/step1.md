@@ -20,6 +20,7 @@ A data science team needs permissions to **manage the lifecycle of CronJobs** in
 ## Try it yourself first!
 
 ✅ Solution (expand to view)
+
 <details><summary>Commands</summary>
 
 ```bash
@@ -47,7 +48,6 @@ kubectl create rolebinding bind-cron-manager \
 <details><summary>YAML</summary>
 
 ```yaml
-
 apiVersion: v1
 kind: ServiceAccount
 metadata:

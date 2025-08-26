@@ -1,0 +1,23 @@
+{
+  "title": "RBAC: Read a Specific Secret Only",
+  "description": "Grant a ServiceAccount read-only access to a single named Secret via resourceNames in a Role.",
+  "details": {
+    "steps": [
+      {
+        "title": "Allow get on only one Secret using resourceNames",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

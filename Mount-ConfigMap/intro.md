@@ -1,6 +1,6 @@
-# Config as Files — CKAD Challenge
-Welcome to the CKAD Config-as-Files task 🚀
+# 📝 CKAD Practice: Config Files + Readiness
 
-A web workload is being validated in `apps`. The process startup checks for **files**, not environment variables. Provide configuration strictly as mounted files and ensure the Pods become Ready.
+A new **workload** must run in the namespace **`apps`** using the **`nginx`** image. The application expects its configuration files at **`/etc/appconfig`** and **does not read environment variables**.
+
 
 Click **Start Scenario** to begin.

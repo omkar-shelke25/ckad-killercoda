@@ -18,6 +18,7 @@ Create a **ConfigMap** and expose its keys as **environment variables** in a Pod
 ## Try it yourself first!
 
 <details><summary>Short Notes on configMap </summary>
+  
 - A ConfigMap can be mounted into Pods either as environment variables or as files.
 - If the application supports reading env vars, use envFrom (all keys) or configMapKeyRef (per key).
 - If the application does not read env vars and instead expects configuration files, mount the ConfigMap as a volume so each key becomes a file.

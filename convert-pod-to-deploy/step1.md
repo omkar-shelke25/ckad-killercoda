@@ -15,12 +15,13 @@ Please create the Deployment and save its yaml under **/opt/course/9/holy-api-de
 <details><summary> ✅ Solution (expand to view)</summary>
 ```bash
   
-# 1) Start from the raw Pod (already provided):
+##### 1) Start from the raw Pod (already provided):
 cat /opt/course/9/holy-api-pod.yaml
 
-# 2)Create a Deployment YAML from that Pod (edit to fit below spec) and save as:
+##### 2)Create a Deployment YAML from that Pod (edit to fit below spec) and save as:
 touch /opt/course/9/holy-api-deployment.yaml
 ```
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment

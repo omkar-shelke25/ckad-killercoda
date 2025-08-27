@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Convert a single Pod to a Deployment with securityContext",
+  "description": "Turn an existing Pod into a Deployment with 3 replicas and proper container security settings, then remove the original Pod.",
+  "details": {
+    "steps": [
+      {
+        "title": "Convert Pod to Deployment and add container securityContext",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

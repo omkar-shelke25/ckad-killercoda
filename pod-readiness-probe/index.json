@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Pod with exec readiness-probe",
+  "description": "Create a single Pod with a readiness probe that checks for a file and a command that creates that file.",
+  "details": {
+    "steps": [
+      {
+        "title": "Create pod6 with readiness-probe and confirm Ready",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

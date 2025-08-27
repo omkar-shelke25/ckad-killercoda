@@ -1,15 +1,9 @@
 # Create `pod6` with a readiness-probe (default namespace)
 
 ## Task
-Create a single Pod named **`pod6`** in Namespace **`default`** using image **`busybox:1.31.0`**.
-
-- Add a **readinessProbe** that runs: `cat /tmp/ready`
-- Set:
-  - `initialDelaySeconds: 5`
-  - `periodSeconds: 10`
-- Command for the container should be:
-  - `touch /tmp/ready && sleep 1d`
-- Confirm the Pod becomes **Ready**.
+Create a single **Pod** named **`pod6`** in **Namespace `default`** of image **`busybox:1.31.0`**.  
+The **Pod** should have a **readiness-probe** executing `cat /tmp/ready`. It should **initially wait 5** and **periodically wait 10 seconds**.
+This will set the container **ready only if the file `/tmp/ready` exists**.
 
 ---
 

@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Secrets via env + volume (existing Pod update)",
+  "description": "Update an existing Pod to consume one Secret as env vars and another Secret as a volume; save the updated YAML.",
+  "details": {
+    "steps": [
+      {
+        "title": "Make changes on existing Pod and Secrets",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

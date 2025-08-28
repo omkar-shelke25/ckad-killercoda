@@ -9,7 +9,7 @@ Then, update the existing service **web-app-service** to send traffic to the **g
 ---
 
 
-## Try to solve this yourself first, then check the solution if needed:
+## Try to solve this yourself first!
 <details>
 <summary>Short Notes On Canary and Blue-Green</summary>
 
@@ -53,7 +53,7 @@ Then, update the existing service **web-app-service** to send traffic to the **g
 
 
 <details>
-<summary>Solution</summary>
+<summary>✅ Solution (expand to view)</summary>
 
 ```yaml
 apiVersion: apps/v1

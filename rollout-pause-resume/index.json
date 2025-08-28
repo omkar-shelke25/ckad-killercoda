@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Rollout Pause/Resume & Rollback",
+  "description": "Practice pausing a rollout, updating image & replicas while paused, then resuming and rolling back to a known-good nginx tag.",
+  "details": {
+    "steps": [
+      {
+        "title": "Pause rollout, change image/replicas, and rollback",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

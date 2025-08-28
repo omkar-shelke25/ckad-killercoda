@@ -1,8 +1,9 @@
-# 🎉 Rollout / Rollback Complete
+# 🎉 Completed
 
-You handled a rollout that started **paused**, updated image and replicas while paused, then **resumed** and **rolled back** safely to a known-good nginx version.
+You updated a **paused** Deployment by changing:
+- **Image** → `nginx:1.26.0`
+- **Replicas** → `5`
 
-Final state:
-- Deployment `api-server` uses **nginx:1.25.3**
-- Replicas = **3**
-- Deployment is **Ready** and **unpaused**
+Then you **resumed** the rollout and confirmed the Deployment became **Ready**.
+
+This mirrors real ops: prepare changes safely while paused, then resume when ready to ship.

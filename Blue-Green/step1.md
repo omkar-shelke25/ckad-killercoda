@@ -54,6 +54,8 @@ Then, update the existing service **web-app-service** to send traffic to the **g
 
 <details>
 <summary>✅ Solution (expand to view)</summary>
+  
+#### copy web-blue deployment in new yaml file. Change according to green environment
 
 ```yaml
 apiVersion: apps/v1
@@ -90,11 +92,25 @@ spec:
 ```
 
 ```bash
+# 🧪 Quick Checks
+
+kubectl get svc -n ios  -owide
+
+kubectl get po -n ios --show-labels | grep web-app-green
+
+# for shift blue to green we need change service selector(pod-labels)
+# two way -> 1) `edit command` 2) `patch command`
+
+kubectl edit -n ios svc # change selector for green deployment
+
 # Patch selector: color from blue → green
 kubectl -n ios patch svc web-app-service --type='merge' -p '{"spec":{"selector":{"app":"web-app","color":"green"}}}'
 
+kubectl get svc -n ios  -owide
+
 # After switching (endpoints should now be green)
 kubectl -n ios get endpoints web-app-service -o wide || kubectl -n ios describe svc web-app-service
+
 ```
 
 </details>

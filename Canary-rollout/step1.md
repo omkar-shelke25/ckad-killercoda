@@ -9,7 +9,8 @@ Create a **canary deployment** that runs **nginx:1.20** alongside the existing p
 
 
 
-
+<details><summary>✅ Solution (expand to view)</summary>
+  
 🔁 How to shift traffic
 
 - Replica weighting (Service-only): adjust replicas between stable (frontend) and canary (frontend-canary) since the Service balances per endpoint.
@@ -52,3 +53,4 @@ spec:
 # Adjust stable to 4 replicas → ~80/20 split
 kubectl scale deploy/frontend --replicas=4
 ```
+</details>

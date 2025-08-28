@@ -42,3 +42,11 @@ spec:
             port: 80
           initialDelaySeconds: 2
           periodSeconds: 5
+```
+```bash
+# Patch selector: color from blue → green
+kubectl -n ios patch svc web-app-service --type='merge' -p '{"spec":{"selector":{"app":"web-app","color":"green"}}}'
+
+# After switching (endpoints should now be green)
+kubectl -n ios get endpoints web-app-service -o wide || kubectl -n ios describe svc web-app-service
+```

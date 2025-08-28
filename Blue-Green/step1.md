@@ -8,8 +8,11 @@ Then, update the existing service **web-app-service** to send traffic to the **g
 
 ---
 
+
+## Try to solve this yourself first, then check the solution if needed:
+
 <details>
-<summary> YAML for web-app-green</summary>
+<summary>Solution</summary>
 
 ```yaml
 apiVersion: apps/v1
@@ -44,6 +47,7 @@ spec:
           initialDelaySeconds: 2
           periodSeconds: 5
 ```
+
 ```bash
 # Patch selector: color from blue → green
 kubectl -n ios patch svc web-app-service --type='merge' -p '{"spec":{"selector":{"app":"web-app","color":"green"}}}'
@@ -51,5 +55,6 @@ kubectl -n ios patch svc web-app-service --type='merge' -p '{"spec":{"selector":
 # After switching (endpoints should now be green)
 kubectl -n ios get endpoints web-app-service -o wide || kubectl -n ios describe svc web-app-service
 ```
+
 </details>
 

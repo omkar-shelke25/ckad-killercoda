@@ -8,6 +8,7 @@ Then, update the existing service **web-app-service** to send traffic to the **g
 
 ---
 
+<details>
 <summary> YAML for web-app-green</summary>
 
 ```yaml

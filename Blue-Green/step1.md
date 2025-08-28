@@ -8,8 +8,8 @@ Then, update the existing service **web-app-service** to send traffic to the **g
 
 ---
 
+<summary> YAML for web-app-green</summary>
 
-## 📄 Example YAML for web-app-green
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -50,3 +50,5 @@ kubectl -n ios patch svc web-app-service --type='merge' -p '{"spec":{"selector":
 # After switching (endpoints should now be green)
 kubectl -n ios get endpoints web-app-service -o wide || kubectl -n ios describe svc web-app-service
 ```
+</details>
+

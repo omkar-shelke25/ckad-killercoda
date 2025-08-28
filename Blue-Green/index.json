@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Blue/Green switch in ios namespace (zero downtime)",
+  "description": "Start with web-app-blue and a Service routing to blue. Create web-app-green and switch the Service to green without downtime.",
+  "details": {
+    "steps": [
+      {
+        "title": "Create green and switch Service selector to green",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

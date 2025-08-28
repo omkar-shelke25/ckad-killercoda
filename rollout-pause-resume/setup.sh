@@ -12,16 +12,14 @@ START_REPLICAS=3
 if ! kubectl -n "$NS" get deploy "$DEP" >/dev/null 2>&1; then
   kubectl -n "$NS" create deployment "$DEP" --image="$GOOD_TAG"
   kubectl -n "$NS" scale deployment "$DEP" --replicas="$START_REPLICAS"
-  # Wait until initial rollout settles (not strictly required)
   kubectl -n "$NS" rollout status deploy/"$DEP" --timeout=120s || true
+else
+  # Ensure desired replicas (don't touch image to avoid side effects)
+  kubectl -n "$NS" scale deployment "$DEP" --replicas="$START_REPLICAS"
 fi
 
-# Ensure it uses the expected image/replicas (idempotent)
-kubectl -n "$NS" set image deploy/"$DEP" '*='"$GOOD_TAG" --record=true
-kubectl -n "$NS" scale deploy/"$DEP" --replicas="$START_REPLICAS"
-
-# PAUSE the rollout so learners start from a paused state
-kubectl -n "$NS" rollout pause deploy/"$DEP"
+# Pause the rollout so learners start from a paused state (idempotent)
+kubectl -n "$NS" rollout pause deploy/"$DEP" || true
 
 echo "Setup complete."
-echo "Deployment '$DEP' is created in '$NS' with image=$GOOD_TAG, replicas=$START_REPLICAS, and rollout **PAUSED**."
+echo "Deployment '$DEP' is created in '$NS' with image=$GOOD_TAG, replicas=$START_REPLICAS, and rollout PAUSED."

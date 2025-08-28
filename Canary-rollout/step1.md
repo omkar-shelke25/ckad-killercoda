@@ -10,17 +10,26 @@ Create a **canary deployment** that runs **nginx:1.20** alongside the existing p
 
 
 <details><summary>✅ Solution (expand to view)</summary>
-  
-🔁 How to shift traffic
 
-- Replica weighting (Service-only): adjust replicas between stable (frontend) and canary (frontend-canary) since the Service balances per endpoint.
+---
 
-- Example phases:
-   - 80/20: frontend=4, frontend-canary=1 
-   - 60/40: frontend=3, frontend-canary=2
-   - 50/50: frontend=2, frontend-canary=2 (total 4), or 3/3
-   - 0/100: frontend=0, frontend-canary=5
+### 🔁 Shifting traffic with canary
 
+* Kubernetes **Services** distribute traffic evenly across all **ready Pods** that match the selector.
+* By **scaling replicas**, you change the ratio of stable vs canary Pods → which indirectly changes traffic split.
+
+---
+
+### Example phases
+
+* **80/20**: `frontend=4`, `frontend-canary=1` → 1 of 5 Pods is canary ≈ 20%.
+* **60/40**: `frontend=3`, `frontend-canary=2` → 2 of 5 Pods are canary ≈ 40%.
+* **50/50**: `frontend=2`, `frontend-canary=2` → equal split.
+* **0/100**: `frontend=0`, `frontend-canary=5` → all traffic goes to canary.
+
+---
+
+### Canary Deployment YAML
 
 ```yaml
 apiVersion: apps/v1
@@ -49,8 +58,13 @@ spec:
         - containerPort: 80
 ```
 
+---
+
+### Scaling command
+
 ```bash
-# Adjust stable to 4 replicas → ~80/20 split
 kubectl scale deploy/frontend --replicas=4
 ```
+
+→ Ensures 4 stable Pods + 1 canary Pod = \~80/20 traffic split.
 </details>

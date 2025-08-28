@@ -9,8 +9,6 @@ Then, update the existing service **web-app-service** to send traffic to the **g
 ---
 
 
----
-
 ## 📄 Example YAML for web-app-green
 ```yaml
 apiVersion: apps/v1

@@ -11,7 +11,7 @@ However, **while the rollout is paused**, the two new pods spin up with the **ol
 ---
 
 # Try it yourself first!
-<details><summary>✅ Solution For reference</summary>
+<details><summary>✅ Solution For Your Reference</summary>
   
 ```bash
 # Confirm paused

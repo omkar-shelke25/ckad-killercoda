@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Canary rollout with nginx tags (20% traffic)",
+  "description": "Create a canary and shift ~20% of traffic using replica weights behind the same Service.",
+  "details": {
+    "steps": [
+      {
+        "title": "Create canary and shift ~20% traffic",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

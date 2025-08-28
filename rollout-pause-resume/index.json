@@ -1,10 +1,10 @@
 {
-  "title": "CKAD: Rollout Pause/Resume & Rollback",
-  "description": "Practice pausing a rollout, updating image & replicas while paused, then resuming and rolling back to a known-good nginx tag.",
+  "title": "CKAD: Update image/replicas on a paused Deployment, then resume",
+  "description": "Start from a paused Deployment (api-server). Learner updates image and replicas while paused, then resumes the rollout.",
   "details": {
     "steps": [
       {
-        "title": "Pause rollout, change image/replicas, and rollback",
+        "title": "Set image & replicas on a paused deployment, then resume",
         "text": "step1.md",
         "verify": "verify.sh"
       }

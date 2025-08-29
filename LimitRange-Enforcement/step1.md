@@ -14,6 +14,7 @@
 4. Confirm the Pod **starts successfully** and received memory **request=128Mi** and **limit=256Mi** from the LimitRange.
    
 > Below Command it’s just for your own verification.
+
 > kubectl -n team-a get pod busy-pod -o jsonpath='{.spec.containers[0].resources}'
 
 <details><summary>✅ Solution (expand to view)</summary>

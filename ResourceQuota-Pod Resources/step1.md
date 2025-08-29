@@ -17,7 +17,9 @@ Do the following:
 
 ---
 
-## Hints (optional)
+<details>
+<summary>Solution</summary>
+
 ```bash
 
 kubectl create namespace production-apps
@@ -68,3 +70,5 @@ spec:
             memory: "512Mi"
 EOF
 ```
+
+</details>

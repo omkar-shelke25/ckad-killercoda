@@ -1,6 +1,4 @@
-# CKAD: Mount Config Files & Gate Readiness
-
-**Question 7 (8%)**
+# CKAD: Mount Config Files & Gate Readiness (weightage 8)
 
 Create a deployment named `app-workload` in the `apps` namespace with 2 replicas using nginx image.
 

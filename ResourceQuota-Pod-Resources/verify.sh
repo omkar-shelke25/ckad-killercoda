@@ -2,69 +2,89 @@
 set -euo pipefail
 
 NS="production-apps"
-RQ="app-quota"
+QUOTA="app-quota"
 DEP="web-server"
 
 pass(){ echo "✅ $1"; }
 fail(){ echo "❌ $1"; exit 1; }
 
-# 1) Namespace exists
+command -v jq >/dev/null 2>&1 || fail "jq not found. Please install jq."
+
+# 0) Namespace exists
 kubectl get ns "$NS" >/dev/null 2>&1 || fail "Namespace '$NS' not found."
+pass "Namespace '$NS' exists"
 
-# 2) ResourceQuota exists with exact hard limits
-kubectl -n "$NS" get resourcequota "$RQ" >/dev/null 2>&1 || fail "ResourceQuota '$RQ' not found in '$NS'."
+# 1) ResourceQuota exists with correct limits
+kubectl -n "$NS" get resourcequota "$QUOTA" >/dev/null 2>&1 || fail "ResourceQuota '$QUOTA' not found in '$NS'."
 
-PODS_HARD="$(kubectl -n "$NS" get resourcequota "$RQ" -o jsonpath='{.spec.hard.pods}')"
-REQ_CPU_HARD="$(kubectl -n "$NS" get resourcequota "$RQ" -o jsonpath='{.spec.hard.requests\.cpu}')"
-REQ_MEM_HARD="$(kubectl -n "$NS" get resourcequota "$RQ" -o jsonpath='{.spec.hard.requests\.memory}')"
-LIM_CPU_HARD="$(kubectl -n "$NS" get resourcequota "$RQ" -o jsonpath='{.spec.hard.limits\.cpu}')"
-LIM_MEM_HARD="$(kubectl -n "$NS" get resourcequota "$RQ" -o jsonpath='{.spec.hard.limits\.memory}')"
+# Check hard limits
+QUOTA_PODS=$(kubectl -n "$NS" get resourcequota "$QUOTA" -o jsonpath='{.spec.hard.pods}')
+QUOTA_CPU_REQ=$(kubectl -n "$NS" get resourcequota "$QUOTA" -o jsonpath='{.spec.hard.requests\.cpu}')
+QUOTA_MEM_REQ=$(kubectl -n "$NS" get resourcequota "$QUOTA" -o jsonpath='{.spec.hard.requests\.memory}')
+QUOTA_CPU_LIM=$(kubectl -n "$NS" get resourcequota "$QUOTA" -o jsonpath='{.spec.hard.limits\.cpu}')
+QUOTA_MEM_LIM=$(kubectl -n "$NS" get resourcequota "$QUOTA" -o jsonpath='{.spec.hard.limits\.memory}')
 
-[[ "$PODS_HARD" == "4" ]] || fail "ResourceQuota pods must be 4 (found '$PODS_HARD')."
-[[ "$REQ_CPU_HARD" == "2000m" ]] || fail "requests.cpu must be 2000m (found '$REQ_CPU_HARD')."
-[[ "$REQ_MEM_HARD" == "4Gi" ]] || fail "requests.memory must be 4Gi (found '$REQ_MEM_HARD')."
-[[ "$LIM_CPU_HARD" == "4000m" ]] || fail "limits.cpu must be 4000m (found '$LIM_CPU_HARD')."
-[[ "$LIM_MEM_HARD" == "8Gi" ]] || fail "limits.memory must be 8Gi (found '$LIM_MEM_HARD')."
+[[ "$QUOTA_PODS" == "4" ]] || fail "ResourceQuota pods limit must be 4 (found '$QUOTA_PODS')."
+[[ "$QUOTA_CPU_REQ" == "2" || "$QUOTA_CPU_REQ" == "2000m" ]] || fail "ResourceQuota CPU requests must be 2000m (found '$QUOTA_CPU_REQ')."
+[[ "$QUOTA_MEM_REQ" == "4Gi" ]] || fail "ResourceQuota memory requests must be 4Gi (found '$QUOTA_MEM_REQ')."
+[[ "$QUOTA_CPU_LIM" == "4" || "$QUOTA_CPU_LIM" == "4000m" ]] || fail "ResourceQuota CPU limits must be 4000m (found '$QUOTA_CPU_LIM')."
+[[ "$QUOTA_MEM_LIM" == "8Gi" ]] || fail "ResourceQuota memory limits must be 8Gi (found '$QUOTA_MEM_LIM')."
+pass "ResourceQuota '$QUOTA' has correct limits"
 
-# 3) Deployment exists with 3 replicas
+# 2) Deployment exists with 3 replicas
 kubectl -n "$NS" get deploy "$DEP" >/dev/null 2>&1 || fail "Deployment '$DEP' not found in '$NS'."
-REPLICAS="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.replicas}')"
-[[ "$REPLICAS" == "3" ]] || fail "Deployment replicas must be 3 (found '$REPLICAS')."
+REPLICAS=$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.replicas}')
+[[ "$REPLICAS" == "3" ]] || fail "Deployment '$DEP' must have 3 replicas (found '$REPLICAS')."
+pass "Deployment '$DEP' has correct replica count: $REPLICAS"
 
-# 4) Container image is nginx (any tag OK)
-IMAGE="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].image}')"
-case "$IMAGE" in
-  nginx:*|*/nginx:*) : ;;
-  nginx) : ;;
-  *) fail "Container image must be an nginx image (found '$IMAGE')." ;;
-esac
-
-# 5) Verify requests/limits on the container
-REQ_CPU="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].resources.requests.cpu}')"
-REQ_MEM="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].resources.requests.memory}')"
-LIM_CPU="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].resources.limits.cpu}')"
-LIM_MEM="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].resources.limits.memory}')"
-
-[[ "$REQ_CPU" == "200m" ]] || fail "requests.cpu must be 200m (found '$REQ_CPU')."
-[[ "$REQ_MEM" == "256Mi" ]] || fail "requests.memory must be 256Mi (found '$REQ_MEM')."
-[[ "$LIM_CPU" == "500m" ]] || fail "limits.cpu must be 500m (found '$LIM_CPU')."
-[[ "$LIM_MEM" == "512Mi" ]] || fail "limits.memory must be 512Mi (found '$LIM_MEM')."
-
-# 6) Rollout and pod status
-kubectl -n "$NS" rollout status "deploy/$DEP" --timeout=120s >/dev/null 2>&1 || \
-  fail "Deployment '$DEP' did not become Ready."
-
-READY="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.status.readyReplicas}')"
-[[ "$READY" == "3" ]] || fail "Expected 3 ready replicas (found '${READY:-0}')."
-
-# 7) Quota enforcement basic check: used pods should be <= 4 (ideally 3)
-USED_PODS="$(kubectl -n "$NS" get resourcequota "$RQ" -o jsonpath='{.status.used.pods}' 2>/dev/null || true)"
-if [[ -n "$USED_PODS" ]]; then
-  # When controller populated, ensure usage within quota
-  if ! [[ "$USED_PODS" =~ ^[0-9]+$ ]]; then
-    fail "ResourceQuota status.used.pods is not numeric (found '$USED_PODS')."
-  fi
-  (( USED_PODS <= 4 )) || fail "ResourceQuota pods usage exceeds limit (used=$USED_PODS, limit=4)."
+# 3) Check nginx image
+IMG=$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].image}')
+if [[ "$IMG" == "nginx" || "$IMG" == nginx:* || "$IMG" == */nginx || "$IMG" == */nginx:* ]]; then
+    pass "Deployment uses nginx image: $IMG"
+else
+    fail "Deployment must use nginx image (found '$IMG')."
 fi
 
-pass "Verification successful! Namespace, ResourceQuota, and Deployment meet all requirements."
+# 4) Check pod resource requests and limits
+CPU_REQ=$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].resources.requests.cpu}')
+MEM_REQ=$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].resources.requests.memory}')
+CPU_LIM=$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].resources.limits.cpu}')
+MEM_LIM=$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].resources.limits.memory}')
+
+[[ "$CPU_REQ" == "200m" ]] || fail "Pod CPU request must be 200m (found '$CPU_REQ')."
+[[ "$MEM_REQ" == "256Mi" ]] || fail "Pod memory request must be 256Mi (found '$MEM_REQ')."
+[[ "$CPU_LIM" == "500m" ]] || fail "Pod CPU limit must be 500m (found '$CPU_LIM')."
+[[ "$MEM_LIM" == "512Mi" ]] || fail "Pod memory limit must be 512Mi (found '$MEM_LIM')."
+pass "Pod resources configured correctly: CPU(200m/500m), Memory(256Mi/512Mi)"
+
+# 5) Check ResourceQuota usage
+USED_PODS=$(kubectl -n "$NS" get resourcequota "$QUOTA" -o jsonpath='{.status.used.pods}')
+USED_CPU_REQ=$(kubectl -n "$NS" get resourcequota "$QUOTA" -o jsonpath='{.status.used.requests\.cpu}')
+USED_MEM_REQ=$(kubectl -n "$NS" get resourcequota "$QUOTA" -o jsonpath='{.status.used.requests\.memory}')
+
+# Convert CPU values for comparison
+if [[ "$USED_CPU_REQ" == "600m" || "$USED_CPU_REQ" == "0.6" ]]; then
+    pass "ResourceQuota CPU usage is correct: $USED_CPU_REQ (3 pods × 200m each)"
+else
+    fail "Expected CPU usage 600m for 3 pods, found '$USED_CPU_REQ'."
+fi
+
+[[ "$USED_PODS" == "3" ]] || fail "ResourceQuota should show 3 pods in use (found '$USED_PODS')."
+pass "ResourceQuota usage: $USED_PODS/$QUOTA_PODS pods, $USED_CPU_REQ CPU requests"
+
+# 6) Check all pods are running
+echo "⏳ Checking pod status..."
+RUNNING_PODS=$(kubectl -n "$NS" get pods -l app="$DEP" --field-selector=status.phase=Running -o json | jq '.items | length')
+READY_PODS=$(kubectl -n "$NS" get pods -l app="$DEP" --field-selector=status.phase=Running -o json | jq '[.items[] | select(.status.conditions[]? | select(.type=="Ready" and .status=="True"))] | length')
+
+[[ "$RUNNING_PODS" == "3" ]] || fail "Expected 3 running pods, found $RUNNING_PODS."
+[[ "$READY_PODS" == "3" ]] || fail "Expected 3 ready pods, found $READY_PODS."
+pass "All pods are running and ready: $READY_PODS/$REPLICAS"
+
+echo ""
+pass "🎉 Verification successful! Resource management configured correctly:"
+echo "   ✓ Namespace: $NS"
+echo "   ✓ ResourceQuota: $QUOTA (pods: $USED_PODS/$QUOTA_PODS, CPU: $USED_CPU_REQ/$QUOTA_CPU_REQ)"
+echo "   ✓ Deployment: $DEP (3 replicas, nginx image)"
+echo "   ✓ Pod Resources: CPU(200m/500m), Memory(256Mi/512Mi)"
+echo "   ✓ Status: All pods running within quota limits"

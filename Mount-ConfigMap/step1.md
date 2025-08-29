@@ -1,16 +1,21 @@
 # CKAD: Mount Config Files & Gate Readiness
 
-## Objective
-Run an **nginx** workload in namespace **`apps`** with **2 replicas**. The container must read **two config files** from **`/etc/appconfig`** with exact contents:
-- `APP_MODE` → `production`
-- `APP_PORT` → `8080`
+**Question 7 (8%)**
 
-**Constraints**
-- You **cannot modify the image**.
-- The app **does not read env vars**; config **must be files** at `/etc/appconfig`.
-- Pods must become **Ready only when both files exist with the correct values**.
-- Use **Kubernetes-native** configuration.
+Create a deployment named `app-workload` in the `apps` namespace with 2 replicas using nginx image.
 
+Create a ConfigMap named `app-config` with the following data:
+- APP_MODE=production  
+- APP_PORT=8080
+
+Mount this ConfigMap to the deployment at `/etc/appconfig` so that each key becomes a separate file.
+
+Add a readiness probe to the container that runs the following command:
+```bash
+grep -qx "production" /etc/appconfig/APP_MODE && grep -qx "8080" /etc/appconfig/APP_PORT
+```
+
+Ensure the deployment is running successfully with all pods ready.
 ---
 
 ## Try it yourself first!

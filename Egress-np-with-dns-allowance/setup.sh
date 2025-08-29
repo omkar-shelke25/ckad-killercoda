@@ -27,15 +27,17 @@ spec:
         app: api
     spec:
       containers:
-      - name: httpd
-        image: busybox:1.36.1
+      - name: web
+        image: python:3.11-alpine
         command: ["/bin/sh","-c"]
         args:
           - |
-            echo "OK" > /www/index.html;
-            httpd -f -p 2222 -h /www
+            mkdir -p /www
+            echo "OK" > /www/index.html
+            python -m http.server 2222 --directory /www
         ports:
         - containerPort: 2222
+                       
 ---
 apiVersion: v1
 kind: Service

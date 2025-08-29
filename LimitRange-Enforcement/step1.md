@@ -12,12 +12,12 @@
 3. Create a Pod **busy-pod** in **team-a** using image **busybox**.
    - **Do not** set any resources in the Pod spec (no requests/limits).
 4. Confirm the Pod **starts successfully** and received memory **request=128Mi** and **limit=256Mi** from the LimitRange.
+   
+> Below Command it’s just for your own verification.
+> kubectl -n team-a get pod busy-pod -o jsonpath='{.spec.containers[0].resources}'
 
----
-
-## Hints (optional)
-
-### LimitRange YAML
+<details><summary>✅ Solution (expand to view)</summary>
+  
 ```yaml
 apiVersion: v1
 kind: LimitRange
@@ -35,3 +35,23 @@ spec:
       memory: 128Mi
     default:
       memory: 256Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busy-pod
+  namespace: team-a
+spec:
+  containers:
+  - name: bb
+    image: busybox:1.37.0
+    command: ["sh","-c","sleep 3600"]
+```
+
+```bash
+#verify:
+#Inspect defaulted resources on the live Pod spec
+kubectl -n team-a get pod busy-pod -o jsonpath='{.spec.containers[0].resources}'
+```
+
+</details>

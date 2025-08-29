@@ -1,19 +1,24 @@
 # CKAD: Mount Config Files & Gate Readiness (weightage 8)
 
-Create a deployment named `app-workload` in the `apps` namespace with 2 replicas using nginx image.
+**Question 7 (8%)**
 
-Create a ConfigMap named `app-config` with the following data:
-- APP_MODE=production  
-- APP_PORT=8080
+Create a ConfigMap named `app-config` in the `apps` namespace with the following data:
+- **APP_MODE=production**  
+- **APP_PORT=8080**
+
+Verify the ConfigMap contains the exact values before proceeding.
+
+Create a deployment named `app-workload` in the `apps` namespace with 2 replicas using nginx image.
 
 Mount this ConfigMap to the deployment at `/etc/appconfig` so that each key becomes a separate file.
 
-Add a readiness probe to the container that runs the following command:
-```bash
+Add a readiness probe to the container that runs the following command to check exact values of ConfigMap:
+
+```
 grep -qx "production" /etc/appconfig/APP_MODE && grep -qx "8080" /etc/appconfig/APP_PORT
 ```
 
-**Ensure the deployment is running successfully with all pods ready.**
+Ensure the deployment is running successfully with all pods ready.
 
 
 ## Try it yourself first!

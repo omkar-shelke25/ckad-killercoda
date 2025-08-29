@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: LimitRange Enforcement (memory defaults & bounds)",
+  "description": "Create a LimitRange to enforce default/min/max memory, then create a Pod that inherits defaults and starts successfully.",
+  "details": {
+    "steps": [
+      {
+        "title": "Create LimitRange and validate defaulted Pod",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

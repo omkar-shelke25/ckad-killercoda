@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Egress NetworkPolicy with DNS allowance",
+  "description": "Create an egress NetworkPolicy that only allows frontend pods to talk to api on TCP and still allows DNS (TCP/UDP 53).",
+  "details": {
+    "steps": [
+      {
+        "title": "Restrict egress from frontend; allow only api + DNS",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

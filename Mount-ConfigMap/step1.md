@@ -1,6 +1,6 @@
-# CKAD: Mount Config Files & Gate Readiness (weightage 8)
+# CKAD: Mount Config Files & Gate Readiness
 
-**Question 7 (8%)**
+**weightage 8**
 
 Create a ConfigMap named `app-config` in the `apps` namespace with the following data:
 - **APP_MODE=production**  

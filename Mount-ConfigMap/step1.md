@@ -13,8 +13,8 @@ Add a readiness probe to the container that runs the following command:
 grep -qx "production" /etc/appconfig/APP_MODE && grep -qx "8080" /etc/appconfig/APP_PORT
 ```
 
-Ensure the deployment is running successfully with all pods ready.
----
+**Ensure the deployment is running successfully with all pods ready.**
+
 
 ## Try it yourself first!
 

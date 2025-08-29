@@ -31,7 +31,7 @@ metadata:
   name: app-quota
   namespace: production-apps
 spec:
-    hard:
+  hard:
     pods: "4"
     requests.cpu: "2000m"
     requests.memory: "4Gi"

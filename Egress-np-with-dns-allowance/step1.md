@@ -1,5 +1,3 @@
-Solve this question on instance: ssh ckad7326
-
 In Namespace venus you'll find two Deployments named api and frontend. 
 
 Both Deployments are exposed inside the cluster using Services. 

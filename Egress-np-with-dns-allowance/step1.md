@@ -8,7 +8,10 @@ Make sure the NetworkPolicy still allows outgoing traffic on UDP/TCP ports 53 fo
 
 Test using: wget www.google.com and wget api:2222 from a Pod of Deployment frontend.
 
+## Try it yourself first!
 
+<details><summary>Solution</summary>
+  
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -35,3 +38,4 @@ spec:
         - protocol: TCP
           port: 53
 ```
+</details>

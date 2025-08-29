@@ -1,4 +1,4 @@
-# Task (Weightage: 6%)
+# CKAD: ResourceQuota + Requests/Limits (Weightage: 6%)
 
 Do the following:
 

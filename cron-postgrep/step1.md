@@ -1,4 +1,4 @@
-Solve this task on the provided cluster instance.  
+# CKAD: CronJob for Database Backup
 
 Your company runs a **PostgreSQL database** in the `production` namespace.  
 The SRE team wants **automated daily backups** to ensure business continuity.  
@@ -17,3 +17,46 @@ Create a **CronJob** named **`database-backup`** in the `production` namespace t
 - If a job is missed, it must be started within 2 minutes of the schedule (startingDeadlineSeconds: 120).
 - Backup pods must never restart (restartPolicy: Never).
 - Keep only the last 3 successful runs and 1 failed run in history.
+
+
+## Try it yourself first!
+
+<details><summary>✅ Solution (expand to view)</summary>
+
+```bash
+kubectl create cronjob database-backup \
+  --image=postgres:13-alpine \
+  --schedule="0 3 * * *" \
+  --namespace=production \
+  -- /bin/bash -c "echo 'Starting DB backup...' && sleep 10 && echo 'Backup complete at $(date)'" --dry-run=client -oyaml > 1.yaml
+```
+👉 After creating it imperatively, you must edit 1.yaml file for the extra fields (since kubectl create cronjob doesn’t cover everything)
+
+```yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: database-backup
+  namespace: production
+spec:
+  schedule: "0 3 * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 120
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: db-backup
+            image: postgres:13-alpine
+            command:
+            - /bin/bash
+            - -c
+            - |
+              echo 'Starting DB backup...' && sleep 10 && echo "Backup complete at $(date)"
+```
+
+</details>

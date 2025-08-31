@@ -1,0 +1,23 @@
+    {
+  "title": "CKAD: CronJob for Database Backup",
+  "description": "Create a CronJob in production namespace for PostgreSQL backups with concurrency control, deadlines, and history limits.",
+  "details": {
+    "steps": [
+      {
+        "title": "Automated PostgreSQL Backup CronJob",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

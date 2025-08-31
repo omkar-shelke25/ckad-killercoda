@@ -20,7 +20,7 @@ kubectl -n payment set serviceaccount deployment/payment-api payment-sa
 ```
 ```bash
 #Alternative Step
-K -n payment edit deployment/payment
+k -n payment edit deployment/payment-api
 # edit the Deployment to include serviceAccountName: payment-sa
 ```
 

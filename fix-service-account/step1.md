@@ -8,7 +8,10 @@ These pods must instead use the dedicated ServiceAccount `payment-sa`, which alr
 ---
 
 ### Task
+
 Update the Deployment `payment-api` in the `payment` namespace to use the ServiceAccount `payment-sa`.
+
+Confirm that pods recreated from this Deployment are using `payment-sa`. 
 
 
 ## Try it yourself first!

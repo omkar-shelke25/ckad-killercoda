@@ -9,7 +9,7 @@
   - **api-secret**: `API_KEY=12345`
 - Pod:
   - **complex-pod** using image **nginx:1.29.0**
-  - Inject env vars as envForm
+  - Inject env vars as envFrom
 - Verify that the Pod’s environment has the expected values.
 
 ---

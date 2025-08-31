@@ -1,6 +1,6 @@
 # 🎉 Complete!
 
-You created **two ConfigMaps** and **one Secret** in the `api` namespace, injected them as **environment variables** into **complex-pod**, and verified the values. You also provided a manager-friendly helper script at **/opt/env.sh** to re-check env values anytime.
+You created **two ConfigMaps** and **one Secret** in the `api` namespace, injected them as **environment variables** into **complex-pod**, and verified the values.
 
 ## You accomplished
 - ✅ Created `frontend-config` (TITLE=Frontend)

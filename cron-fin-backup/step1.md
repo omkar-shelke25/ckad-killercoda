@@ -31,7 +31,7 @@ kubectl create cronjob db-backup \
   --image=busybox \
   --schedule="*/10 * * * *" \
   -n payment \
-  --dry-run=client -oyaml
+  --dry-run=client -oyaml \
   -- /bin/sh -c "date; echo Starting backup" > 1.yaml
 ```
 

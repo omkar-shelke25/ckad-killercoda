@@ -1,6 +1,6 @@
 {
-  "title": "CKAD: Multiple ConfigMaps & Secret → env vars (with /opt/env.sh)",
-  "description": "Create two ConfigMaps and one Secret in the api namespace, inject them as env vars into a Pod, and verify with a helper script.",
+  "title": "CKAD: Multiple ConfigMaps & Secret → env vars",
+  "description": "Create two ConfigMaps and one Secret in the api namespace, inject them as env vars into a Pod.",
   "details": {
     "steps": [
       {

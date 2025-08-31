@@ -23,14 +23,6 @@ Create a **CronJob** named **`database-backup`** in the `production` namespace t
 
 <details><summary>✅ Solution (expand to view)</summary>
 
-```bash
-kubectl create cronjob database-backup \
-  --image=postgres:13-alpine \
-  --schedule="0 3 * * *" \
-  --namespace=production \
-  -- /bin/bash -c "echo 'Starting DB backup...' && sleep 10 && echo 'Backup complete at $(date)'" --dry-run=client -oyaml > 1.yaml
-```
-👉 After creating it imperatively, you must edit 1.yaml file for the extra fields (since kubectl create cronjob doesn’t cover everything)
 
 ```yaml
 apiVersion: batch/v1

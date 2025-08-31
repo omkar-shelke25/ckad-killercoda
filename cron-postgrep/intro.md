@@ -1,4 +1,4 @@
-# CKAD: Real-life CronJob
+# CKAD: CronJob for Database Backup
 
 Your company runs a **PostgreSQL database** in the `production` namespace.  
 The SRE team requires **daily automated backups** during off-peak hours.

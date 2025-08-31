@@ -1,0 +1,22 @@
+{
+  "title": "CKAD: Finance Team Database Backup CronJob",
+  "description": "Create a CronJob in the payment namespace and also trigger a manual Job from it.",
+  "details": {
+    "steps": [
+      {
+        "title": "Database Backup CronJob & Manual Job",
+        "text": "step1.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

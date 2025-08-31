@@ -5,7 +5,8 @@
     "steps": [
       {
         "title": "Database Backup CronJob & Manual Job",
-        "text": "step1.md"
+        "text": "step1.md",
+        "verify": "verify.sh"
       }
     ],
     "intro": {

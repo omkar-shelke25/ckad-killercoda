@@ -2,7 +2,7 @@
 
 You have an existing deployment named **frontend** running image **nginx:1.19** with **5 replicas** in the **default** namespace.
   
-Create a **canary deployment** that runs **nginx:1.20** alongside the existing pods, handling **20% of the traffic**. Canary deployment named is `frontend-canary`.
+Create a **canary deployment** that runs **nginx:1.20** alongside the existing pods, handling **20% of the traffic**. Canary deployment name should be `frontend-canary`.
 
 Assume a **Service** exists targeting the `frontend` pods by label.  
 

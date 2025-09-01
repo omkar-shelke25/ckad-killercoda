@@ -10,7 +10,7 @@ Please create the Deployment and save its yaml under **/opt/course/9/holy-api-de
 
 ---
 
-# Tr
+## Try it yourself first!
 
 <details><summary> ✅ Solution (expand to view)</summary>
   

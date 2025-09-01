@@ -1,8 +1,11 @@
 # 🧪 Canary Deployment: 20% Traffic on nginx:1.20
 
-You have an existing deployment named **frontend** running image **nginx:1.19** with **5 replicas** in the **default** namespace.  
-Create a **canary deployment** that runs **nginx:1.20** alongside the existing pods, handling **20% of the traffic**. Assume a **Service** exists targeting the `frontend` pods by label.  
-**Describe how you would gradually shift traffic** from the old version to the new version.
+You have an existing deployment named **frontend** running image **nginx:1.19** with **5 replicas** in the **default** namespace.
+  
+Create a **canary deployment** that runs **nginx:1.20** alongside the existing pods, handling **20% of the traffic**. Canary deployment named is `frontend-canary`.
+
+Assume a **Service** exists targeting the `frontend` pods by label.  
+
 
 
 ---

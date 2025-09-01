@@ -18,9 +18,11 @@ You must ensure that **`ckad00018-newpod`** can only send and receive traffic wi
   - Allows communication only with Pods labeled `app=web` and `app=db`
 
 
-Here’s the **answer** (what the learner should do to fix the intermediate CKAD NetworkPolicy task):
 
----
+## Try it yourself first!
+
+<details><summary> ✅ Solution (expand to view)</summary>
+
 
 
 ### ✅ Step 1: Label the Pods correctly
@@ -73,4 +75,4 @@ You should see:
 
 * Pod `ckad00018-newpod` is isolated and can only send/receive traffic to/from Pods `web` and `db`, because the labels now align with the pre-existing NetworkPolicy.
 
-
+</details>

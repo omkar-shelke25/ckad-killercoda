@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: PV, PVC, and Deployment",
+  "description": "Work with PersistentVolumes, PersistentVolumeClaims, and mount them into a Deployment.",
+  "details": {
+    "steps": [
+      {
+        "title": "PV, PVC, and Deployment Task",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

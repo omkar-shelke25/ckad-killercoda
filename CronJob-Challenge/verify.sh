@@ -13,12 +13,12 @@ kubectl get ns "${NS}" >/dev/null 2>&1 || fail "Namespace '${NS}' not found."
 # 2) CronJob exists
 kubectl get cronjob "${NAME}" -n "${NS}" >/dev/null 2>&1 || fail "CronJob '${NAME}' not found in namespace '${NS}'."
 
-# Helper to fetch jsonpaths safely
+# Helper function for jsonpath
 jp() {
   kubectl get cronjob "${NAME}" -n "${NS}" -o jsonpath="$1" 2>/dev/null
 }
 
-# 3) Schedule
+# 3) Schedule check
 SCHEDULE="$(jp '{.spec.schedule}')"
 [ "${SCHEDULE}" = "*/5 * * * *" ] || fail "Schedule is '${SCHEDULE}', expected '*/5 * * * *'."
 pass "Schedule set to every 5 minutes."
@@ -40,14 +40,14 @@ TTL="$(jp '{.spec.jobTemplate.spec.ttlSecondsAfterFinished}')"
 [ "${TTL}" = "120" ] || fail "ttlSecondsAfterFinished is '${TTL}', expected '120'."
 pass "ttlSecondsAfterFinished=120"
 
+ADS="$(jp '{.spec.jobTemplate.spec.activeDeadlineSeconds}')"
+[ "${ADS}" = "40" ] || fail "activeDeadlineSeconds is '${ADS}', expected '40'."
+pass "activeDeadlineSeconds=40"
+
 # 5) Pod template fields
 RESTART_POLICY="$(jp '{.spec.jobTemplate.spec.template.spec.restartPolicy}')"
 [ "${RESTART_POLICY}" = "Never" ] || fail "restartPolicy is '${RESTART_POLICY}', expected 'Never'."
 pass "restartPolicy=Never"
-
-ADS="$(jp '{.spec.jobTemplate.spec.template.spec.activeDeadlineSeconds}')"
-[ "${ADS}" = "40" ] || fail "activeDeadlineSeconds is '${ADS}', expected '40'."
-pass "activeDeadlineSeconds=40"
 
 IMAGE="$(jp '{.spec.jobTemplate.spec.template.spec.containers[0].image}')"
 [ "${IMAGE}" = "busybox" ] || fail "container image is '${IMAGE}', expected 'busybox'."

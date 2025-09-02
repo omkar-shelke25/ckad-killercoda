@@ -1,4 +1,4 @@
-8# CronJob Challenge
+# CronJob Challenge
 
 ## 🔹 Question (Weightage: 4)
 

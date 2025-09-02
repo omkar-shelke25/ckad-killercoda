@@ -1,4 +1,4 @@
-# CronJob Challenge
+8# CronJob Challenge
 
 ## 🔹 Question (Weightage: 4)
 
@@ -28,26 +28,22 @@ Try solving it yourself first. If needed, expand below:
 
 ```yaml
 apiVersion: batch/v1
-kind: CronJob
+kind: Job
 metadata:
-  name: task-cron
-  namespace: batch
+  name: deadline-demo
 spec:
-  schedule: "*/5 * * * *"
-  jobTemplate:
+  completions: 3
+  parallelism: 2
+  backoffLimit: 1
+  activeDeadlineSeconds: 120   # 🔵 Job-level: whole job must finish within 120s
+  template:
     spec:
-      backoffLimit: 2
-      completions: 4
-      parallelism: 2
-      ttlSecondsAfterFinished: 120
-      activeDeadlineSeconds: 40
-      template:
-        spec:
-          containers:
-          - name: task
-            image: busybox
-            command: ["/bin/sh", "-c", "echo Processing && sleep 30"]
-          restartPolicy: Never
+      activeDeadlineSeconds: 40  # 🟢 Pod-level: each Pod killed if it runs > 40s
+      containers:
+      - name: test
+        image: busybox
+        command: ["sleep", "200"]
+      restartPolicy: Never
 ```
 
 </details>

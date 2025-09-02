@@ -40,6 +40,7 @@ spec:
       completions: 4
       parallelism: 2
       ttlSecondsAfterFinished: 120
+      activeDeadlineSeconds: 40
       template:
         spec:
           containers:
@@ -47,7 +48,6 @@ spec:
             image: busybox
             command: ["/bin/sh", "-c", "echo Processing && sleep 30"]
           restartPolicy: Never
-          activeDeadlineSeconds: 40
 ```
 
 </details>

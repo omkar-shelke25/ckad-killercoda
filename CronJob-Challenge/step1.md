@@ -28,22 +28,26 @@ Try solving it yourself first. If needed, expand below:
 
 ```yaml
 apiVersion: batch/v1
-kind: Job
+kind: CronJob
 metadata:
-  name: deadline-demo
+  name: task-cron
+  namespace: batch
 spec:
-  completions: 3
-  parallelism: 2
-  backoffLimit: 1
-  activeDeadlineSeconds: 120   # 🔵 Job-level: whole job must finish within 120s
-  template:
+  schedule: "*/5 * * * *"   # Run every 5 minutes
+  jobTemplate:
     spec:
-      #activeDeadlineSeconds: 40  # 🟢 Pod-level: each Pod killed if it runs > 40s
-      containers:
-      - name: test
-        image: busybox
-        command: ["sleep", "200"]
-      restartPolicy: Never
+      backoffLimit: 2                   # Fail after 2 retries
+      completions: 4                    # Must complete 4 successful Pods
+      parallelism: 2                    # Run 2 Pods at a time
+      ttlSecondsAfterFinished: 120      # Clean up Job 120s after finishing
+      activeDeadlineSeconds: 40         # Fail Job if runs > 40 seconds
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: task
+            image: busybox
+            command: ["/bin/sh", "-c", "echo Processing && sleep 30"]
 ```
 
 </details>

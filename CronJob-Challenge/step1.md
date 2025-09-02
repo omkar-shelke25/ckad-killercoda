@@ -38,7 +38,7 @@ spec:
   activeDeadlineSeconds: 120   # 🔵 Job-level: whole job must finish within 120s
   template:
     spec:
-      activeDeadlineSeconds: 40  # 🟢 Pod-level: each Pod killed if it runs > 40s
+      #activeDeadlineSeconds: 40  # 🟢 Pod-level: each Pod killed if it runs > 40s
       containers:
       - name: test
         image: busybox

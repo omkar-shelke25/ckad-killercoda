@@ -53,21 +53,18 @@ IMAGE="$(jp '{.spec.jobTemplate.spec.template.spec.containers[0].image}')"
 [ "${IMAGE}" = "busybox" ] || fail "container image is '${IMAGE}', expected 'busybox'."
 pass "container image=busybox"
 
-# 6) Command/Args check: accept either .command or .args, but content must include:
-# - echo Processing
-# - sleep 30
-CMD_AND_ARGS="$(kubectl get cronjob "${NAME}" -n "${NS}" \
-  -o jsonpath='{.spec.jobTemplate.spec.template.spec.containers[0].command[*]} {.spec.jobTemplate.spec.template.spec.containers[0].args[*]}')"
+# 6) Command check
+CMD="$(kubectl get cronjob "${NAME}" -n "${NS}" \
+  -o jsonpath='{.spec.jobTemplate.spec.template.spec.containers[0].command[*]}')"
 
-# Normalize multiple spaces
-CMD_AND_ARGS="$(echo "${CMD_AND_ARGS}" | tr -s ' ')"
+CMD="$(echo "${CMD}" | tr -s ' ')"
 
-echo "${CMD_AND_ARGS}" | grep -qiE '(^|[[:space:]])echo[[:space:]]+Processing([[:space:]]|$)' \
-  || fail "command/args must include: echo Processing"
+echo "${CMD}" | grep -qi "echo Processing" \
+  || fail "command must include: echo Processing"
 
-echo "${CMD_AND_ARGS}" | grep -qiE '(^|[[:space:]])sleep[[:space:]]+30([[:space:]]|$)' \
-  || fail "command/args must include: sleep 30"
+echo "${CMD}" | grep -qi "sleep 30" \
+  || fail "command must include: sleep 30"
 
-pass "command/args include 'echo Processing' and 'sleep 30'."
+pass "command includes 'echo Processing' and 'sleep 30'."
 
 echo "✅ Verification successful! CronJob '${NAME}' in namespace '${NS}' is correctly configured."

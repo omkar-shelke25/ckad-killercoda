@@ -1,10 +1,9 @@
-# ✅ Remediation Complete
+# 🎉 Remediation Complete
 
 You hardened the `busybox` Deployment in `net-acm`:
 
-- Runs **as non-root**
+- **Runs as non-root**
 - **allowPrivilegeEscalation: false**
-- Added **NET_BIND_SERVICE** capability only
-- Provided `/net-acm/id.sh` to prove the pod’s UID for audits
+- **NET_BIND_SERVICE** capability added
 
-This is a realistic baseline you’ll apply across many workloads in production. 🔒
+This reflects standard production hardening for Linux containers. Great job! 🔒

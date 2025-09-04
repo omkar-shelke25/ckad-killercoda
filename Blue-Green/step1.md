@@ -91,6 +91,11 @@ spec:
             port: 80
           initialDelaySeconds: 2
           periodSeconds: 5
+# kubectl edit -n ios svc # change selector for green deployment
+# OR
+# Patch selector: color from blue → green
+# kubectl -n ios patch svc web-app-service --type='merge' -p '{"spec":{"selector":{"app":"web-app","color":"green"}}}'
+
 ```
 
 ```bash
@@ -101,7 +106,7 @@ kubectl get svc -n ios  -owide
 kubectl get po -n ios --show-labels | grep web-app-green
 
 # for shift blue to green we need change service selector(pod-labels)
-# two way -> 1) `edit command` 2) `patch command`
+# two way -> 1) edit command 2) patch command
 
 kubectl edit -n ios svc # change selector for green deployment
 

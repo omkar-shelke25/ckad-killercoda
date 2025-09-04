@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: CronJob for Data Pipeline",
+  "description": "Create a CronJob in the batch namespace with concurrency control, history limits, retries, pod limits, and timeouts.",
+  "details": {
+    "steps": [
+      {
+        "title": "Data Pipeline CronJob",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

@@ -10,7 +10,7 @@ SVC="busybox-svc"
 # Namespace
 kubectl get ns "$NS" >/dev/null 2>&1 || kubectl create ns "$NS"
 
-# Minimal, unsecured deployment to start with (to be remediated by the learner)
+# Minimal, unsecured deployment to be remediated
 if ! kubectl -n "$NS" get deploy "$DEP" >/dev/null 2>&1; then
 cat <<'EOF' | kubectl apply -f -
 apiVersion: apps/v1
@@ -35,7 +35,7 @@ spec:
 EOF
 fi
 
-# A dummy ClusterIP Service (not functionally used, just pre-created as requested)
+# Dummy Service (not essential, created per request)
 if ! kubectl -n "$NS" get svc "$SVC" >/dev/null 2>&1; then
 cat <<'EOF' | kubectl apply -f -
 apiVersion: v1
@@ -47,16 +47,12 @@ spec:
   selector:
     app: busybox
   ports:
-  - port: 80
-    targetPort: 80
+  - port: 8080
+    targetPort: 8080
 EOF
 fi
-
-# Ensure directory for the verification script exists
-sudo mkdir -p /net-acm
-sudo chmod 755 /net-acm
 
 echo "⏳ Waiting for initial Deployment to be ready..."
 kubectl -n "$NS" rollout status deploy/"$DEP" --timeout=120s || true
 
-echo "✅ Environment ready. Remediate Deployment 'busybox' in namespace 'net-acm' and create /net-acm/id.sh."
+echo "✅ Environment ready. Update Deployment 'busybox' with the required security settings."

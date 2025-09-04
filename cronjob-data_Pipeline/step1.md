@@ -31,4 +31,39 @@ Create the CronJob according to the following requirements:
   /bin/sh -c "echo Running Data Job && sleep 40"
   ```
 
+
+## Try to solve this yourself first!
+
+<details>
+<summary>✅ Solution (expand to view)</summary>
   
+```yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: data-pipeline
+  namespace: batch
+spec:
+  schedule: "*/10 * * * *"            # runs every 10 minutes
+  concurrencyPolicy: Forbid           # prevent overlapping jobs
+  successfulJobsHistoryLimit: 2       # keep 2 successful job records
+  failedJobsHistoryLimit: 1           # keep 1 failed job record
+  jobTemplate:
+    spec:
+      backoffLimit: 3                 # max retries for failed pods
+      completions: 2                  # 2 pods must complete
+      parallelism: 1                  # 1 pod at a time
+      ttlSecondsAfterFinished: 90     # auto-delete after 90s
+      activeDeadlineSeconds: 50       # fail if runs >50s
+      template:
+        spec:
+          restartPolicy: Never        # don't restart failed containers
+          containers:
+          - name: runner
+            image: busybox
+            command:
+            - /bin/sh
+            - -c
+            - echo Running Data Job && sleep 40
+```
+ </details> 

@@ -1,4 +1,4 @@
-Solve this task on the provided cluster instance.
+# CKAD: Harden a Deployment (non-root, no-priv-escalation, NET_BIND_SERVICE)
 
 A Deployment named **`busybox`** exists in the **`net-acm`** namespace. The security team has flagged this workload during their audit and requires immediate remediation.
 
@@ -6,12 +6,9 @@ A Deployment named **`busybox`** exists in the **`net-acm`** namespace. The secu
 Update the **`busybox`** Deployment so that its container:
 - **Runs as non-root**
 - Has **`allowPrivilegeEscalation: false`**
-- Has Linux capability **`NET_BIND_SERVICE`** added (no extra capabilities beyond that)
-
-After making these changes, your team lead wants to verify the implementation.  
-Create a shell script at **`/net-acm/id.sh`** that prints the **user ID** the Pod is running as (for the compliance report).
+- Adds the Linux capability **`NET_BIND_SERVICE`**
 
 > Notes
-> - The application team confirmed the busybox container continues to function with these constraints.
-> - The namespace, Deployment, and a dummy Service are pre-created.
-> - You may edit the existing Deployment spec; replacing it is fine as long as the name/namespace stay the same.
+> - Namespace, Deployment, and a dummy Service are **already created**.
+> - You may edit and apply the Deployment spec (e.g., `kubectl edit` or `kubectl apply -f`).
+> - Assume the application will continue to operate with these constraints.

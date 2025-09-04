@@ -1,6 +1,6 @@
 {
   "title": "CKAD: Harden a Deployment (non-root, no-priv-escalation, NET_BIND_SERVICE)",
-  "description": "Security team flagged a workload. Update a Deployment to run as non-root, disable privilege escalation, and add NET_BIND_SERVICE capability. Include a UID check script.",
+  "description": "Security audit flagged a workload in net-acm. Update the Deployment to run as non-root, disable privilege escalation, and add NET_BIND_SERVICE capability.",
   "details": {
     "steps": [
       {

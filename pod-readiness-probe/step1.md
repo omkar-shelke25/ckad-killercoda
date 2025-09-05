@@ -6,7 +6,7 @@ The **Pod** should have a **readiness-probe** executing `cat /tmp/ready`. It sho
 This will set the container **ready only if the file `/tmp/ready` exists**.
 
 Use below command:
-`command: ["/bin/sh","-c","touch /tmp/ready && sleep 1d"]`
+- `command: ["/bin/sh","-c","touch /tmp/ready && sleep 1d"]`
 
 ---
 

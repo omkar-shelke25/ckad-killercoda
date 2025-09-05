@@ -5,8 +5,8 @@ Create a single **Pod** named **`pod6`** in **Namespace `default`** of image **`
 The **Pod** should have a **readiness-probe** executing `cat /tmp/ready`. It should **initially wait 5** and **periodically wait 10 seconds**.
 This will set the container **ready only if the file `/tmp/ready` exists**.
 
-Must Use below Command:
-- `command: ["/bin/sh","-c","touch /tmp/ready && sleep 1d"]`
+Must Use below Things:
+- `command: ["/bin/sh","-c","touch /tmp/ready && sleep 1d"]` 
 - /bin/sh is used in both the container’s command (entrypoint) and in the readiness probe.
 
 ---

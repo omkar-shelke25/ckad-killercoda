@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+mkdir -p /opt/course/5
+
 echo "Preparing lab environment..."
 
 NS="neptune"

@@ -54,7 +54,7 @@ kubectl -n neptune describe job neb-new-job
 kubectl get po -n neptune
 
 # check logs of pod --> pod name will be diffrent in your case
-kubectl  logs -n neptune neb-new-job-92f7j  #--> pod name change
+kubectl  logs -n neptune neb-new-job-92f7j 
 ```
 
 </details>

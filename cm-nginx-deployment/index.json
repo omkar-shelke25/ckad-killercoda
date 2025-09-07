@@ -1,5 +1,5 @@
 {
-  "title": "CKAD: ConfigMap for Nginx Deployment",
+  "title": "CKAD: Create ConfigMap & Fix Nginx Deployment",
   "description": "Create a ConfigMap containing nginx configuration and use it in an existing Deployment.",
   "details": {
     "steps": [

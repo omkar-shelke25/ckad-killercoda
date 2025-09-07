@@ -18,6 +18,6 @@
     }
   },
   "backend": {
-    "imageid": "kubernetes-killer-coda"
+    "imageid": "kubernetes-kubeadm-2nodes"
   }
 }

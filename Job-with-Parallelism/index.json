@@ -1,14 +1,21 @@
 {
-  "title": "CKAD Mock Exam - Job with Parallelism",
-  "description": "Create a Kubernetes Job with specific parallelism and completions.",
-  "difficulty": "Intermediate",
-  "time": "20 minutes",
+  "title": "⚙️ Kubernetes Job — Parallelism & Completions",
+  "description": "Create a Kubernetes Job with specific parallelism, completions, labels, and container command execution in a custom namespace.",
   "details": {
     "steps": [
-      { "title": "Create Job with Parallelism", "text": "step1.md" }
+      {
+        "title": "Create Job with Parallelism & Completions",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
     ],
-    "intro": "intro.md",
-    "finish": "finish.md"
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
   },
   "backend": {
     "imageid": "kubernetes-killer-coda"

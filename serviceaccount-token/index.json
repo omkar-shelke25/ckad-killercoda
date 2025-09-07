@@ -1,0 +1,25 @@
+{
+  "title": "CKAD - ServiceAccount Secret & Token Decode",
+  "description": "Find the Secret belonging to a ServiceAccount, decode its token and write the decoded token to a file.",
+  "difficulty": "Easy",
+  "time": "10 minutes",
+  "details": {
+    "steps": [
+      {
+        "title": "Retrieve the ServiceAccount token",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

@@ -12,7 +12,7 @@ For this test we ignore that it doesn't contain valid html.
 
 The InitContainer should be using image **`busybox:1.31.0`**. Test your implementation for example using **`curl/wget`** from a temporary **`nginx:alpine`** Pod.
 
-> use replace command to replace existing deployment 'k replace -f <file-name> --force
+> use replace command to replace existing deployment 'k replace -f <file-name> --force'
 
 ---
 

@@ -5,10 +5,19 @@
   "time": "10 minutes",
   "details": {
     "steps": [
-      { "title": "Retrieve the ServiceAccount token", "text": "step1.md" }
+      {
+        "title": "Retrieve the ServiceAccount token",
+        "text": "step1.md"
+      }
     ],
-    "intro": "intro.md",
-    "finish": "finish.md"
+    "intro": {
+      "text": "intro.md",
+      "courseData": ""
+    },
+    "finish": {
+      "text": "finish.md",
+      "courseData": ""
+    }
   },
   "backend": {
     "imageid": "kubernetes-kubeadm-2nodes"

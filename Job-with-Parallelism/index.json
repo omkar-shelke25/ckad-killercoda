@@ -1,5 +1,5 @@
 {
-  "title": "⚙️ Kubernetes Job — Parallelism & Completions",
+  "title": "⚙️ CKAD: Kubernetes Job — Parallelism & Completions",
   "description": "Create a Kubernetes Job with specific parallelism, completions, labels, and container command execution in a custom namespace.",
   "details": {
     "steps": [

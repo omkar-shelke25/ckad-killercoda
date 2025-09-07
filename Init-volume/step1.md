@@ -10,11 +10,13 @@ Create an **InitContainer** named **`init-con`** which also mounts that volume a
 
 For this test we ignore that it doesn't contain valid html.
 
-The InitContainer should be using image **`busybox:1.31.0`**. Test your implementation for example using **`curl`** from a temporary **`nginx:alpine`** Pod.
+The InitContainer should be using image **`busybox:1.31.0`**. Test your implementation for example using **`curl/wget`** from a temporary **`nginx:alpine`** Pod.
+
+> use replace command to replace existing deployment 'k replace -f <file-name> --force
 
 ---
 
-## 💡 (Optional) Complete Solution
+## 💡 Complete Solution
 
 <details>
 <summary>🔍 Click to view full YAML solution</summary>
@@ -59,7 +61,7 @@ spec:
 
 ```bash
 # Test commands
-kubectl apply -f /opt/course/17/test-init-container.yaml
+kubectl replace -f /opt/course/17/test-init-container.yaml --force
 kubectl expose deployment test-init-container --port=80
 kubectl run tmp --restart=Never --rm -i --image=nginx:alpine -- curl test-init-container
 ```

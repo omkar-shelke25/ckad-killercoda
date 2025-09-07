@@ -4,7 +4,8 @@
 - Namespace: **`neptune`**
 - ServiceAccount: **`neptune-sa-v2`**
 - Find the **Secret** associated with this ServiceAccount.
-- Extract the **token** (base64 encoded) and save in /opt/course/5/token
+- Extract the **token** (base64 encoded) and Write the decoded token string (exact text, no extra blank lines) to:
+  **/opt/course/5/token**
 
 ## Try it yourself first!
 
@@ -21,7 +22,7 @@ SECRET=$(kubectl -n neptune get sa neptune-sa-v2 -o jsonpath='{.secrets[0].name}
 TOKEN=$(kubectl -n neptune get secret $SECRET -o jsonpath='{.data.token}')
 
 # 4) Decode and save
-echo $TOKEN > /opt/course/5/token
+echo $TOKEN | base64 -d > /opt/course/5/token
 ```
 
 </details> 

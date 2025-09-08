@@ -12,6 +12,7 @@ They want to package it as a container image and deliver it in two formats.
    `/opt/course/21/oci/myapp-oci.tar`
 
 > You can use any name and tag for the image during the build.
+
 > Please check the `docker buildx version`. If it is not available, wait for 1 minute to install Docker Buildx.
 
 ## 💡 Complete Solution

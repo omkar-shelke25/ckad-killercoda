@@ -4,6 +4,26 @@ set -e
 # Create the course directory
 mkdir -p /opt/course/17
 
+cat > 1.yaml << 'EOF'
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: test-init-container
+  name: test-init-container
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: test-init-container
+status:
+  loadBalancer: {}
+EOF
+
+
 # Create the initial Deployment YAML with nginx but empty volume
 cat > /opt/course/17/test-init-container.yaml << 'EOF'
 apiVersion: apps/v1
@@ -35,8 +55,6 @@ spec:
       - name: web-content
         emptyDir: {}
 EOF
-
-kubectl expose deploy/test-init-container --port 80 
 
 echo "✅ Setup complete!"
 echo "📁 Deployment YAML created at: /opt/course/17/test-init-container.yaml"

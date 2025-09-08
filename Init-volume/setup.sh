@@ -21,8 +21,6 @@ spec:
     app: test-init-container
 EOF
 
-kubectl apply -f 
-
 # Create the initial Deployment YAML with nginx but empty volume
 cat > /opt/course/17/test-init-container.yaml << 'EOF'
 apiVersion: apps/v1
@@ -42,6 +40,13 @@ spec:
       labels:
         app: test-init-container
     spec:
+      initContainers:                # ✅ Added InitContainer
+      - name: init-web-content
+        image: busybox:1.35
+        command: ['sh', '-c', 'echo "Hello from InitContainer" > /usr/share/nginx/html/index.html']
+        volumeMounts:
+        - name: web-content
+          mountPath: /usr/share/nginx/html
       containers:
       - name: nginx
         image: nginx:1.17.3-alpine
@@ -56,7 +61,6 @@ spec:
 EOF
 
 kubectl apply -f /opt/course/17/1.yaml
-
 kubectl apply -f /opt/course/17/test-init-container.yaml
 
 echo "✅ Setup complete!"

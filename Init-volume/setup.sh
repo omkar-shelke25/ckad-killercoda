@@ -4,7 +4,7 @@ set -e
 # Create the course directory
 mkdir -p /opt/course/17
 
-cat > 1.yaml << 'EOF'
+cat > /opt/course/17/1.yaml << 'EOF'
 apiVersion: v1
 kind: Service
 metadata:

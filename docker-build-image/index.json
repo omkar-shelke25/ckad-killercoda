@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Docker Image Build and Export",
+  "description": "Build a Docker image from a Dockerfile and export it as a tar archive for offline distribution.",
+  "details": {
+    "steps": [
+      {
+        "title": "Build Docker Image and Export as Tar",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

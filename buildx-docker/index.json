@@ -1,0 +1,23 @@
+{
+  "title": "Buildx: Export Docker & OCI Images",
+  "description": "Use docker buildx to build an application image and export it in docker-archive and OCI formats.",
+  "details": {
+    "steps": [
+      {
+        "title": "Build image and export as docker & oci",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

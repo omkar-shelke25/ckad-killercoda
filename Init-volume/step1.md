@@ -20,7 +20,8 @@ The InitContainer should be using image **`busybox:1.31.0`**. Test your implemen
 
 <details>
 <summary>🔍 Click to view full YAML solution</summary>
-
+# Edit And Replace /opt/course/17/test-init-container.yaml
+ 
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -62,7 +63,6 @@ spec:
 ```bash
 # Test commands
 kubectl replace -f /opt/course/17/test-init-container.yaml --force
-kubectl expose deployment test-init-container --port=80
 kubectl run tmp --restart=Never --rm -i --image=nginx:alpine -- curl test-init-container
 ```
 

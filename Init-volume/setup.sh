@@ -19,8 +19,6 @@ spec:
     targetPort: 80
   selector:
     app: test-init-container
-status:
-  loadBalancer: {}
 EOF
 
 

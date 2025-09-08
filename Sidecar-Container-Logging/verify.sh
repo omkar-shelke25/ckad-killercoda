@@ -43,8 +43,13 @@ else
 fi
 
 # Check if both containers mount to /tmp
-CLEANER_MOUNT=$(grep -A 20 "name: cleaner-con" "$YAML_FILE" | grep -A 5 "volumeMounts:" | grep "mountPath:" | awk '{print $2}' || echo "")
-LOGGER_MOUNT=$(grep -A 20 "name: logger-con" "$YAML_FILE" | grep -A 5 "volumeMounts:" | grep "mountPath:" | awk '{print $2}' || echo "")
+# More robust parsing that handles different YAML formatting styles
+CLEANER_MOUNT=$(awk '/name: cleaner-con/,/name: logger-con/ { if (/mountPath:/) print $2 }' "$YAML_FILE" | head -1 || echo "")
+LOGGER_MOUNT=$(awk '/name: logger-con/,/volumes:/ { if (/mountPath:/) print $2 }' "$YAML_FILE" | head -1 || echo "")
+
+# Clean up any quotes from the mount paths
+CLEANER_MOUNT=$(echo "$CLEANER_MOUNT" | tr -d '"' | tr -d "'")
+LOGGER_MOUNT=$(echo "$LOGGER_MOUNT" | tr -d '"' | tr -d "'")
 
 if [[ "$CLEANER_MOUNT" == "/tmp" ]] && [[ "$LOGGER_MOUNT" == "/tmp" ]]; then
     pass "Both containers mount volume to /tmp."

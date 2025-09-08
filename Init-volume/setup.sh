@@ -21,6 +21,7 @@ spec:
     app: test-init-container
 EOF
 
+kubectl apply -f 
 
 # Create the initial Deployment YAML with nginx but empty volume
 cat > /opt/course/17/test-init-container.yaml << 'EOF'
@@ -53,6 +54,10 @@ spec:
       - name: web-content
         emptyDir: {}
 EOF
+
+kubectl apply -f /opt/course/17/1.yaml
+
+kubectl apply -f /opt/course/17/test-init-container.yaml
 
 echo "✅ Setup complete!"
 echo "📁 Deployment YAML created at: /opt/course/17/test-init-container.yaml"

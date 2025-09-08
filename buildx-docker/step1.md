@@ -18,11 +18,19 @@ They want to package it as a container image and deliver it in two formats.
 <details>
 <summary>🔍 Click to view full YAML solution</summary>
 
+##### Build Images 
+   
+```bash
+# build the image from /opt/course/21/workdir
+cd /opt/course/21/workdir
+```
+
 ```bash
 docker buildx build -t my-app:v1 .  --output type=docker,dest=/opt/course/21/docker/myapp-docker.tar
 docker buildx build -t my-app:v1 .  --output type=oci,dest=/opt/course/21/oci/myapp-oci.tar
 ```
- 
+
+#### VERIFY THE IMAGES: 
 - `docker load -i /opt/course/21/docker/myapp-docker.tar`  
 - `tar -tf /opt/course/21/oci/myapp-oci.tar | grep oci-layout`
 

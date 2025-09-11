@@ -110,16 +110,3 @@ spec:
 EOF
 
 kubectl apply -f /opt/course/api-fix/network-policy.yaml
-
-echo "✅ Setup complete!"
-echo "🎯 Context set to: cluster1"
-echo "📁 Files created in: /opt/course/api-fix/"
-echo "🚨 Legacy deployment with deprecated API version is now running"
-echo "⚠️  Check for deprecation warnings in the cluster"
-echo ""
-echo "Your tasks:"
-echo "1. Identify the deprecated API version in legacy-app deployment"
-echo "2. Update to current stable API version"
-echo "3. Ensure deployment maintains same functionality"
-echo "4. Verify no deprecation warnings"
-echo "5. Document the changes made"

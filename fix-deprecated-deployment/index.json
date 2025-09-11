@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Fix API Deprecation Issues",
+  "description": "Fix deprecated API versions in existing Kubernetes deployments and ensure compatibility with current cluster versions.",
+  "details": {
+    "steps": [
+      {
+        "title": "Identify and Fix API Deprecation Issues",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

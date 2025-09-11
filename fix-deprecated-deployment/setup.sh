@@ -19,7 +19,7 @@ fi
 
 # Write a current apps/v1 Deployment (replace image/values as needed)
 cat > "$DEPLOYMENT_YAML" <<'EOF'
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: legacy-app

@@ -114,34 +114,6 @@ EOF
 
 kubectl apply -f /opt/course/api-fix/network-policy.yaml
 
-# Create documentation template
-cat > /opt/course/api-fix/changes-documented.md << 'EOF'
-# API Deprecation Fix Documentation
-
-## Changes Made:
-
-### Before (Deprecated):
-- API Version: 
-- Issues Found:
-
-### After (Current):
-- API Version: 
-- Changes Applied:
-
-### Verification:
-- [ ] Deployment is running with current API version
-- [ ] All functionality is maintained
-- [ ] No deprecation warnings
-
-## Commands Used:
-```bash
-# Add your commands here
-```
-
-## Notes:
-<!-- Add any additional notes about the migration -->
-EOF
-
 echo "✅ Setup complete!"
 echo "🎯 Context set to: cluster1"
 echo "📁 Files created in: /opt/course/api-fix/"

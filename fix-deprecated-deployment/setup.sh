@@ -84,29 +84,5 @@ spec:
   type: ClusterIP
 EOF
 
-kubectl apply -f /opt/course/api-fix/legacy-app-service.yaml
 
-# Create a network policy with deprecated API (if applicable)
-cat > /opt/course/api-fix/network-policy.yaml << 'EOF'
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: legacy-app-netpol
-  namespace: migration
-spec:
-  podSelector:
-    matchLabels:
-      app: legacy-app
-  policyTypes:
-  - Ingress
-  - Egress
-  ingress:
-  - from: []
-    ports:
-    - protocol: TCP
-      port: 80
-  egress:
-  - {}
-EOF
 
-kubectl apply -f /opt/course/api-fix/network-policy.yaml

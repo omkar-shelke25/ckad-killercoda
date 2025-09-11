@@ -6,13 +6,6 @@ Your team of engineers has been trying to deploy the `legacy-app` but they're en
 
 The YAML file at `/opt/course/api-fix/legacy-app.yaml` contains a deployment configuration that uses deprecated API versions. Fix the API deprecation issues so the engineers can successfully deploy the application.
 
-Requirements:
-- Fix the deprecated API version in the YAML file
-- Deploy the application successfully to `migration` namespace
-- Ensure all functionality is preserved
-- Verify no deprecation warnings
-
-
 <details>
 <summary>🔍 Click to view the complete solution</summary>
 

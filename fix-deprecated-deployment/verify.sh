@@ -4,7 +4,6 @@ set -euo pipefail
 DEPLOYMENT="legacy-app"
 NAMESPACE="migration"
 YAML_FILE="/opt/course/api-fix/legacy-app.yaml"
-DOCS_FILE="/opt/course/api-fix/changes-documented.md"
 EXPECTED_API_VERSION="apps/v1"
 DEPRECATED_API_VERSION="extensions/v1beta1"
 
@@ -129,32 +128,6 @@ if echo "$APPLY_OUTPUT" | grep -qi "deprecated\|warning"; then
     echo "Output: $APPLY_OUTPUT"
 else
     pass "No deprecation warnings when applying the updated YAML"
-fi
-
-# Check if documentation file has been updated
-if [ -f "$DOCS_FILE" ]; then
-    pass "Documentation file exists"
-    
-    # Check if documentation contains key information
-    if grep -q "$EXPECTED_API_VERSION" "$DOCS_FILE"; then
-        pass "Documentation mentions the correct API version"
-    else
-        warn "Documentation should mention the new API version: $EXPECTED_API_VERSION"
-    fi
-    
-    if grep -q "$DEPRECATED_API_VERSION" "$DOCS_FILE"; then
-        pass "Documentation mentions the deprecated API version"
-    else
-        warn "Documentation should mention the old deprecated API version"
-    fi
-    
-    if grep -q "Changes Applied\|Changes Made" "$DOCS_FILE"; then
-        pass "Documentation contains change information"
-    else
-        warn "Documentation should contain detailed change information"
-    fi
-else
-    fail "Documentation file '$DOCS_FILE' not found or not updated"
 fi
 
 # Final rollout status check

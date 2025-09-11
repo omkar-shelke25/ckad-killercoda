@@ -56,15 +56,6 @@ Fix API deprecation issues in existing deployment:
    kubectl get deployment legacy-app -n migration -o yaml | grep apiVersion
    kubectl rollout status deployment/legacy-app -n migration
    ```
-
-## 📝 Documentation
-
-Update `/opt/course/api-fix/changes-documented.md` with:
-- The deprecated API version you found
-- The current API version you updated to
-- Commands used for verification
-- Any additional changes needed
-
 ---
 
 ## 💡 Complete Solution

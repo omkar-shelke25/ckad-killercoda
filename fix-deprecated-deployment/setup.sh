@@ -62,8 +62,6 @@ spec:
       restartPolicy: Always
 EOF
 
-# Try to apply the deprecated deployment (this might generate warnings)
-kubectl apply -f /opt/course/api-fix/legacy-app.yaml
 
 # Create a service for the app
 cat > /opt/course/api-fix/legacy-app-service.yaml << 'EOF'
@@ -84,5 +82,4 @@ spec:
   type: ClusterIP
 EOF
 
-
-
+kubectl apply -f /opt/course/api-fix/legacy-app-service.yaml

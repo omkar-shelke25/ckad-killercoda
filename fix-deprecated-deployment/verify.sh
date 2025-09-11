@@ -15,9 +15,9 @@ warn(){ echo "⚠️ $1"; }
 echo "🔍 Starting API Deprecation Fix Verification..."
 echo ""
 
-# Set context to cluster1
-kubectl config use-context cluster1 >/dev/null 2>&1 || fail "Failed to set context to cluster1"
-pass "Context set to cluster1"
+# Check if kubectl is available and cluster is accessible
+kubectl cluster-info >/dev/null 2>&1 || fail "Cannot connect to Kubernetes cluster"
+pass "Kubernetes cluster is accessible"
 
 # Check if namespace exists
 kubectl get namespace "$NAMESPACE" >/dev/null 2>&1 || fail "Namespace '$NAMESPACE' does not exist"
@@ -179,6 +179,5 @@ echo "   • ✅ Updated API version from $DEPRECATED_API_VERSION to $EXPECTED_A
 echo "   • ✅ Deployment is healthy with all replicas ready"
 echo "   • ✅ All functionality is maintained (containers, resources, probes)"
 echo "   • ✅ No deprecation warnings present"
-echo "   • ✅ Changes are properly documented"
 echo ""
 echo "🚀 The legacy application is now using supported API versions and is future-ready!"

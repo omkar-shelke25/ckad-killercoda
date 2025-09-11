@@ -1,9 +1,6 @@
 #!/bin/bash
 set -e
 
-# Set context to cluster1
-kubectl config use-context cluster1
-
 # Create the migration namespace
 kubectl create namespace migration
 

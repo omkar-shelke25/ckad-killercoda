@@ -13,9 +13,6 @@ Fix API deprecation issues in existing deployment:
 
 ## 📂 Files Location
 - Deployment YAML: `/opt/course/api-fix/legacy-app.yaml`
-- Documentation template: `/opt/course/api-fix/changes-documented.md`
-
-
 
 <details>
 <summary>🔍 Click to view the complete solution</summary>

@@ -1,15 +1,25 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
-# Create the migration namespace
-kubectl create namespace migration
+NAMESPACE="migration"
+MANIFEST_DIR="/opt/course/api-fix"
+DEPLOYMENT_YAML="$MANIFEST_DIR/legacy-app.yaml"
+SERVICE_YAML="$MANIFEST_DIR/legacy-app-service.yaml"
 
-# Create the course directory
-mkdir -p /opt/course/api-fix
+# Ensure directory
+mkdir -p "$MANIFEST_DIR"
 
-# Create a deployment with deprecated API version (extensions/v1beta1)
-cat > /opt/course/api-fix/legacy-app.yaml << 'EOF'
-apiVersion: extensions/v1beta1
+# Create namespace if missing (idempotent)
+if ! kubectl get namespace "$NAMESPACE" >/dev/null 2>&1; then
+  kubectl create namespace "$NAMESPACE"
+  echo "✅ Namespace created: $NAMESPACE"
+else
+  echo "ℹ️ Namespace already exists: $NAMESPACE"
+fi
+
+# Write a current apps/v1 Deployment (replace image/values as needed)
+cat > "$DEPLOYMENT_YAML" <<'EOF'
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: legacy-app
@@ -59,12 +69,10 @@ spec:
             port: 80
           initialDelaySeconds: 15
           periodSeconds: 20
-      restartPolicy: Always
 EOF
 
-
-# Create a service for the app
-cat > /opt/course/api-fix/legacy-app-service.yaml << 'EOF'
+# Service YAML
+cat > "$SERVICE_YAML" <<'EOF'
 apiVersion: v1
 kind: Service
 metadata:
@@ -82,4 +90,8 @@ spec:
   type: ClusterIP
 EOF
 
-kubectl apply -f /opt/course/api-fix/legacy-app-service.yaml
+# Apply both resources
+
+kubectl apply -f "$SERVICE_YAML"
+
+

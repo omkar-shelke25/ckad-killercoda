@@ -9,7 +9,6 @@ Fix API deprecation issues in existing deployment:
 * Update to current stable API version  
 * Ensure deployment maintains same functionality
 * Verify the deployment is using supported API version
-* Document the changes made
 
 ## 📂 Files Location
 - Deployment YAML: `/opt/course/api-fix/legacy-app.yaml`

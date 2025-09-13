@@ -42,6 +42,7 @@ kubectl -n pluto expose pod project-plt-6cc-api \
 
 3) **Using Wget/Curl**
 
+*Using With curl**
 ```bash
 kubectl -n pluto run tmp --image=nginx -it --rm --restart=Never -- \
   curl -s -m5 project-plt-6cc-svc:3333 | head -n25 > /opt/course/10/service_test.html

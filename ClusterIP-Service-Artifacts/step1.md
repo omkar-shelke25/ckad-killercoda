@@ -40,14 +40,14 @@ kubectl -n pluto expose pod project-plt-6cc-api \
   --protocol=TCP
 ```
 
-3) **Using Curl with tempory pod**
+3) **Using Wget/Curl**
 
 ```bash
 kubectl -n pluto run tmp --image=nginx -it --rm --restart=Never -- \
   curl -s -m5 project-plt-6cc-svc:3333 | head -n25 > /opt/course/10/service_test.html
 ```
 
-4) **Using With wget**
+ **Using With wget**
 - Run a temporary client Pod and directly fetch the Service:
   ```bash
   kubectl -n pluto run svc-tester --image=busybox:1.36 --restart=Never --command -- sh -c "sleep 3600"
@@ -56,6 +56,7 @@ kubectl -n pluto run tmp --image=nginx -it --rm --restart=Never -- \
   kubectl -n pluto exec svc-tester -- sh -c "wget -qO- http://project-plt-6cc-svc:3333/" \
   > /opt/course/10/service_test.html 
   ```
+  
 5) **Save backend pod logs to host**
 ```bash
 kubectl -n pluto logs project-plt-6cc-api > /opt/course/10/service_test.log

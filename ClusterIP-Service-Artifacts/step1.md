@@ -59,9 +59,9 @@ kubectl -n pluto expose pod project-plt-6cc-api \
     > /opt/course/10/service_test.html 
     ```
 
-4) **Save backend pod logs to host**
-```bash
-kubectl -n pluto logs project-plt-6cc-api > /opt/course/10/service_test.log
-```
+ 4) **Save backend pod logs to host**
+ ```bash
+ kubectl -n pluto logs project-plt-6cc-api > /opt/course/10/service_test.log
+ ```
 
 </details>

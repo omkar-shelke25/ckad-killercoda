@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Complex NetworkPolicy Pod Communication",
+  "description": "Work with existing NetworkPolicies to configure pod communication by only modifying pod labels - no policy changes allowed.",
+  "details": {
+    "steps": [
+      {
+        "title": "NetworkPolicy Pod Communication Challenge",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

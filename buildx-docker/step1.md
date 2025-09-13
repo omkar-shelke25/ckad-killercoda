@@ -28,7 +28,8 @@ cd /opt/course/21/workdir
 ```
 
 ```bash
-docker buildx build -t retailco/analytics-api:v1 . --output type=docker,dest=myapp-docker.tar
-docker buildx build -t retailco/analytics-api:v2 . --output type=oci,dest=myapp-oci.tar
+docker buildx build -t retailco/analytics-api:v1 . --output type=docker,dest=/opt/course/21/docker/myapp-docker.tar
+docker buildx build -t retailco/analytics-api:v2 . --output type=oci,dest=/opt/course/21/oci/myapp-oci.tar
 ```
+
 </details>

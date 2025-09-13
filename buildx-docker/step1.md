@@ -34,13 +34,19 @@ docker buildx build -t retailco/analytics-api:v2 . --output type=oci,dest=/opt/c
 Here’s the verification commands :
 
 **For Docker tarball (type=docker):**
-
+```bash
+cd /opt/course/21/docker
+```
 ```bash
 docker load -i /opt/course/21/docker/myapp-docker.tar
 docker images | grep retailco/analytics-api
 ```
 
 **For OCI tarball (type=oci):**
+
+```bash
+cd /opt/course/21/oci
+```
 
 ```bash
 tar -tf /opt/course/21/oci/myapp-oci.tar | head

@@ -44,10 +44,10 @@ kubectl -n pluto expose pod project-plt-6cc-api \
 
    **Using With curl**
 
-  ```bash
-  kubectl -n pluto run tmp --image=nginx -it --rm --restart=Never -- \
-  curl -s -m5 project-plt-6cc-svc:3333 | head -n25 > /opt/course/10/service_test.html
-  ```
+   ```bash
+   kubectl -n pluto run tmp --image=nginx -it --rm --restart=Never -- \
+   curl -s -m5 project-plt-6cc-svc:3333 | head -n25 > /opt/course/10/service_test.html
+   ```
 
    **Using With wget**
   - Run a temporary client Pod and directly fetch the Service:

@@ -31,5 +31,19 @@ cd /opt/course/21/workdir
 docker buildx build -t retailco/analytics-api:v1 . --output type=docker,dest=/opt/course/21/docker/myapp-docker.tar
 docker buildx build -t retailco/analytics-api:v2 . --output type=oci,dest=/opt/course/21/oci/myapp-oci.tar
 ```
+Here’s the verification commands :
+
+**For Docker tarball (type=docker):**
+
+```bash
+docker load -i /opt/course/21/docker/myapp-docker.tar
+docker images | grep retailco/analytics-api
+```
+
+**For OCI tarball (type=oci):**
+
+```bash
+tar -tf /opt/course/21/oci/myapp-oci.tar | head
+```
 
 </details>

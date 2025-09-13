@@ -9,8 +9,9 @@ The service should use tcp port redirection of **3333:80**
 From a temporary client Pod in the same namespace, make an HTTP request to  
 **http://project-plt-6cc-svc:3333/**
 
-- Save the response body to:  **/opt/course/10/service_test.html**
-- Save the logs from Pod **project-plt-6cc-api** to:  /opt/course/10/service_test.log
+- 💾 Save the response body to /opt/course/10/service_test.html, and 📄 service_test.html should contain the HTML code from the Nginx default directory. 🌐 Use wget/curl for that.
+  
+- 💾 Save the wget/curl logs from the Pod project-plt-6cc-api to /opt/course/10/service_test.log.
 
 
 ## **Solution**
@@ -39,18 +40,25 @@ kubectl -n pluto expose pod project-plt-6cc-api \
   --protocol=TCP
 ```
 
+3) **Using Curl with tempory pod**
 
-3) **Functional check & artifacts**
+```bash
+kubectl -n pluto run tmp --image=nginx -it --rm --restart=Never -- \
+  curl -s -m5 project-plt-6cc-svc:3333 | head -n25 > /opt/course/10/service_test.html
+```
+
+4) **Using With wget**
 - Run a temporary client Pod and directly fetch the Service:
   ```bash
   kubectl -n pluto run svc-tester --image=busybox:1.36 --restart=Never --command -- sh -c "sleep 3600"
   ```
   ```bash
   kubectl -n pluto exec svc-tester -- sh -c "wget -qO- http://project-plt-6cc-svc:3333/" \
-  > /opt/course/10/service_test.html
+  > /opt/course/10/service_test.html 
   ```
-4) **Save backend pod logs to host**
+5) **Save backend pod logs to host**
 ```bash
 kubectl -n pluto logs project-plt-6cc-api > /opt/course/10/service_test.log
 ```
+
 </details>

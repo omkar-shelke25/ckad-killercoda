@@ -23,7 +23,7 @@ cat > "$WORKDIR/greeting.txt" <<'EOF'
 This container simulates the RetailCo Analytics API service.
 EOF
 
-cd "$WORKDIR"
+
 
 # Enable Docker BuildKit
 export DOCKER_BUILDKIT=1

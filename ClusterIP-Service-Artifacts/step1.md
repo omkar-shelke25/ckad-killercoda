@@ -42,7 +42,8 @@ kubectl -n pluto expose pod project-plt-6cc-api \
 
 3) **Using Wget/Curl**
 
-*Using With curl**
+**Using With curl**
+
 ```bash
 kubectl -n pluto run tmp --image=nginx -it --rm --restart=Never -- \
   curl -s -m5 project-plt-6cc-svc:3333 | head -n25 > /opt/course/10/service_test.html
@@ -57,8 +58,8 @@ kubectl -n pluto run tmp --image=nginx -it --rm --restart=Never -- \
   kubectl -n pluto exec svc-tester -- sh -c "wget -qO- http://project-plt-6cc-svc:3333/" \
   > /opt/course/10/service_test.html 
   ```
-  
-5) **Save backend pod logs to host**
+
+4) **Save backend pod logs to host**
 ```bash
 kubectl -n pluto logs project-plt-6cc-api > /opt/course/10/service_test.log
 ```

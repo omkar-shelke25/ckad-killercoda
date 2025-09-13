@@ -1,6 +1,33 @@
 #!/bin/bash
 set -euo pipefail
 
+echo "🚀 Setting up Docker environment..."
+
+# Setup directories
+COURSE_DIR="/opt/course/21"
+WORKDIR="$COURSE_DIR/workdir"
+DOCKER_DIR="$COURSE_DIR/docker"
+OCI_DIR="$COURSE_DIR/oci"
+mkdir -p "$WORKDIR" "$DOCKER_DIR" "$OCI_DIR"
+
+# Sample production-style Dockerfile
+cat > "$WORKDIR/Dockerfile" <<'EOF'
+FROM alpine:3.18
+LABEL maintainer="team@retail-co.example"
+RUN apk add --no-cache curl
+COPY greeting.txt /greeting.txt
+CMD ["sh", "-c", "echo '🚀 RetailCo Analytics API v1.0' && cat /greeting.txt && sleep 3600"]
+EOF
+
+cat > "$WORKDIR/greeting.txt" <<'EOF'
+This container simulates the RetailCo Analytics API service.
+EOF
+
+cd "$WORKDIR"
+
+# Enable Docker BuildKit
+export DOCKER_BUILDKIT=1
+
 echo "🔧 Installing Docker Buildx..."
 
 # Create plugin directory
@@ -45,4 +72,8 @@ else
     exit 1
 fi
 
-echo "✅ Docker Buildx setup complete"
+echo "✅ Environment setup complete"
+echo "📁 Working directory: $WORKDIR"
+echo "🐳 Docker BuildKit enabled: $DOCKER_BUILDKIT"
+
+sleep 3

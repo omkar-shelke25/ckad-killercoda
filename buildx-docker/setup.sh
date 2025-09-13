@@ -39,22 +39,3 @@ docker buildx inspect kc-builder --bootstrap || true
 
 sleep 3
 
-# Build docker archive
-docker buildx build -t retailco/analytics-api:v1 . --output type=docker,dest=myapp-docker.tar
-mv myapp-docker.tar "$DOCKER_DIR/"
-
-# Build OCI archive
-docker buildx build -t retailco/analytics-api:v1 . --output type=oci,dest=myapp-oci.tar
-mv myapp-oci.tar "$OCI_DIR/"
-
-cat > "$COURSE_DIR/README" <<'HINT'
-✅ Outputs created:
-- Docker archive: /opt/course/21/docker/myapp-docker.tar
-- OCI archive:   /opt/course/21/oci/myapp-oci.tar
-
-To load locally:
-  docker load -i /opt/course/21/docker/myapp-docker.tar
-
-To inspect OCI tar:
-  tar -tf /opt/course/21/oci/myapp-oci.tar | head
-HINT

@@ -18,7 +18,7 @@ They want to package it as a container image and deliver it in two formats.
 ## 💡 Complete Solution
 
 <details>
-<summary>🔍 Click to view full YAML solution</summary>
+<summary>🔍 Click to view full solution</summary>
 
 ##### Build Images 
    

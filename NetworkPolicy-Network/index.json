@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: NetworkPolicy - Restrict Redis Access",
+  "description": "Create a NetworkPolicy to restrict incoming connections to Redis deployment from specific Pods only.",
+  "details": {
+    "steps": [
+      {
+        "title": "Create NetworkPolicy for Redis Access Control",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

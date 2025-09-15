@@ -10,7 +10,7 @@ Create a **NetworkPolicy** named **np-redis** which restricts **incoming connect
 * 🌐 Pods in Deployment **redis** should still be able to perform DNS lookups (UDP/TCP 53).
 
 
-```
+
 
 ## 💪 Try it yourself first!
 

@@ -1,10 +1,10 @@
 {
-  "title": "CKAD: Configure Pod Communication with Existing NetworkPolicies",
-  "description": "Configure pod labels to work with existing NetworkPolicies to restrict communication between specific pods.",
+  "title": "CKAD: Restrict Pod Communication with Existing NetworkPolicy",
+  "description": "Work with an existing NetworkPolicy so that a new Pod only communicates with specific peers.",
   "details": {
     "steps": [
       {
-        "title": "Configure Pod Communication Restrictions",
+        "title": "Pod Communication Restrictions",
         "text": "step1.md",
         "verify": "verify.sh"
       }

@@ -24,7 +24,6 @@ spec:
     image: nginx:1.21-alpine
     ports:
     - containerPort: 80
-    command: ["sh", "-c", "echo 'Frontend Service Ready' && sleep 3600"]
 ---
 apiVersion: v1
 kind: Pod
@@ -40,7 +39,6 @@ spec:
     image: nginx:1.21-alpine
     ports:
     - containerPort: 5432
-    command: ["sh", "-c", "echo 'Database Service Ready' && sleep 3600"]
 ---
 apiVersion: v1
 kind: Pod
@@ -57,7 +55,6 @@ spec:
     image: nginx:1.21-alpine
     ports:
     - containerPort: 8080
-    command: ["sh", "-c", "echo 'Payment Processor Ready' && sleep 3600"]
 EOF
 
 echo "🛡️  Applying security NetworkPolicies..."

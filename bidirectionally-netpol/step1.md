@@ -4,11 +4,11 @@
 
 You're working as a DevOps engineer for a fintech company. The security team has implemented NetworkPolicies for a payment processing platform, but during deployment, the pods were labeled incorrectly. 
 
-In namespace **`payment-platform`**, three microservices exist:
+In namespace **`payment-platform`**, three microservices pods exist:
 
-- **frontend-service** (needs label `tier=frontend`)  
-- **database-service** (needs label `tier=database`)  
-- **payment-processor** (needs label `tier=payment`)  
+- **frontend-service** 
+- **database-service** 
+- **payment-processor** 
 
 ## 🎯 Task Requirements
 

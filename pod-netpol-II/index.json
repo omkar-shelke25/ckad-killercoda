@@ -1,1 +1,23 @@
-
+{
+  "title": "CKAD: Restrict Pod Communication with Existing NetworkPolicy",
+  "description": "Work with an existing NetworkPolicy so that a new Pod only communicates with specific peers.",
+  "details": {
+    "steps": [
+      {
+        "title": "Pod Communication Restrictions",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

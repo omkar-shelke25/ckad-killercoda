@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Scale Web Application and Create NodePort Service",
+  "description": "Scale an existing web frontend deployment for high availability and expose it through a NodePort service for external access.",
+  "details": {
+    "steps": [
+      {
+        "title": "Scale Deployment and Create NodePort Service",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

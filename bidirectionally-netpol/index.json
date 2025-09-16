@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Configure Pod Network Isolation with Existing NetworkPolicies",
+  "description": "Modify pod labels to align with existing NetworkPolicies for proper network segmentation in a production environment.",
+  "details": {
+    "steps": [
+      {
+        "title": "Configure Network Isolation for Production Workload",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

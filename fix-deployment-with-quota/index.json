@@ -1,10 +1,10 @@
 {
-  "title": "CKAD: ResourceQuota and Deployment Resource Requests",
-  "description": "Work with a namespace that enforces CPU/Memory quotas. Fix a Deployment so its Pods can be scheduled.",
+  "title": "CKAD: ResourceQuota blocking Checkout API deployment",
+  "description": "Namespace enforces resource requests/limits. A production Checkout API Deployment has no resources defined and pods fail to be created. Debug and fix it.",
   "details": {
     "steps": [
       {
-        "title": "Deployment Fails Due to ResourceQuota",
+        "title": "Fix Checkout API Deployment to Respect ResourceQuota",
         "text": "step1.md",
         "verify": "verify.sh"
       }

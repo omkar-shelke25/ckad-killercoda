@@ -19,10 +19,13 @@ In namespace **`payments-prod`**, the following resources already exist:
 Got it 👍 — here’s a **short, exam-style solution** that has only the essentials:
 
 ---
+## Try it yourself first!
 
-# ✅ Solution
+✅ Solution (expand to view)
+<details><summary>Solution</summary>
 
-## 1. Fix with YAML
+
+### 1. Fix with YAML
 
 Edit the Deployment and add resources:
 
@@ -44,7 +47,7 @@ kubectl apply -f checkout-api.yaml
 
 ---
 
-## 2. Alternative Solution - Fix with Command
+### 2. Alternative Solution - Fix with Command
 
 ```bash
 kubectl -n payments-prod set resources deploy/checkout-api \
@@ -54,7 +57,7 @@ kubectl -n payments-prod set resources deploy/checkout-api \
 
 ---
 
-## 3. Explanation
+### 3. Explanation
 
 * **Requests** = minimum guaranteed resources per Pod
 
@@ -72,4 +75,4 @@ With **3 replicas**:
 
 ✅ Fits within the ResourceQuota → Pods will be admitted and run.
 
-
+</details>

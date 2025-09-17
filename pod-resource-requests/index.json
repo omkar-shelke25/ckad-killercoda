@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Configure Pod Resource Requests for Production Workload",
+  "description": "Create a pod with specific CPU and memory resource requests to ensure guaranteed resource allocation in a production environment.",
+  "details": {
+    "steps": [
+      {
+        "title": "Create Namespace and Configure Pod Resource Requests",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

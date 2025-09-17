@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Configure Deployment Resource Requests Based on Namespace Quota",
+  "description": "Modify an existing deployment to set appropriate memory requests based on namespace resource quota limits in a multi-tenant environment.",
+  "details": {
+    "steps": [
+      {
+        "title": "Calculate and Set Memory Requests Based on Namespace Quota",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

@@ -16,7 +16,7 @@ In namespace **`payments-prod`**, the following resources already exist:
  
 
 > Recommend to use `k set resource` command.
-Got it 👍 — here’s a **short, exam-style solution** that has only the essentials:
+
 
 ---
 ## Try it yourself first!

@@ -16,7 +16,60 @@ In namespace **`payments-prod`**, the following resources already exist:
  
 
 > Recommend to use `k set resource` command.
+Got it 👍 — here’s a **short, exam-style solution** that has only the essentials:
 
+---
 
-  
+# ✅ Solution
+
+## 1. Fix with YAML
+
+Edit the Deployment and add resources:
+
+```yaml
+resources:
+  requests:
+    cpu: "100m"
+    memory: "300Mi"
+  limits:
+    cpu: "200m"
+    memory: "500Mi"
+```
+
+Apply:
+
+```bash
+kubectl apply -f checkout-api.yaml
+```
+
+---
+
+## 2. Alternative Solution - Fix with Command
+
+```bash
+kubectl -n payments-prod set resources deploy/checkout-api \
+  --requests=cpu=100m,memory=300Mi \
+  --limits=cpu=200m,memory=500Mi
+```
+
+---
+
+## 3. Explanation
+
+* **Requests** = minimum guaranteed resources per Pod
+
+  * CPU: `100m` (\~0.1 vCPU)
+  * Memory: `300Mi` (\~300 MB)
+* **Limits** = maximum Pod can use
+
+  * CPU: `200m`
+  * Memory: `500Mi`
+
+With **3 replicas**:
+
+* Total requests = **300m CPU, 900Mi memory** (under quota `600m`, `1536Mi`)
+* Total limits = **600m CPU, 1500Mi memory** (under quota `1 CPU`, `3Gi`)
+
+✅ Fits within the ResourceQuota → Pods will be admitted and run.
+
 

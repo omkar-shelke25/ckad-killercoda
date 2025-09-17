@@ -25,20 +25,8 @@ You need to set up a production-ready nginx web service for **Project One** with
 
 <details><summary>📋 Complete Solution (Click to expand)</summary>
 
-### Method 1: Using kubectl run (Recommended for CKAD exam)
 
-```bash
-# Step 1: Create the namespace
-kubectl create namespace project-one
-
-# Step 2: Create pod with resource requests
-kubectl run nginx-resources \
-  --image=nginx \
-  --requests=cpu=200m,memory=1Gi \
-  --namespace=project-one
-```
-
-### Method 2: Using YAML Manifest (Production approach)
+### Method 1: Using YAML Manifest (Production approach)
 
 ```bash
 # Step 1: Create the namespace

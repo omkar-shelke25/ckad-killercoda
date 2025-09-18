@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Build, Save & Deploy with Podman",
+  "description": "Master container lifecycle management: Build custom images, save in OCI format, transfer between nodes, and monitor running containers using Podman.",
+  "details": {
+    "steps": [
+      {
+        "title": "Build and Deploy BlackHole Monitoring Container",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

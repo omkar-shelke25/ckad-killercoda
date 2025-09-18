@@ -33,7 +33,7 @@ You need to build, save, transfer, and deploy the BlackHole Wave Monitoring cont
 - Use OCI-compliant format
 
 ### 📦 **Phase 3: Transfer to Node01**
-- Copy the tar file into node01 (`use scp command`)
+- Copy the tar file into `node01:/tmp` (`use scp command`)
 - Maintain file integrity during transfer
 
 ### 🚀 **Phase 4: Deploy on Node01**

@@ -44,7 +44,7 @@ You need to build, save, transfer, and deploy the BlackHole Wave Monitoring cont
 ### 📊 **Phase 5: Monitor and Verify**
 - Check container logs
 - Confirm monitoring script is running
-- Verify maintainer information appears
+
 
 ---
 

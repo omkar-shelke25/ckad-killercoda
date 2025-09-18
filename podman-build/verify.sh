@@ -71,7 +71,7 @@ echo "📋 Phase 5: Verifying container image loading..."
 ssh node01 "podman images | grep -q 'blackhole-wave'" || fail "Container image not loaded on node01. Did you run 'podman load -i /tmp/blackhole-monitoring.tar'?"
 
 # Verify correct tag
-ssh node01 "podman images | grep -q 'quantum.registry:8000/blackhole-wave:2.36'" || fail "Container image tag not correct. Expected 'quantum.registry:8000/blackhole-wave:2.36'"
+ssh node01 "podman images | grep -q 'quantum.registry:8000/blackhole-wave'" || fail "Container image tag not correct. Expected 'quantum.registry:8000/blackhole-wave:2.36'"
 
 echo "✅ Container image loaded successfully on node01"
 

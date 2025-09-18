@@ -37,8 +37,7 @@ You need to build, save, transfer, and deploy the BlackHole Wave Monitoring cont
 - Maintain file integrity during transfer
 
 ### 🚀 **Phase 4: Deploy on node01**
-- Copy `blackhole-monitoring.tar` 
-- Load the container image
+- Load the OCI container image on node01 from `blackhole-monitoring.tar`
 - Run container with name: `blackhole-monitoring`
 - Verify container is operational
 

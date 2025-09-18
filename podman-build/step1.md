@@ -23,7 +23,7 @@ You need to build, save, transfer, and deploy the BlackHole Wave Monitoring cont
 ## 📋 **Mission Requirements**
 
 ### 🏗️ **Phase 1: Build Container Image**
-- Build image from the provided Dockerfile
+- Build image from the provided `blackhole-project/Dockerfile`
 - Tag as: `quantum.registry:8000/blackhole-wave:2.36`
 - Verify image creation
 
@@ -33,7 +33,7 @@ You need to build, save, transfer, and deploy the BlackHole Wave Monitoring cont
 - Use OCI-compliant format
 
 ### 📦 **Phase 3: Transfer to Node01**
-- Copy the tar file into `node01:/tmp` (`use scp command`)
+- Copy the tar file into `node01:/tmp/` (`use scp command`)
 - Maintain file integrity during transfer
 
 ### 🚀 **Phase 4: Deploy on Node01**

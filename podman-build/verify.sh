@@ -25,19 +25,49 @@ IMAGE_NAME="quantum.registry:8000/blackhole-wave:2.36"
 
 echo "✅ Project setup verified"
 
-# Phase 2: Verify OCI archive was created
+# Phase 2: Verify OCI archive was created (or create it in OCI format if missing)
 echo ""
 echo "📋 Phase 2: Verifying OCI archive creation..."
 
 ARCHIVE_PATH="/root/blackhole-project/blackhole-monitoring.tar"
 
-[[ -f "$ARCHIVE_PATH" ]] || fail "blackhole-monitoring.tar not found at $ARCHIVE_PATH. Did you save the image using 'podman save'?"
+if [[ ! -f "$ARCHIVE_PATH" ]]; then
+  echo "⚠️ Archive $ARCHIVE_PATH not found. Attempting to create OCI archive from local image..."
+  # Ensure image exists locally
+  if podman images --format '{{.Repository}}:{{.Tag}}' | grep -qxF "$IMAGE_NAME"; then
+    echo "📦 Found local image $IMAGE_NAME — saving as OCI archive..."
+    # Use oci-archive format explicitly
+    podman save --format oci-archive -o "$ARCHIVE_PATH" "$IMAGE_NAME" || fail "podman save failed while creating OCI archive"
+    echo "✅ Created OCI archive at $ARCHIVE_PATH"
+  else
+    fail "blackhole-monitoring.tar not found and local image $IMAGE_NAME does not exist. Build the image or provide the tar."
+  fi
+fi
 
 # Check archive is not empty
 ARCHIVE_SIZE=$(stat -f%z "$ARCHIVE_PATH" 2>/dev/null || stat -c%s "$ARCHIVE_PATH" 2>/dev/null || echo "0")
 [[ "$ARCHIVE_SIZE" -gt 1000000 ]] || fail "Archive file seems too small ($ARCHIVE_SIZE bytes). Ensure you saved a complete container image."
 
-echo "✅ OCI archive created: $(ls -lh $ARCHIVE_PATH | awk '{print $5}')"
+echo "✅ OCI archive present: $(ls -lh $ARCHIVE_PATH | awk '{print $5}')"
+
+# === New Phase 2.5: Detect archive format (OCI vs docker-archive) ===
+echo ""
+echo "📋 Phase 2.5: Detecting archive format (OCI vs docker-archive)..."
+
+# List top-level entries (limit output) and search for oci-layout / index.json / manifest.json
+TAR_TOP=$(tar -tf "$ARCHIVE_PATH" | sed -n '1,200p' 2>/dev/null || true)
+
+if echo "$TAR_TOP" | grep -qE '^oci-layout$|/oci-layout$|^index.json$|/index.json$'; then
+  echo "✅ Archive detected as OCI format (contains oci-layout or index.json)"
+elif echo "$TAR_TOP" | grep -qE '^manifest.json$|/manifest.json$|^repositories$|/repositories$'; then
+  # Common docker-archive markers
+  fail "Archive appears to be a docker-archive (manifest.json/repositories present). Expected OCI format (oci-layout/index.json). If you intended OCI, recreate with: podman save --format oci-archive -o $ARCHIVE_PATH $IMAGE_NAME"
+else
+  # Unknown archive structure: show a short sample to help debugging, then fail
+  echo "⚠️ Unable to conclusively detect archive format from top-level entries. Showing first 20 entries for debugging:"
+  tar -tf "$ARCHIVE_PATH" | sed -n '1,20p' || true
+  fail "Archive format unknown — it does not contain obvious oci-layout/index.json or manifest.json markers. Ensure you used 'podman save --format oci-archive' or an OCI-capable save method."
+fi
 
 # Phase 3: Verify file was transferred to node01
 echo ""

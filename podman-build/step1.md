@@ -36,7 +36,7 @@ You need to build, save, transfer, and deploy the BlackHole Wave Monitoring cont
 - Copy the tar file into `node01:/tmp/` (`use scp command`)
 - Maintain file integrity during transfer
 
-### 🚀 **Phase 4: Deploy on Node01**
+### 🚀 **Phase 4: Deploy on node01**
 - Copy `blackhole-monitoring.tar` 
 - Load the container image
 - Run container with name: `blackhole-monitoring`

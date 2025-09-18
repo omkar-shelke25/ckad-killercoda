@@ -86,7 +86,7 @@ podman images | grep blackhole-wave
 
 Save the image as a tar archive:
 ```bash
-podman save -o blackhole-monitoring.tar quantum.registry:8000/blackhole-wave:2.36
+podman save --format oci-archive -o blackhole-monitoring.tar quantum.registry:8000/blackhole-wave:2.36
 ```
 
 Verify the archive was created:

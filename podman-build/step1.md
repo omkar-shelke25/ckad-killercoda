@@ -203,30 +203,3 @@ Your deployment is successful when:
 
 </details>
 
----
-
-## 🎯 **Mission Commands Summary**
-
-```bash
-# 1. Build image
-podman build -t quantum.registry:8000/blackhole-wave:2.36 .
-
-# 2. Save as OCI archive  
-podman save -o blackhole-monitoring.tar quantum.registry:8000/blackhole-wave:2.36
-
-# 3. Transfer to node01
-scp blackhole-monitoring.tar node01:/tmp/
-
-# 4. Load and run on node01
-ssh node01 "podman load -i /tmp/blackhole-monitoring.tar"
-ssh node01 "podman run -d --name blackhole-monitoring quantum.registry:8000/blackhole-wave:2.36"
-
-# 5. Verify deployment
-ssh node01 "podman logs blackhole-monitoring"
-```
-
----
-
-## 🌟 **Ready to Launch the BlackHole Monitoring System?**
-
-The Quantum Space Observatory is waiting for your successful deployment! 🚀

@@ -18,7 +18,6 @@ Create a **CronJob** named **`database-backup`** in the `production` namespace t
 - Backup pods must never restart (restartPolicy: Never).
 - Keep only the last 3 successful runs and 1 failed run in history.
 
-
 ## Try it yourself first!
 
 <details><summary>✅ Solution (expand to view)</summary>

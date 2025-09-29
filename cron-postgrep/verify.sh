@@ -21,9 +21,22 @@ SCHED="$(kubectl -n "$NS" get cj "$CJ" -o jsonpath='{.spec.schedule}')"
 IMG="$(kubectl -n "$NS" get cj "$CJ" -o jsonpath='{.spec.jobTemplate.spec.template.spec.containers[0].image}')"
 [[ "$IMG" == "postgres:13-alpine" ]] || fail "Image must be postgres:13-alpine (found: $IMG)."
 
-# Command check
-CMD="$(kubectl -n "$NS" get cj "$CJ" -o jsonpath='{.spec.jobTemplate.spec.template.spec.containers[0].command}')"
-echo "$CMD" | grep -q "Starting DB backup" || fail "Command must simulate DB backup (echo 'Starting DB backup...')."
+# Command check (array-safe + strict command string)
+C0="$(kubectl -n "$NS" get cj "$CJ" -o jsonpath='{.spec.jobTemplate.spec.template.spec.containers[0].command[0]}')"
+C1="$(kubectl -n "$NS" get cj "$CJ" -o jsonpath='{.spec.jobTemplate.spec.template.spec.containers[0].command[1]}')"
+C2="$(kubectl -n "$NS" get cj "$CJ" -o jsonpath='{.spec.jobTemplate.spec.template.spec.containers[0].command[2]}')"
+
+# Accept either /bin/sh or /bin/bash
+if [[ "$C0" != "/bin/sh" && "$C0" != "/bin/bash" ]]; then
+  fail "Command[0] must be /bin/sh or /bin/bash (found: $C0)."
+fi
+
+[[ "$C1" == "-c" ]] || fail "Command[1] must be -c (found: $C1)."
+
+EXPECTED_CMD='echo '\''Starting DB backup...'\'' && sleep 10 && echo "Backup complete at $(date)"'
+[[ "$C2" == "$EXPECTED_CMD" ]] || fail "Command[2] mismatch.
+Expected: $EXPECTED_CMD
+Found:    $C2"
 
 # ConcurrencyPolicy check
 CONC="$(kubectl -n "$NS" get cj "$CJ" -o jsonpath='{.spec.concurrencyPolicy}')"

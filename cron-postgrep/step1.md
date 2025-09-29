@@ -10,7 +10,7 @@ Create a **CronJob** named **`database-backup`** in the `production` namespace t
 - Simulates a backup by running:
   
   ```bash
-    /bin/bash -c "echo 'Starting DB backup...' && sleep 10 && echo 'Backup complete at \$(date)'"
+    /bin/bash -c echo 'Starting DB backup...' && sleep 10 && echo "Backup complete at $(date)"
   ```
   
 - Ensures no overlapping backups (concurrencyPolicy: Forbid).

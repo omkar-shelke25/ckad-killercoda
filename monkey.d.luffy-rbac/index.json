@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Configure RBAC for Deployment ServiceAccount",
+  "description": "Configure ServiceAccount, Role, and RoleBinding for Deployments to list other Deployments in their namespace. Fix RBAC permission errors.",
+  "details": {
+    "steps": [
+      {
+        "title": "Configure RBAC for monkey.d.luffy and crew-monitor Deployments",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

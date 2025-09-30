@@ -2,18 +2,6 @@
 
 The Straw Hat Pirates need their monitoring systems to access deployment information. Currently, both **monkey.d.luffy** and **crew-monitor** deployments in the **one-piece** namespace are showing RBAC errors in their logs.
 
-## 🔍 Check the Current State
-
-First, let's see the RBAC errors happening:
-
-```bash
-# Check monkey.d.luffy logs - you'll see permission denied errors
-kubectl logs deployment/monkey.d.luffy -n one-piece --tail=10
-
-# Check crew-monitor logs - you'll see errors from ServiceAccount 'nami-navigator'
-kubectl logs deployment/crew-monitor -n one-piece --tail=10
-```
-
 You should see errors like:
 ```
 Error from server (Forbidden): deployments.apps is forbidden: User "system:serviceaccount:one-piece:default" cannot list resource "deployments"
@@ -117,11 +105,3 @@ kubectl logs deployment/crew-monitor -n one-piece --tail=20 -f
 
 ---
 
-### Hints
-
-- Use `kubectl create serviceaccount` to create ServiceAccounts
-- Use `kubectl create role` with `--verb` and `--resource` flags
-- Use `kubectl create rolebinding` with `--role` and `--serviceaccount` flags
-- ServiceAccount reference format is `namespace:serviceaccount-name`
-- Use `kubectl logs -f deployment/<name> -n one-piece` to watch logs in real-time
-- The **crew-monitor** deployment already has the ServiceAccount configured, you just need to create the Role and RoleBinding!

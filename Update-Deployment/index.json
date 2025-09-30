@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Update Deployment image and container name in-place without recreating the Deployment object",
+  "description": "Update an existing Deployment's container image and name without recreating the Deployment object.",
+  "details": {
+    "steps": [
+      {
+        "title": "Update image and container name on existing Deployment",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

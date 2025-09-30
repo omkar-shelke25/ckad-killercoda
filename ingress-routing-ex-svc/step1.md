@@ -14,35 +14,6 @@ The Ingress resource named **api-ingress** is configured to route traffic to a S
 
 ---
 
-## 🔍 Check Current State
-
-```bash
-# Check the Ingress configuration
-kubectl -n exam-app get ingress api-ingress
-kubectl -n exam-app describe ingress api-ingress
-
-# Check if the Service exists (it shouldn't)
-kubectl -n exam-app get svc external-api
-
-# Get the Ingress access URL
-cat /tmp/ingress_url.txt
-
-# Try accessing the Ingress (will return 404)
-INGRESS_URL=$(cat /tmp/ingress_url.txt)
-curl -i $INGRESS_URL
-```
-
----
-
-## 💡 Tips
-
-- ExternalName Services don't have selectors or endpoints - they map to an external DNS name
-- ExternalName Services don't need a port definition in the same way ClusterIP services do
-- The Service name must match what the Ingress expects: `external-api`
-- You can use `kubectl create service externalname` or write YAML
-
----
-
 # Try it yourself first!
 
 <details><summary>✅ Solution For Your Reference</summary>

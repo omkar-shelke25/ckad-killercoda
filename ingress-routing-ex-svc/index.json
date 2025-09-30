@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Fix Ingress 404 with ExternalName Service",
+  "description": "Create an ExternalName Service to fix a broken Ingress routing to an external API.",
+  "details": {
+    "steps": [
+      {
+        "title": "Create ExternalName Service to fix Ingress routing",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

@@ -12,6 +12,7 @@ The Ingress resource named **api-ingress** is configured to route traffic to a S
 2. Ensure the Ingress is able to forward traffic correctly to the external backend via this Service.
 3. Verify that accessing the Ingress no longer returns a **404 error**.
 
+>  cat /tmp/ingress_url.txt   # Get the Ingress access URL
 ---
 
 # Try it yourself first!

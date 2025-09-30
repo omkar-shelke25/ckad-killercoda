@@ -1,5 +1,5 @@
 {
-  "title": "Fix RBAC permission errors for Deployment ServiceAccount",
+  "title": "CKAD: Fix RBAC permission errors for Deployment ServiceAccount",
   "description": "Configure ServiceAccount, Role, and RoleBinding for Deployments to list other Deployments in their namespace. Fix RBAC permission errors.",
   "details": {
     "steps": [

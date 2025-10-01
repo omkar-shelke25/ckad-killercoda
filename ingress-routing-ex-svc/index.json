@@ -1,5 +1,5 @@
 {
-  "title": "CKAD: Fix Ingress 404 with ExternalName Service",
+  "title": "CKAD: Fix Ingress 503 with ExternalName Service",
   "description": "Create an ExternalName Service to fix a broken Ingress routing to an external API.",
   "details": {
     "steps": [

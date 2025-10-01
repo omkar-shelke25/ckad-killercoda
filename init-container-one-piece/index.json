@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Deploy Nginx with ConfigMap and InitContainer - One Piece Edition",
+  "description": "Deploy an Nginx application serving custom One Piece Strawhat crew HTML using ConfigMap and InitContainer",
+  "details": {
+    "steps": [
+      {
+        "title": "Deploy Strawhat Crew Website with ConfigMap and InitContainer",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

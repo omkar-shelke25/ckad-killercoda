@@ -8,6 +8,8 @@ In the `one-piece` namespace, deploy an Nginx application serving custom Strawha
 2. **Create Deployment** named `strawhat-deploy`:
    - **Replicas**: 1
    - **Container** `strawhat-nginx`: `public.ecr.aws/nginx/nginx:latest`
+   -  Define the **Deployment selector** as `app=strawhat`
+   -  By default, use nginx’s port.
    - **InitContainer** `init-copy`: `public.ecr.aws/docker/library/busybox:latest`
      - Copies `index.html` from ConfigMap to `/usr/share/nginx/html/`
 3. **Create Service** named `strawhat-svc`:

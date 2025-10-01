@@ -6,7 +6,7 @@ You successfully fixed the Ingress routing issue by creating an **ExternalName S
 
 ✅ **Created ExternalName Service**: The Service acts as a DNS alias for the external endpoint
 
-✅ **Fixed 404 Errors**: The Ingress can now successfully route traffic to the external API
+✅ **Fixed 503 Errors**: The Ingress can now successfully route traffic to the external API
 
 ✅ **Verified Connectivity**: HTTP requests through the Ingress return 200 OK responses
 

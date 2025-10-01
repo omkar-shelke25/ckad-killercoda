@@ -6,15 +6,15 @@ echo "Preparing One Piece lab environment..."
 # Create the one-piece directory
 mkdir -p /one-piece
 
-# Create the index.html file with One Piece terminal theme content
-cat > /one-piece/index.html << 'HTMLEOF'
-
-
-
-    
-    
-    One Piece Terminal - Straw Hat Pirates Database
-    
+# Write the exact HTML (verbatim) using a single-quoted heredoc
+cat > /one-piece/index.html <<'HTMLEOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Piece Terminal - Straw Hat Pirates Database</title>
+    <style>
         * {
             margin: 0;
             padding: 0;
@@ -173,155 +173,168 @@ cat > /one-piece/index.html << 'HTMLEOF'
         .devil-fruit {
             color: #ff1493;
         }
-    
-
-
-    
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="terminal-header">
+            <span class="terminal-button btn-red"></span>
+            <span class="terminal-button btn-yellow"></span>
+            <span class="terminal-button btn-green"></span>
+            <span class="terminal-title">terminal@straw-hat-pirates</span>
+        </div>
         
-            
-            
-            
-            terminal@straw-hat-pirates
-        
-        
-        
-            
+        <div class="terminal-body">
+            <div class="ascii-art">
     ____  _   _ _____   ____  ___ _____ ____ _____ 
    / __ \| \ | | ____| |  _ \|_ _| ____/ ___| ____|
   | |  | |  \| |  _|   | |_) || ||  _|| |   |  _|  
   | |__| | |\  | |___  |  __/ | || |__| |___| |___ 
    \____/|_| \_|_____| |_|   |___|_____\____|_____|
-            
+            </div>
 
-            cat straw_hat_crew.db
+            <div class="prompt">cat straw_hat_crew.db</div>
             
-            
-                Loading Straw Hat Pirates Database...
-                Access Granted: Marine Intelligence Level 5
-                ========================================
-            
+            <div class="output">
+                <p class="value">Loading Straw Hat Pirates Database...</p>
+                <p class="value">Access Granted: Marine Intelligence Level 5</p>
+                <p class="value">========================================</p>
+            </div>
 
-            >> CREW OVERVIEW
-            
-                Ship: Thousand Sunny
-                Total Members: 10
-                Total Bounty: 8,816,001,000 Berries
-                Status: Active - Yonko Crew
-            
+            <div class="section-title">&gt;&gt; CREW OVERVIEW</div>
+            <div class="output">
+                <p class="info-line"><span class="label">Ship:</span> <span class="value">Thousand Sunny</span></p>
+                <p class="info-line"><span class="label">Total Members:</span> <span class="value">10</span></p>
+                <p class="info-line"><span class="label">Total Bounty:</span> <span class="bounty">8,816,001,000 Berries</span></p>
+                <p class="info-line"><span class="label">Status:</span> <span class="value">Active - Yonko Crew</span></p>
+            </div>
 
-            >> CREW MEMBERS DATA
+            <div class="section-title">&gt;&gt; CREW MEMBERS DATA</div>
 
-            
-                [ 01 ] MONKEY D. LUFFY
-                Position: Captain
-                Age: 19
-                Bounty: 3,000,000,000 Berries
-                Devil Fruit: Gomu Gomu no Mi (Hito Hito no Mi, Model: Nika)
-                Abilities: Gear 5, Advanced Haki (All Three Types), Rubber Body
-                Dream: Become King of the Pirates
-            
+            <div class="character-card">
+                <div class="character-name">[ 01 ] MONKEY D. LUFFY</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Captain</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">19</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">3,000,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Devil Fruit:</span> <span class="devil-fruit">Gomu Gomu no Mi (Hito Hito no Mi, Model: Nika)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Gear 5, Advanced Haki (All Three Types), Rubber Body</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Become King of the Pirates</span></p>
+            </div>
 
-            
-                [ 02 ] RORONOA ZORO
-                Position: Swordsman / First Mate
-                Age: 21
-                Bounty: 1,111,000,000 Berries
-                Fighting Style: Three-Sword Style (Santoryu)
-                Abilities: Advanced Conqueror's Haki, Enma Mastery
-                Dream: Become the World's Greatest Swordsman
-            
+            <div class="character-card">
+                <div class="character-name">[ 02 ] RORONOA ZORO</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Swordsman / First Mate</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">21</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">1,111,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Fighting Style:</span> <span class="value">Three-Sword Style (Santoryu)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Advanced Conqueror's Haki, Enma Mastery</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Become the World's Greatest Swordsman</span></p>
+            </div>
 
-            
-                [ 03 ] NAMI
-                Position: Navigator
-                Age: 20
-                Bounty: 366,000,000 Berries
-                Weapon: Clima-Tact (Weather Manipulation)
-                Abilities: Master Navigator, Weather Prediction, Zeus Control
-                Dream: Draw a Complete Map of the World
-            
+            <div class="character-card">
+                <div class="character-name">[ 03 ] NAMI</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Navigator</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">20</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">366,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Weapon:</span> <span class="value">Clima-Tact (Weather Manipulation)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Master Navigator, Weather Prediction, Zeus Control</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Draw a Complete Map of the World</span></p>
+            </div>
 
-            
-                [ 04 ] USOPP
-                Position: Sniper
-                Age: 19
-                Bounty: 500,000,000 Berries
-                Weapon: Kabuto (Slingshot)
-                Abilities: Observation Haki, Expert Marksman, Inventor
-                Dream: Become a Brave Warrior of the Sea
-            
+            <div class="character-card">
+                <div class="character-name">[ 04 ] USOPP</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Sniper</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">19</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">500,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Weapon:</span> <span class="value">Kabuto (Slingshot)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Observation Haki, Expert Marksman, Inventor</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Become a Brave Warrior of the Sea</span></p>
+            </div>
 
-            
-                [ 05 ] SANJI
-                Position: Cook
-                Age: 21
-                Bounty: 1,032,000,000 Berries
-                Fighting Style: Black Leg Style (Kicks)
-                Abilities: Ifrit Jambe, Germa Exoskeleton, Observation Haki
-                Dream: Find the All Blue
-            
+            <div class="character-card">
+                <div class="character-name">[ 05 ] SANJI</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Cook</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">21</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">1,032,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Fighting Style:</span> <span class="value">Black Leg Style (Kicks)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Ifrit Jambe, Germa Exoskeleton, Observation Haki</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Find the All Blue</span></p>
+            </div>
 
-            
-                [ 06 ] TONY TONY CHOPPER
-                Position: Doctor
-                Age: 17
-                Bounty: 1,000 Berries
-                Devil Fruit: Hito Hito no Mi (Human-Human Fruit)
-                Abilities: Monster Point, Rumble Ball, Medical Expertise
-                Dream: Cure All Diseases
-            
+            <div class="character-card">
+                <div class="character-name">[ 06 ] TONY TONY CHOPPER</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Doctor</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">17</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">1,000 Berries</span></p>
+                <p class="info-line"><span class="label">Devil Fruit:</span> <span class="devil-fruit">Hito Hito no Mi (Human-Human Fruit)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Monster Point, Rumble Ball, Medical Expertise</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Cure All Diseases</span></p>
+            </div>
 
-            
-                [ 07 ] NICO ROBIN
-                Position: Archaeologist
-                Age: 30
-                Bounty: 930,000,000 Berries
-                Devil Fruit: Hana Hana no Mi (Flower-Flower Fruit)
-                Abilities: Demonio Fleur, Poneglyph Reading, Armament Haki
-                Dream: Uncover the True History
-            
+            <div class="character-card">
+                <div class="character-name">[ 07 ] NICO ROBIN</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Archaeologist</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">30</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">930,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Devil Fruit:</span> <span class="devil-fruit">Hana Hana no Mi (Flower-Flower Fruit)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Demonio Fleur, Poneglyph Reading, Armament Haki</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Uncover the True History</span></p>
+            </div>
 
-            
-                [ 08 ] FRANKY
-                Position: Shipwright
-                Age: 36
-                Bounty: 394,000,000 Berries
-                Type: Cyborg
-                Abilities: Franky Shogun, Radical Beam, Vegapunk Technology
-                Dream: Build a Dream Ship and Sail it to the End
-            
+            <div class="character-card">
+                <div class="character-name">[ 08 ] FRANKY</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Shipwright</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">36</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">394,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Type:</span> <span class="value">Cyborg</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Franky Shogun, Radical Beam, Vegapunk Technology</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Build a Dream Ship and Sail it to the End</span></p>
+            </div>
 
-            
-                [ 09 ] BROOK
-                Position: Musician
-                Age: 90
-                Bounty: 383,000,000 Berries
-                Devil Fruit: Yomi Yomi no Mi (Revive-Revive Fruit)
-                Abilities: Soul Manipulation, Ice Powers, Master Swordsman
-                Dream: Reunite with Laboon
-            
+            <div class="character-card">
+                <div class="character-name">[ 09 ] BROOK</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Musician</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">90</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">383,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Devil Fruit:</span> <span class="devil-fruit">Yomi Yomi no Mi (Revive-Revive Fruit)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Soul Manipulation, Ice Powers, Master Swordsman</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Reunite with Laboon</span></p>
+            </div>
 
-            
-                [ 10 ] JINBE
-                Position: Helmsman
-                Age: 46
-                Bounty: 1,100,000,000 Berries
-                Species: Fish-Man (Whale Shark)
-                Abilities: Fish-Man Karate, Advanced Armament Haki, Water Manipulation
-                Dream: Achieve Equality Between Races
-            
+            <div class="character-card">
+                <div class="character-name">[ 10 ] JINBE</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Helmsman</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">46</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">1,100,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Species:</span> <span class="value">Fish-Man (Whale Shark)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Fish-Man Karate, Advanced Armament Haki, Water Manipulation</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Achieve Equality Between Races</span></p>
+            </div>
 
-            
-                ========================================
-                End of Database Query
-                Note: These Pirates are extremely dangerous!
-            
+            <div class="output" style="margin-top: 30px;">
+                <p class="value">========================================</p>
+                <p class="value">End of Database Query</p>
+                <p class="label">Note: These Pirates are extremely dangerous!</p>
+            </div>
 
-            
-                
-            
-        
-    
-
-
+            <div class="command-input">
+                <span class="cursor"></span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
 HTMLEOF
+
+# Permissions (optional but nice)
+chmod 644 /one-piece/index.html
+
+# Create the namespace if it doesn't exist
+kubectl create namespace one-piece 2>/dev/null || true
+
+# Quick sanity check
+echo "Setup complete."
+echo "Saved: /one-piece/index.html"
+echo "Title check:" && grep -m1 -o 'One Piece Terminal - Straw Hat Pirates Database' /one-piece/index.html || true
+echo "Namespace 'one-piece' ensured."
+ls -lh /one-piece/index.html

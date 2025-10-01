@@ -11,9 +11,10 @@ In the `one-piece` namespace, deploy an Nginx application serving custom Strawha
    - **InitContainer** `init-copy`: `public.ecr.aws/docker/library/busybox:latest`
      - Copies `index.html` from ConfigMap to `/usr/share/nginx/html/`
 3. **Create Service** named `strawhat-svc`:
-   - Type: **NodePort**
-   - Port: **80**
-   - NodePort: **32100**
+   - Type: `NodePort`
+   - Port: `80`
+   - NodePort: `32100`
+   - Service selector `app=strawhat` (matches .spec.selector.app).
 4. From the terminal navigation (top right), select the item. The service should be accessible on port 32100. Verify that the `index.html` page is displayed.
    
    ![One Piece terminal screenshot](https://github.com/user-attachments/assets/56ec5f6a-e274-4494-8cc4-9b038073e77e)

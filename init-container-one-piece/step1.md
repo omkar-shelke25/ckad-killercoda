@@ -17,10 +17,7 @@ In the `one-piece` namespace, deploy an Nginx application serving custom Strawha
 
 ---
 
-## ✅ Solution
-
-
-Click for solution
+<details><summary>✅ Solution (expand to view)</summary>
 
 ```bash
 # 1. Create ConfigMap from file

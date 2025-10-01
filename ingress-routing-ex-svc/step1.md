@@ -1,6 +1,6 @@
 # CKAD: Fix Ingress Routing with ExternalName Service
 
-A cloud-native startup has deployed an **Ingress** in the `exam-app` namespace to route API traffic to an external service. However, users are currently experiencing **404 errors** when accessing the API endpoint because the backend Service was never created.
+A cloud-native startup has deployed an **Ingress** in the `exam-app` namespace to route API traffic to an external service. However, users are currently experiencing **503 errors** when accessing the API endpoint because the backend Service was never created.
 
 The Ingress resource named **api-ingress** is configured to route traffic to a Service named `external-api`, but this Service does not exist yet.
 
@@ -10,7 +10,7 @@ The Ingress resource named **api-ingress** is configured to route traffic to a S
    - The Service type must be **ExternalName**.
    - It should point to the DNS hostname: `httpbin.org`.
 2. Ensure the Ingress is able to forward traffic correctly to the external backend via this Service.
-3. Verify that accessing the Ingress no longer returns a **404 error**.
+3. Verify that accessing the Ingress no longer returns a **503 error**.
 4. Ingress URL stored in `cat /tmp/ingress_url.txt`
 
 ---
@@ -49,7 +49,7 @@ curl -i ${INGRESS_URL}get
 
 **Expected behavior after creating the Service**:
 - The Ingress will successfully route traffic to httpbin.org
-- You'll receive a 200 OK response instead of 404
+- You'll receive a 200 OK response instead of 503
 - The response body will contain JSON data from httpbin.org
 
 </details>

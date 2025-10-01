@@ -13,6 +13,7 @@ The Ingress resource named **api-ingress** is configured to route traffic to a S
 3. Verify that accessing the Ingress no longer returns a **503 error**.
 4. Ingress URL stored in `cat /tmp/ingress_url.txt`
 
+> Wait 1–2 minutes for setup, then check the ingress URL with `cat /tmp/ingress_url.txt`
 ---
 
 # Try it yourself first!

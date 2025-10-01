@@ -1,86 +1,340 @@
 #!/bin/bash
 set -euo pipefail
 
-NS="one-piece"
-CM="strawhat-cm"
-DEP="strawhat-deploy"
-SVC="strawhat-svc"
-EXPECT_REPLICAS="1"
-EXPECT_NODEPORT="32100"
-EXPECT_IMAGE="public.ecr.aws/nginx/nginx:latest"
-EXPECT_INIT_IMAGE="public.ecr.aws/docker/library/busybox:latest"
+echo "Preparing One Piece lab environment..."
 
-pass(){ echo "✅ $1"; }
-fail(){ echo "❌ $1"; exit 1; }
+# Create the one-piece directory
+mkdir -p /one-piece
 
-# 1) Namespace exists
-kubectl get namespace "$NS" >/dev/null 2>&1 || fail "Namespace '$NS' not found."
+# Write the exact HTML (verbatim) using a single-quoted heredoc
+cat > /one-piece/index.html <<'HTMLEOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Piece Terminal - Straw Hat Pirates Database</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-# 2) ConfigMap exists and has index.html (case-insensitive title check)
-kubectl -n "$NS" get configmap "$CM" >/dev/null 2>&1 || fail "ConfigMap '$CM' not found in namespace '$NS'."
-CM_HTML="$(kubectl -n "$NS" get configmap "$CM" -o jsonpath='{.data.index\.html}' || true)"
-[[ -n "${CM_HTML}" ]] || fail "ConfigMap '$CM' has no 'index.html' key."
-echo "$CM_HTML" | grep -qi "One Piece Terminal - Straw Hat Pirates Database" \
-  || fail "ConfigMap '$CM' index.html missing expected title text."
+        body {
+            background: #0a0e27;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            line-height: 1.6;
+        }
 
-pass "ConfigMap '$CM' contains index.html with expected title."
+        .terminal {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #000;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+            overflow: hidden;
+        }
 
-# 3) Deployment exists
-kubectl -n "$NS" get deploy "$DEP" >/dev/null 2>&1 || fail "Deployment '$DEP' not found in namespace '$NS'."
+        .terminal-header {
+            background: #1a1a1a;
+            padding: 10px 15px;
+            border-bottom: 2px solid #00ff00;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-# 4) Check replicas
-REPLICAS="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.replicas}')"
-[[ "$REPLICAS" == "$EXPECT_REPLICAS" ]] || fail "Expected replicas=$EXPECT_REPLICAS but found '${REPLICAS:-<none>}.'"
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
 
-# 5) Check main container
-CONTAINER_NAME="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].name}')"
-[[ "$CONTAINER_NAME" == "strawhat-nginx" ]] || fail "Expected container name 'strawhat-nginx' but found '$CONTAINER_NAME'."
+        .btn-red { background: #ff5f56; }
+        .btn-yellow { background: #ffbd2e; }
+        .btn-green { background: #27c93f; }
 
-IMG="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].image}')"
-[[ "$IMG" == "$EXPECT_IMAGE" ]] || fail "Expected image '$EXPECT_IMAGE' but found '$IMG'."
+        .terminal-title {
+            margin-left: 10px;
+            color: #00ff00;
+            font-size: 14px;
+        }
 
-# 6) Check initContainer
-INIT_NAME="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.initContainers[0].name}')"
-[[ "$INIT_NAME" == "init-copy" ]] || fail "Expected initContainer name 'init-copy' but found '$INIT_NAME'."
+        .terminal-body {
+            padding: 20px;
+            min-height: 500px;
+        }
 
-INIT_IMG="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.initContainers[0].image}')"
-[[ "$INIT_IMG" == "$EXPECT_INIT_IMAGE" ]] || fail "Expected initContainer image '$EXPECT_INIT_IMAGE' but found '$INIT_IMG'."
+        .prompt {
+            color: #00ff00;
+            margin-bottom: 15px;
+        }
 
-# 7) Check volumes
-CONFIG_VOL="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.volumes[?(@.configMap.name=="'"$CM"'")].name}')"
-[[ -n "$CONFIG_VOL" ]] || fail "ConfigMap volume referencing '$CM' not found in deployment."
+        .prompt::before {
+            content: "root@onepiece:~$ ";
+            color: #00ffff;
+        }
 
-EMPTY_VOL="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.volumes[?(@.emptyDir)].name}')"
-[[ -n "$EMPTY_VOL" ]] || fail "emptyDir volume not found in deployment."
+        .output {
+            margin-bottom: 20px;
+            animation: typewriter 0.5s steps(40);
+        }
 
-# 8) Deployment should be ready
-kubectl -n "$NS" rollout status "deploy/$DEP" --timeout=120s >/dev/null 2>&1 \
-  || fail "Deployment '$DEP' did not become Ready in time."
+        @keyframes typewriter {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
-READY="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.status.readyReplicas}')"
-[[ "$READY" == "$EXPECT_REPLICAS" ]] || fail "Expected $EXPECT_REPLICAS ready replicas but found '${READY:-0}'."
+        .ascii-art {
+            color: #ffa500;
+            font-size: 10px;
+            line-height: 1.2;
+            margin: 20px 0;
+            white-space: pre;
+        }
 
-# 9) Service exists and is NodePort
-kubectl -n "$NS" get service "$SVC" >/dev/null 2>&1 || fail "Service '$SVC' not found in namespace '$NS'."
+        .character-card {
+            border: 1px solid #00ff00;
+            padding: 15px;
+            margin: 15px 0;
+            background: #0a0a0a;
+            transition: all 0.3s;
+        }
 
-SVC_TYPE="$(kubectl -n "$NS" get service "$SVC" -o jsonpath='{.spec.type}')"
-[[ "$SVC_TYPE" == "NodePort" ]] || fail "Expected service type 'NodePort' but found '$SVC_TYPE'."
+        .character-card:hover {
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            transform: translateX(10px);
+        }
 
-# 10) Check NodePort
-NODEPORT="$(kubectl -n "$NS" get service "$SVC" -o jsonpath='{.spec.ports[0].nodePort}')"
-[[ "$NODEPORT" == "$EXPECT_NODEPORT" ]] || fail "Expected NodePort=$EXPECT_NODEPORT but found '${NODEPORT:-<none>}.'"
+        .character-name {
+            color: #ffff00;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-decoration: underline;
+        }
 
-# 11) Check service selector
-SELECTOR="$(kubectl -n "$NS" get service "$SVC" -o jsonpath='{.spec.selector.app}')"
-[[ "$SELECTOR" == "strawhat" ]] || fail "Expected service selector 'app=strawhat' but found 'app=${SELECTOR:-<none>}.'"
+        .label {
+            color: #00ffff;
+            font-weight: bold;
+        }
 
-# 12) Verify content is accessible (case-insensitive title + LUFFY)
-sleep 5
-RESPONSE="$(curl -s --max-time 5 localhost:$EXPECT_NODEPORT || true)"
-[[ -n "$RESPONSE" ]] || fail "No HTTP response from localhost:$EXPECT_NODEPORT. Are you running this on a cluster node?"
-echo "$RESPONSE" | grep -qi "One Piece Terminal - Straw Hat Pirates Database" \
-  || fail "Service content check failed: page title not found in HTTP response."
-echo "$RESPONSE" | grep -q "MONKEY D\. LUFFY" \
-  || fail "Service content check failed: 'MONKEY D. LUFFY' not found in HTTP response."
+        .value {
+            color: #00ff00;
+        }
 
-pass "Verification successful! Deployment '$DEP', ConfigMap '$CM', InitContainer, and Service '$SVC' (NodePort: $NODEPORT) are correctly configured and serving content."
+        .bounty {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .command-input {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .command-input::before {
+            content: "root@onepiece:~$ ";
+            color: #00ffff;
+            margin-right: 5px;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: #00ff00;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .section-title {
+            color: #ff00ff;
+            font-size: 20px;
+            margin: 20px 0 10px 0;
+            border-bottom: 1px solid #ff00ff;
+            padding-bottom: 5px;
+        }
+
+        .info-line {
+            margin: 5px 0;
+        }
+
+        .devil-fruit {
+            color: #ff1493;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <div class="terminal-header">
+            <span class="terminal-button btn-red"></span>
+            <span class="terminal-button btn-yellow"></span>
+            <span class="terminal-button btn-green"></span>
+            <span class="terminal-title">terminal@straw-hat-pirates</span>
+        </div>
+        
+        <div class="terminal-body">
+            <div class="ascii-art">
+    ____  _   _ _____   ____  ___ _____ ____ _____ 
+   / __ \| \ | | ____| |  _ \|_ _| ____/ ___| ____|
+  | |  | |  \| |  _|   | |_) || ||  _|| |   |  _|  
+  | |__| | |\  | |___  |  __/ | || |__| |___| |___ 
+   \____/|_| \_|_____| |_|   |___|_____\____|_____|
+            </div>
+
+            <div class="prompt">cat straw_hat_crew.db</div>
+            
+            <div class="output">
+                <p class="value">Loading Straw Hat Pirates Database...</p>
+                <p class="value">Access Granted: Marine Intelligence Level 5</p>
+                <p class="value">========================================</p>
+            </div>
+
+            <div class="section-title">&gt;&gt; CREW OVERVIEW</div>
+            <div class="output">
+                <p class="info-line"><span class="label">Ship:</span> <span class="value">Thousand Sunny</span></p>
+                <p class="info-line"><span class="label">Total Members:</span> <span class="value">10</span></p>
+                <p class="info-line"><span class="label">Total Bounty:</span> <span class="bounty">8,816,001,000 Berries</span></p>
+                <p class="info-line"><span class="label">Status:</span> <span class="value">Active - Yonko Crew</span></p>
+            </div>
+
+            <div class="section-title">&gt;&gt; CREW MEMBERS DATA</div>
+
+            <div class="character-card">
+                <div class="character-name">[ 01 ] MONKEY D. LUFFY</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Captain</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">19</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">3,000,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Devil Fruit:</span> <span class="devil-fruit">Gomu Gomu no Mi (Hito Hito no Mi, Model: Nika)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Gear 5, Advanced Haki (All Three Types), Rubber Body</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Become King of the Pirates</span></p>
+            </div>
+
+            <div class="character-card">
+                <div class="character-name">[ 02 ] RORONOA ZORO</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Swordsman / First Mate</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">21</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">1,111,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Fighting Style:</span> <span class="value">Three-Sword Style (Santoryu)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Advanced Conqueror's Haki, Enma Mastery</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Become the World's Greatest Swordsman</span></p>
+            </div>
+
+            <div class="character-card">
+                <div class="character-name">[ 03 ] NAMI</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Navigator</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">20</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">366,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Weapon:</span> <span class="value">Clima-Tact (Weather Manipulation)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Master Navigator, Weather Prediction, Zeus Control</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Draw a Complete Map of the World</span></p>
+            </div>
+
+            <div class="character-card">
+                <div class="character-name">[ 04 ] USOPP</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Sniper</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">19</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">500,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Weapon:</span> <span class="value">Kabuto (Slingshot)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Observation Haki, Expert Marksman, Inventor</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Become a Brave Warrior of the Sea</span></p>
+            </div>
+
+            <div class="character-card">
+                <div class="character-name">[ 05 ] SANJI</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Cook</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">21</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">1,032,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Fighting Style:</span> <span class="value">Black Leg Style (Kicks)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Ifrit Jambe, Germa Exoskeleton, Observation Haki</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Find the All Blue</span></p>
+            </div>
+
+            <div class="character-card">
+                <div class="character-name">[ 06 ] TONY TONY CHOPPER</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Doctor</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">17</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">1,000 Berries</span></p>
+                <p class="info-line"><span class="label">Devil Fruit:</span> <span class="devil-fruit">Hito Hito no Mi (Human-Human Fruit)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Monster Point, Rumble Ball, Medical Expertise</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Cure All Diseases</span></p>
+            </div>
+
+            <div class="character-card">
+                <div class="character-name">[ 07 ] NICO ROBIN</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Archaeologist</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">30</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">930,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Devil Fruit:</span> <span class="devil-fruit">Hana Hana no Mi (Flower-Flower Fruit)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Demonio Fleur, Poneglyph Reading, Armament Haki</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Uncover the True History</span></p>
+            </div>
+
+            <div class="character-card">
+                <div class="character-name">[ 08 ] FRANKY</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Shipwright</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">36</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">394,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Type:</span> <span class="value">Cyborg</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Franky Shogun, Radical Beam, Vegapunk Technology</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Build a Dream Ship and Sail it to the End</span></p>
+            </div>
+
+            <div class="character-card">
+                <div class="character-name">[ 09 ] BROOK</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Musician</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">90</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">383,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Devil Fruit:</span> <span class="devil-fruit">Yomi Yomi no Mi (Revive-Revive Fruit)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Soul Manipulation, Ice Powers, Master Swordsman</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Reunite with Laboon</span></p>
+            </div>
+
+            <div class="character-card">
+                <div class="character-name">[ 10 ] JINBE</div>
+                <p class="info-line"><span class="label">Position:</span> <span class="value">Helmsman</span></p>
+                <p class="info-line"><span class="label">Age:</span> <span class="value">46</span></p>
+                <p class="info-line"><span class="label">Bounty:</span> <span class="bounty">1,100,000,000 Berries</span></p>
+                <p class="info-line"><span class="label">Species:</span> <span class="value">Fish-Man (Whale Shark)</span></p>
+                <p class="info-line"><span class="label">Abilities:</span> <span class="value">Fish-Man Karate, Advanced Armament Haki, Water Manipulation</span></p>
+                <p class="info-line"><span class="label">Dream:</span> <span class="value">Achieve Equality Between Races</span></p>
+            </div>
+
+            <div class="output" style="margin-top: 30px;">
+                <p class="value">========================================</p>
+                <p class="value">End of Database Query</p>
+                <p class="label">Note: These Pirates are extremely dangerous!</p>
+            </div>
+
+            <div class="command-input">
+                <span class="cursor"></span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+HTMLEOF
+
+# Permissions (optional but nice)
+chmod 644 /one-piece/index.html
+
+# Create the namespace if it doesn't exist
+kubectl create namespace one-piece 2>/dev/null || true
+
+# Quick sanity check
+echo "Setup complete."
+echo "Saved: /one-piece/index.html"
+echo "Title check:" && grep -m1 -o 'One Piece Terminal - Straw Hat Pirates Database' /one-piece/index.html || true
+echo "Namespace 'one-piece' ensured."
+ls -lh /one-piece/index.html

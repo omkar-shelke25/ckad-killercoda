@@ -11,7 +11,7 @@ The Ingress resource named **api-ingress** is configured to route traffic to a S
    - It should point to the DNS hostname: `httpbin.org`.
 2. Ensure the Ingress is able to forward traffic correctly to the external backend via this Service.
 3. Verify that accessing the Ingress no longer returns a **503 error**.
-4. The Ingress URL is stored in `/tmp/ingress_url.txt`. You can view it with `cat /tmp/ingress_url.txt` and test it using `curl -i <url>`.
+4. The Ingress URL is stored in `/tmp/ingress_url.txt`. You can view it with `cat /tmp/ingress_url.txt` and test it using `curl -i <url>/get`.
 
 
 > Wait 1–2 minutes for the setup, then check the Ingress URL. It will be available in `/tmp/ingress_url.txt` (use cat /tmp/ingress_url.txt).

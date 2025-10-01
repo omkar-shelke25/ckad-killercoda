@@ -14,6 +14,8 @@ In the `one-piece` namespace, deploy an Nginx application serving custom Strawha
    - Type: **NodePort**
    - Port: **80**
    - NodePort: **32100**
+4. From the terminal navigation (top right), select the item. The service should be accessible on port 32100. Verify that the `index.html` page is displayed.
+   <img width="1912" height="656" alt="image" src="https://github.com/user-attachments/assets/ef0af4f4-9405-4a50-bf1d-aabd91ead7b4" />
 
 ---
 

@@ -16,16 +16,21 @@ fail(){ echo "❌ $1"; exit 1; }
 # 1) Namespace exists
 kubectl get namespace "$NS" >/dev/null 2>&1 || fail "Namespace '$NS' not found."
 
-# 2) ConfigMap exists and has index.html
+# 2) ConfigMap exists and has index.html (case-insensitive title check)
 kubectl -n "$NS" get configmap "$CM" >/dev/null 2>&1 || fail "ConfigMap '$CM' not found in namespace '$NS'."
-kubectl -n "$NS" get configmap "$CM" -o jsonpath='{.data.index\.html}' | grep -q "ONE PIECE" || fail "ConfigMap '$CM' does not contain expected index.html content."
+CM_HTML="$(kubectl -n "$NS" get configmap "$CM" -o jsonpath='{.data.index\.html}' || true)"
+[[ -n "${CM_HTML}" ]] || fail "ConfigMap '$CM' has no 'index.html' key."
+echo "$CM_HTML" | grep -qi "One Piece Terminal - Straw Hat Pirates Database" \
+  || fail "ConfigMap '$CM' index.html missing expected title text."
+
+pass "ConfigMap '$CM' contains index.html with expected title."
 
 # 3) Deployment exists
 kubectl -n "$NS" get deploy "$DEP" >/dev/null 2>&1 || fail "Deployment '$DEP' not found in namespace '$NS'."
 
 # 4) Check replicas
 REPLICAS="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.replicas}')"
-[[ "$REPLICAS" == "$EXPECT_REPLICAS" ]] || fail "Expected replicas=$EXPECT_REPLICAS but found '${REPLICAS:-<none>}'."
+[[ "$REPLICAS" == "$EXPECT_REPLICAS" ]] || fail "Expected replicas=$EXPECT_REPLICAS but found '${REPLICAS:-<none>}.'"
 
 # 5) Check main container
 CONTAINER_NAME="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].name}')"
@@ -43,14 +48,14 @@ INIT_IMG="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec
 
 # 7) Check volumes
 CONFIG_VOL="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.volumes[?(@.configMap.name=="'"$CM"'")].name}')"
-[[ -n "$CONFIG_VOL" ]] || fail "ConfigMap volume not found in deployment."
+[[ -n "$CONFIG_VOL" ]] || fail "ConfigMap volume referencing '$CM' not found in deployment."
 
 EMPTY_VOL="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.volumes[?(@.emptyDir)].name}')"
 [[ -n "$EMPTY_VOL" ]] || fail "emptyDir volume not found in deployment."
 
 # 8) Deployment should be ready
 kubectl -n "$NS" rollout status "deploy/$DEP" --timeout=120s >/dev/null 2>&1 \
-  || fail "Deployment '$DEP' did not become Ready."
+  || fail "Deployment '$DEP' did not become Ready in time."
 
 READY="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.status.readyReplicas}')"
 [[ "$READY" == "$EXPECT_REPLICAS" ]] || fail "Expected $EXPECT_REPLICAS ready replicas but found '${READY:-0}'."
@@ -63,21 +68,19 @@ SVC_TYPE="$(kubectl -n "$NS" get service "$SVC" -o jsonpath='{.spec.type}')"
 
 # 10) Check NodePort
 NODEPORT="$(kubectl -n "$NS" get service "$SVC" -o jsonpath='{.spec.ports[0].nodePort}')"
-[[ "$NODEPORT" == "$EXPECT_NODEPORT" ]] || fail "Expected NodePort=$EXPECT_NODEPORT but found '${NODEPORT:-<none>}'."
+[[ "$NODEPORT" == "$EXPECT_NODEPORT" ]] || fail "Expected NodePort=$EXPECT_NODEPORT but found '${NODEPORT:-<none>}.'"
 
 # 11) Check service selector
 SELECTOR="$(kubectl -n "$NS" get service "$SVC" -o jsonpath='{.spec.selector.app}')"
-[[ "$SELECTOR" == "strawhat" ]] || fail "Expected service selector 'app=strawhat' but found 'app=$SELECTOR'."
+[[ "$SELECTOR" == "strawhat" ]] || fail "Expected service selector 'app=strawhat' but found 'app=${SELECTOR:-<none>}.'"
 
-# 12) Verify content is accessible
-sleep 5  # Give service a moment to be ready
-RESPONSE=$(curl -s localhost:$EXPECT_NODEPORT 2>/dev/null || echo "")
-if ! echo "$RESPONSE" | grep -q "ONE PIECE"; then
-  fail "Service not returning expected content. Cannot find 'ONE PIECE' in response."
-fi
+# 12) Verify content is accessible (case-insensitive title + LUFFY)
+sleep 5
+RESPONSE="$(curl -s --max-time 5 localhost:$EXPECT_NODEPORT || true)"
+[[ -n "$RESPONSE" ]] || fail "No HTTP response from localhost:$EXPECT_NODEPORT. Are you running this on a cluster node?"
+echo "$RESPONSE" | grep -qi "One Piece Terminal - Straw Hat Pirates Database" \
+  || fail "Service content check failed: page title not found in HTTP response."
+echo "$RESPONSE" | grep -q "MONKEY D\. LUFFY" \
+  || fail "Service content check failed: 'MONKEY D. LUFFY' not found in HTTP response."
 
-if ! echo "$RESPONSE" | grep -q "LUFFY"; then
-  fail "Service not returning expected content. Cannot find 'LUFFY' in response."
-fi
-
-pass "Verification successful! Deployment '$DEP' with ConfigMap '$CM', InitContainer, and Service '$SVC' (NodePort: $NODEPORT) are correctly configured and serving content."
+pass "Verification successful! Deployment '$DEP', ConfigMap '$CM', InitContainer, and Service '$SVC' (NodePort: $NODEPORT) are correctly configured and serving content."

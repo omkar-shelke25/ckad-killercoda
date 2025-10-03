@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: API Deprecation and Deployment",
+  "description": "Fix deprecated API versions in a manifest and deploy to Kubernetes v1.33",
+  "details": {
+    "steps": [
+      {
+        "title": "Fix API deprecations and deploy the application",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

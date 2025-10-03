@@ -2,7 +2,7 @@
 
 You successfully configured the warp core probe systems:
 
-- **readinessProbe**: HTTP check on `/helathz` port 80
+- **readinessProbe**: HTTP check on `/readyz` port 80
   - Initial delay: 2 seconds
   - Check interval: 5 seconds
   

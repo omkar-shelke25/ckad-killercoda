@@ -127,6 +127,7 @@ EOF
 kubectl -n galaxy get deployment warp-core
 kubectl -n galaxy get pods
 kubectl -n galaxy describe deployment warp-core
+kubectl logs deployment/warp-core -n galaxy
 ```
 
 </details>

@@ -1,4 +1,4 @@
-# 🌌 CKAD Exam Question: Warp Core Probe Systems in Galaxy Namespace
+# 🌌 CKAD: Warp Core Probe Systems in Galaxy Namespace
 
 A namespace named `galaxy` already exists. A Deployment named `warp-core` is already running in this namespace. The application inside the Pods is **listening on port 80**.
 

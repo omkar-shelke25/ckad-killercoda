@@ -26,11 +26,11 @@ READINESS_INITIAL=$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.templ
 READINESS_PERIOD=$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].readinessProbe.periodSeconds}')
 
 [[ -n "$READINESS_PATH" ]] || fail "readinessProbe is not configured."
-[[ "$READINESS_PATH" == "/helathz" ]] || fail "readinessProbe path must be '/helathz' (found '$READINESS_PATH')."
+[[ "$READINESS_PATH" == "/readyz" ]] || fail "readinessProbe path must be '/readyz' (found '$READINESS_PATH')."
 [[ "$READINESS_PORT" == "80" ]] || fail "readinessProbe port must be 80 (found '$READINESS_PORT')."
 [[ "$READINESS_INITIAL" == "2" ]] || fail "readinessProbe initialDelaySeconds must be 2 (found '$READINESS_INITIAL')."
 [[ "$READINESS_PERIOD" == "5" ]] || fail "readinessProbe periodSeconds must be 5 (found '$READINESS_PERIOD')."
-pass "readinessProbe configured correctly: path=/helathz, port=80, initialDelay=2s, period=5s"
+pass "readinessProbe configured correctly: path=/readyz, port=80, initialDelay=2s, period=5s"
 
 # 3) Check livenessProbe configuration
 echo "🔍 Checking livenessProbe configuration..."
@@ -85,7 +85,7 @@ echo ""
 pass "🎉 Verification successful! Warp Core probe systems are operational:"
 echo "   ✓ Namespace: $NS"
 echo "   ✓ Deployment: $DEP"
-echo "   ✓ readinessProbe: HTTP GET /helathz:80 (initial=2s, period=5s)"
+echo "   ✓ readinessProbe: HTTP GET /readyz:80 (initial=2s, period=5s)"
 echo "   ✓ livenessProbe: HTTP GET /helathz:80 (initial=5s, period=10s, failure=3)"
 echo "   ✓ Status: $READY_PODS pods ready and healthy"
 echo "   ✓ Health monitoring: Active and functional"

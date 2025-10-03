@@ -1,4 +1,4 @@
-# 🌌 CKAD Exam Question: Warp Core Probe Systems in Galaxy Namespace (Weightage: 18%)
+# 🌌 CKAD Exam Question: Warp Core Probe Systems in Galaxy Namespace
 
 A namespace named `galaxy` already exists. A Deployment named `warp-core` is already running in this namespace. The application inside the Pods is **listening on port 80**.
 
@@ -6,11 +6,11 @@ Your mission is to upgrade the Deployment with **probe systems** to keep the war
 
 ## Requirements:
 
-1. Add a **readinessProbe** that checks HTTP path `/helathz` on the application's listening port.
+1. Add a **readinessProbe** that checks HTTP path `/readyz` on the application's listening port.
    - `initialDelaySeconds: 2`
    - `periodSeconds: 5`
 
-2. Add a **livenessProbe** that checks the same HTTP path `/helathz` on the application's listening port.
+2. Add a **livenessProbe** that checks HTTP path `/helathz` on the application's listening port.
    - `initialDelaySeconds: 5`
    - `periodSeconds: 10`
    - `failureThreshold: 3`
@@ -31,7 +31,7 @@ Add the following probes under the `httpd` container section:
 ```yaml
         readinessProbe:
           httpGet:
-            path: /helathz
+            path: /readyz
             port: 80
           initialDelaySeconds: 2
           periodSeconds: 5
@@ -52,7 +52,7 @@ kubectl -n galaxy patch deployment warp-core --type='json' -p='[
     "path": "/spec/template/spec/containers/0/readinessProbe",
     "value": {
       "httpGet": {
-        "path": "/helathz",
+        "path": "/readyz",
         "port": 80
       },
       "initialDelaySeconds": 2,
@@ -103,7 +103,7 @@ spec:
           mountPath: /usr/local/apache2/htdocs
         readinessProbe:
           httpGet:
-            path: /helathz
+            path: /readyz
             port: 80
           initialDelaySeconds: 2
           periodSeconds: 5

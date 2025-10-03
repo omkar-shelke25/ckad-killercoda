@@ -17,31 +17,6 @@ Your mission is to upgrade the Deployment with **probe systems** to keep the war
 
 3. Apply the changes and confirm the Deployment updates successfully in the `galaxy` namespace.
 
-## Notes:
-- The ConfigMap `warp-core-pages` contains the health check endpoint data
-- The application serves health check pages from `/usr/local/apache2/htdocs`
-- Both probes should check the **same HTTP path**: `/helathz`
-
----
-
-<details>
-<summary>💡 Hint</summary>
-
-You can edit the deployment directly:
-```bash
-kubectl -n galaxy edit deployment warp-core
-```
-
-Or export, modify, and apply:
-```bash
-kubectl -n galaxy get deployment warp-core -o yaml > warp-core.yaml
-# Edit the file to add probes
-kubectl apply -f warp-core.yaml
-```
-
-</details>
-
----
 
 <details>
 <summary>✅ Solution</summary>

@@ -16,7 +16,7 @@ Your mission is to upgrade the Deployment with **probe systems** to keep the war
    - `failureThreshold: 3`
 
 3. Apply the changes and confirm the Deployment updates successfully in the `galaxy` namespace.
-4. After applying your changes, check the Deployment logs to verify that Apache is running and serving traffic. Also, confirm that the /helathz and /readyz endpoints return an HTTP 200 OK response.
+4. After applying your changes, check the Deployment logs to verify that Apache is running and serving traffic. Also, confirm that the /helathz and /readyz endpoints return an **HTTP 200 OK** response.
 
 
 <details>

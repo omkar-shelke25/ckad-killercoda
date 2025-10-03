@@ -12,12 +12,8 @@ The development team at your company has provided a manifest file at `/ancient-t
 2. **Fix all API deprecation issues** in the manifest so that it becomes compatible with Kubernetes v1.33.
    - **Download and install kubectl-convert plugin** (recommended approach) rather than manually editing
    - Save the updated file in the same location with the same name
-
-3. **Update the manifest** to deploy to the **viper** namespace instead of anaconda.
-
-4. **Deploy the application** using the updated manifest file into the **viper** namespace.
-
-6. **Verify** that the application Pods are successfully running in the **viper** namespace.
+3. **Deploy the application** using the updated manifest file into the **viper** namespace.
+4. **Verify** that the application Pods are successfully running in the **viper** namespace.
 
 ---
 

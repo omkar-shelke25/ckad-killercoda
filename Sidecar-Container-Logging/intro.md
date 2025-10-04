@@ -1,7 +1,5 @@
-# 🚀 CKAD: Sidecar Container for Logging
-     
-## 📋 Your Mission
+# CKAD: Sidecar Container for Logging
 
-Your task is to create a sidecar container named `logger-con` that mounts the same volume as the main `cleaner-con` container and outputs log information to stdout for easier monitoring.
+You will add a **sidecar container** to an existing Deployment to capture log files and stream them to stdout. This is a common pattern for making application logs accessible via `kubectl logs`.
 
-Click **🎬 Start Scenario** to begin your sidecar logging journey!
+Click **Start Scenario** to begin.

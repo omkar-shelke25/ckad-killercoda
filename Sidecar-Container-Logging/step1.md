@@ -25,11 +25,13 @@ Do the following:
 <details>
 <summary>📖 Solution</summary>
 
+# Kubernetes Sidecar Init Containers (Restartable Init Containers)
 
-- In Kubernetes 1.28+, sidecar containers are init containers with `restartPolicy: Always`
-- The sidecar container should mount the same volume (`logs`) at the same path (`/var/log`)
-- Use `tail -f /var/log/cleaner.log` to continuously stream the log file
-- Test with: `kubectl logs -n mercury deployment/cleaner -c logger-con`
+As of **Kubernetes v1.29**, **restartable init containers** (also known as **sidecar init containers**) are officially supported under the `SidecarContainers` feature gate, which is **enabled by default**. These containers start before the main containers but **continue running afterward** and can **restart independently**, making them useful for logging, monitoring, or proxying within a Pod.
+
+For more details, see the official Kubernetes documentation on sidecar containers:  
+https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/
+
 
 ```bash
 # First, examine the existing deployment

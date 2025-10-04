@@ -25,7 +25,7 @@ Do the following:
 <details>
 <summary>📖 Solution</summary>
 
-# Kubernetes Sidecar Init Containers (Restartable Init Containers)
+#### Kubernetes Sidecar Init Containers (Restartable Init Containers)
 
 As of **Kubernetes v1.29**, **restartable init containers** (also called **sidecar init containers**) are officially supported under the `SidecarContainers` feature gate, which is **enabled by default**.  
 These containers start **before** the main containers, **stay running afterward**, and can **restart independently** of the main application container.  

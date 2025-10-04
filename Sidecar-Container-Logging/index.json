@@ -1,10 +1,10 @@
 {
   "title": "CKAD: Sidecar Container for Logging",
-  "description": "Create a sidecar container that processes and outputs logs from the main application container.",
+  "description": "Add a sidecar container to an existing Deployment to capture and stream log files to stdout.",
   "details": {
     "steps": [
       {
-        "title": "Create Sidecar Container with Shared Volume",
+        "title": "Create Sidecar Container for Logging",
         "text": "step1.md",
         "verify": "verify.sh"
       }

@@ -15,7 +15,6 @@ Do the following:
    - Image: `public.ecr.aws/docker/library/busybox:latest`
    - Mount the same volume as `cleaner-con`
    - Use `tail -f` command to stream `/var/log/cleaner.log` to stdout
-   - Configure as an init container with `restartPolicy: Always` (sidecar pattern)
 3. **Save your changes** to `/opt/course/16/cleaner-new.yaml`
 4. **Apply the updated Deployment** to make it running
 5. **Verify** the logs are accessible via `kubectl logs`

@@ -11,11 +11,11 @@ The yaml for the existing Deployment is available at `/opt/course/16/cleaner.yam
 Do the following:
 
 1. **Examine the existing Deployment** at `/opt/course/16/cleaner.yaml`
-2. **Add a sidecar container** named `logger-con` with:
+2. **Save your changes** to `/opt/course/16/cleaner-new.yaml`
+3. **Add a sidecar container** named `logger-con` with:
    - Image: `public.ecr.aws/docker/library/busybox:latest`
    - Mount the same volume as `cleaner-con`
    - Use `tail -F` command to stream `/var/log/cleaner.log` to stdout
-3. **Save your changes** to `/opt/course/16/cleaner-new.yaml`
 4. **Apply the updated Deployment** to make it running
 5. **Verify** the logs are accessible via `kubectl logs`
 6. **Check the logs** to find information about the missing data incidents

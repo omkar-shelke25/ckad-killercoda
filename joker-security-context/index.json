@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: SecurityContext & Capabilities (8%)",
+  "description": "Modify an existing Deployment to add security context settings and Linux capabilities.",
+  "details": {
+    "steps": [
+      {
+        "title": "Configure SecurityContext and Capabilities",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

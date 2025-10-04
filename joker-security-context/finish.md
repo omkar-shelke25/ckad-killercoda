@@ -1,139 +1,148 @@
-# CKAD: SecurityContext & Capabilities (Weightage: 8%)
+# ✅ Completed
 
-## 📋 Background
+## 🎉 Congratulations!
 
-The security team has identified that the `joker-deployment` in namespace `joker` needs hardening. The deployment is currently running with default security settings, which pose potential security risks.
+You successfully configured **SecurityContext** and **Linux Capabilities** for the joker-deployment!
 
-The manifest file for the existing Deployment can be found at `/opt/course/20/joker-deployment.yaml`.
+### What You Accomplished:
 
-## 🎯 Task
-
-Modify the existing Deployment named **joker-deployment** running in namespace **joker** so that its containers:
-
-1. **Run with user ID 3000**
-2. **Privilege escalation is forbidden** (set `allowPrivilegeEscalation: false`)
-3. **Add the following Linux capabilities:**
-   - `NET_BIND_SERVICE`
-   - `NET_RAW`
-   - `NET_ADMIN`
-
-**Requirements:**
-- Save your modified YAML to `/opt/course/20/joker-deployment-new.yaml`
-- Apply the changes to update the running deployment
-- Verify all pods are running successfully with the new security configuration
+1. ✓ **Set runAsUser to 3000** - Container runs as non-root user
+2. ✓ **Disabled privilege escalation** - Set `allowPrivilegeEscalation: false`
+3. ✓ **Added Linux capabilities:**
+   - `NET_BIND_SERVICE` - Bind to ports < 1024 without root
+   - `NET_RAW` - Use RAW and PACKET sockets
+   - `NET_ADMIN` - Perform network administration tasks
+4. ✓ **Saved** changes to `/opt/course/20/joker-deployment-new.yaml`
+5. ✓ **Applied** the configuration to the running deployment
+6. ✓ **Verified** all pods are running with the new security settings
 
 ---
 
-## 💡 Hints
+## 🔐 Security Concepts Explained
 
-- Use `securityContext` at the container level to set:
-  - `runAsUser: 3000`
-  - `allowPrivilegeEscalation: false`
-  - `capabilities.add: [...]`
-- The capabilities should be in uppercase: `NET_BIND_SERVICE`, `NET_RAW`, `NET_ADMIN`
-- After applying changes, the deployment will perform a rolling update
-- Use `kubectl describe pod` to verify the security context is applied
+### **SecurityContext**
+Controls privilege and access settings for Pods and containers:
+- **runAsUser**: Specifies the UID to run the container process
+- **runAsGroup**: Specifies the primary GID
+- **fsGroup**: Defines ownership for volumes
+- **allowPrivilegeEscalation**: Controls if a process can gain more privileges
+
+### **Why Non-Root Matters**
+Running as UID 3000 (non-root) provides:
+- **Defense in depth** - Container breakout has less impact
+- **Reduced attack surface** - Can't access root-only resources
+- **Compliance** - Required by many security policies (PCI-DSS, SOC 2)
+- **Best practice** - Principle of least privilege
+
+### **Privilege Escalation Prevention**
+Setting `allowPrivilegeEscalation: false`:
+- Prevents setuid binaries from changing effective user ID
+- Blocks gaining capabilities beyond those explicitly granted
+- Essential for multi-tenant environments
+
+### **Linux Capabilities**
+Fine-grained privileges instead of all-or-nothing root:
+
+| Capability | Purpose | Example Use Case |
+|------------|---------|------------------|
+| **NET_BIND_SERVICE** | Bind to ports < 1024 | Web servers on port 80/443 |
+| **NET_RAW** | Use RAW/PACKET sockets | Packet capture, ping |
+| **NET_ADMIN** | Network configuration | VPN, routing, firewall rules |
+| **SYS_TIME** | Set system clock | NTP servers |
+| **CHOWN** | Change file ownership | File management tools |
 
 ---
 
-<details>
-<summary>📖 Solution</summary>
+## 💡 Common CKAD Scenarios
 
-```bash
-# First, examine the existing deployment
-cat /opt/course/20/joker-deployment.yaml
+### **Security Context Levels**
 
-# Copy the file to create a new version
-cp /opt/course/20/joker-deployment.yaml /opt/course/20/joker-deployment-new.yaml
-
-# Edit the file to add security context and capabilities
-cat <<'EOF' > /opt/course/20/joker-deployment-new.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: joker-deployment
-  namespace: joker
+```yaml
+# Pod-level (applies to all containers)
 spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: joker
-  template:
-    metadata:
-      labels:
-        app: joker
-    spec:
-      containers:
-      - name: joker-container
-        image: public.ecr.aws/docker/library/busybox:latest
-        command: ["sh", "-c"]
-        args:
-        - |
-          echo "Joker application starting..."
-          echo "User ID: $(id -u)"
-          echo "Capabilities: $(cat /proc/self/status | grep Cap)"
-          while true; do
-            echo "$(date '+%Y-%m-%d %H:%M:%S') - Joker is running..."
-            sleep 30
-          done
-        securityContext:
-          runAsUser: 3000
-          allowPrivilegeEscalation: false
-          capabilities:
-            add:
-            - NET_BIND_SERVICE
-            - NET_RAW
-            - NET_ADMIN
-EOF
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 3000
+    fsGroup: 2000
+  containers:
+  - name: app
+    image: myapp
 
-# Apply the updated deployment
-kubectl apply -f /opt/course/20/joker-deployment-new.yaml
-
-# Wait for the rollout to complete
-kubectl rollout status deployment/joker-deployment -n joker
-
-# Verify the changes
-kubectl get pods -n joker
-kubectl describe deployment joker-deployment -n joker | grep -A 10 "Security Context"
-
-# Check a pod to verify user ID
-POD=$(kubectl get pods -n joker -l app=joker -o jsonpath='{.items[0].metadata.name}')
-kubectl exec -n joker $POD -- id
-
-# Should show: uid=3000 gid=0(root)
+# Container-level (overrides pod-level)
+spec:
+  containers:
+  - name: app
+    image: myapp
+    securityContext:
+      runAsUser: 3000
+      allowPrivilegeEscalation: false
 ```
 
-**Alternative using kubectl edit:**
+### **Complete Security Example**
 
-```bash
-# Edit the deployment directly
-kubectl edit deployment joker-deployment -n joker
-
-# Add the securityContext section under containers:
-#   securityContext:
-#     runAsUser: 3000
-#     allowPrivilegeEscalation: false
-#     capabilities:
-#       add:
-#       - NET_BIND_SERVICE
-#       - NET_RAW
-#       - NET_ADMIN
-
-# Save the current state to the required file
-kubectl get deployment joker-deployment -n joker -o yaml > /opt/course/20/joker-deployment-new.yaml
+```yaml
+securityContext:
+  runAsUser: 1000
+  runAsNonRoot: true
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+    - ALL
+    add:
+    - NET_BIND_SERVICE
 ```
 
-**Key Points:**
-- **runAsUser: 3000** - Forces the container to run as user ID 3000 (non-root)
-- **allowPrivilegeEscalation: false** - Prevents gaining more privileges than the parent process
-- **capabilities.add** - Grants specific Linux capabilities without running as root:
-  - `NET_BIND_SERVICE` - Bind to ports below 1024
-  - `NET_RAW` - Use RAW and PACKET sockets
-  - `NET_ADMIN` - Network administration tasks
+### **Pod Security Standards**
 
-This configuration follows the principle of least privilege by:
-- Running as a non-root user
-- Preventing privilege escalation
-- Only adding the specific capabilities needed
+Kubernetes defines three security levels:
 
-</details>
+1. **Privileged** - Unrestricted (default, not recommended)
+2. **Baseline** - Minimally restrictive, prevents known privilege escalations
+3. **Restricted** - Heavily restricted, current Pod hardening best practices
+
+Your configuration aligns with **Baseline** standards!
+
+---
+
+## 🎯 Key Exam Tips
+
+1. **Remember the syntax**:
+   - Capabilities are UPPERCASE: `NET_BIND_SERVICE`, not `net_bind_service`
+   - Use `capabilities.add` and `capabilities.drop` arrays
+
+2. **Container vs Pod level**:
+   - `runAsUser` can be set at both levels
+   - Container-level overrides pod-level
+   - Capabilities can ONLY be set at container level
+
+3. **Common mistakes**:
+   - Forgetting `allowPrivilegeEscalation: false`
+   - Adding capabilities without understanding what they do
+   - Not testing if the pod actually starts after changes
+
+4. **Quick verification**:
+   ```bash
+   kubectl exec <pod> -- id        # Check user ID
+   kubectl exec <pod> -- whoami    # Check username
+   kubectl describe pod <pod>      # See security context
+   ```
+
+---
+
+## 🚀 Next Steps
+
+**Practice these scenarios**:
+- Run as non-root with read-only root filesystem
+- Drop all capabilities then add only what's needed
+- Use Pod Security Admission controller
+- Configure AppArmor or SELinux profiles
+- Implement network policies alongside security contexts
+
+**Real-world applications**:
+- Databases running as specific users
+- Web servers binding to port 80 without root
+- Monitoring agents needing specific capabilities
+- Compliance with CIS Kubernetes Benchmark
+
+Great work! Security context configuration is frequently tested in CKAD and is critical for production Kubernetes security!

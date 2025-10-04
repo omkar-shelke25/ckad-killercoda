@@ -27,7 +27,7 @@ Do the following:
 
 #### Kubernetes Sidecar Init Containers (Restartable Init Containers)
 
-As of **Kubernetes v1.29**, **restartable init containers** (also called **sidecar init containers**) are officially supported under the `SidecarContainers` feature gate, which is **enabled by default**.  
+As of **Kubernetes v1.29+**, **restartable init containers** (also called **sidecar init containers**) are officially supported under the `SidecarContainers` feature gate, which is **enabled by default**.  
 These containers start **before** the main containers, **stay running afterward**, and can **restart independently** of the main application container.  
 They are typically used for **logging**, **monitoring**, or **proxy** sidecar processes inside a Pod.
 

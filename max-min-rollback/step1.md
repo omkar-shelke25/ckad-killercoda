@@ -167,16 +167,8 @@ kubectl -n prod get pods -l app=web-frontend -o jsonpath='{range .items[*]}{.met
 kubectl -n prod get deployment web1
 ```
 
-### Step 5: Simulate Failure Scenario
 
-Assume you've discovered that the new version has CSS rendering issues affecting users.
-
-```bash
-echo "⚠️  ALERT: New version has CSS rendering issues!"
-echo "🔧 Initiating immediate rollback..."
-```
-
-### Step 6: Execute Rollback
+### Step 5: Execute Rollback
 
 ```bash
 # Rollback to previous version
@@ -189,7 +181,7 @@ kubectl -n prod rollout status deployment/web1
 # kubectl -n prod rollout undo deployment/web1 --to-revision=1
 ```
 
-### Step 7: Verify Rollback Success
+### Step 6: Verify Rollback Success
 
 ```bash
 # Check current image after rollback

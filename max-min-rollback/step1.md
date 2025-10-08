@@ -30,6 +30,10 @@ Update the deployment `web1` to use:
 - ✅ Verify all pods are back to `perl` image
 - ✅ Confirm rollback completed successfully
 
+
+> In this question, we used maxUnavailable: 0% (no pods can be unavailable) and maxSurge: 5% (allowing up to 5% extra pods during the rollout). Because probes are enabled, it may take some time for all pods to become ready. After performing the image update and rollback, verify that all pods are running with the correct image.
+
+
 ---
 
 ## 💡 Try It Yourself First!

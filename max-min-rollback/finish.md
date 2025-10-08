@@ -12,7 +12,6 @@ Excellent work! You have successfully demonstrated production-grade rolling upda
 - **Monitored** rollout progress in real-time
 
 ### 🔙 Rollback Execution
-- **Detected** simulated failure scenario (CSS rendering issue)
 - **Executed** immediate rollback to previous stable version
 - **Verified** all 10 pods returned to original `perl` image
 - **Confirmed** zero user impact during entire process
@@ -68,51 +67,5 @@ All Pods Back to Stable Version
 - ✅ Limit surge to prevent cluster resource exhaustion
 - ✅ Set appropriate resource requests/limits
 - ✅ Plan capacity for surge pods
-
-## 🔧 Commands You Mastered
-
-```bash
-# Rolling update configuration
-kubectl patch deployment web1 -p '{"spec":{"strategy":...}}'
-
-# Image updates
-kubectl set image deployment/web1 nginx=NEW_IMAGE
-
-# Monitoring
-kubectl rollout status deployment/web1
-kubectl rollout history deployment/web1
-
-# Rollback operations
-kubectl rollout undo deployment/web1
-kubectl rollout undo deployment/web1 --to-revision=N
-
-# Verification
-kubectl get deployment web1
-kubectl get pods -l app=web-frontend
-```
-
-## 🏆 Achievement Unlocked
-
-**"Production Deployment Master"** - Successfully executed zero-downtime rolling update with strict availability requirements and demonstrated controlled rollback capability!
-
-## 💡 Real-World Applications
-
-These skills are critical for:
-- **E-commerce platforms** during high-traffic events
-- **Banking systems** requiring 24/7 availability
-- **SaaS applications** with strict SLAs
-- **Global services** with continuous operation requirements
-- **Any production system** where downtime = revenue loss
-
-## 🚀 Next Steps
-
-To further enhance your deployment skills:
-- Practice with different rollout strategies (`Recreate` vs `RollingUpdate`)
-- Implement blue-green deployments
-- Use canary deployments for gradual rollouts
-- Explore progressive delivery with tools like Flagger or Argo Rollouts
-- Study deployment strategies for stateful applications
-
----
 
 **Congratulations!** You're now equipped to handle production deployments with confidence and safety! 🎊

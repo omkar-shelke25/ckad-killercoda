@@ -22,7 +22,7 @@ Update the deployment `web1` to use:
 
 #### Part 2: Execute and Monitor Rollout
 - ✅ Apply the configuration changes
-- ✅ Monitor the rollout progress
+- ✅ Monitor the rollout progress, including how pods are terminated and replaced during the image update
 - ✅ Verify all pods are updated successfully
 
 #### Part 3: Simulate Failure and Rollback

@@ -36,13 +36,6 @@ spec:
         image: public.ecr.aws/nginx/nginx:perl
         ports:
         - containerPort: 80
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "400m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
         readinessProbe:
           httpGet:
             path: /

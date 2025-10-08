@@ -26,7 +26,6 @@ Update the deployment `web1` to use:
 - ✅ Verify all pods are updated successfully
 
 #### Part 3: Simulate Failure and Rollback
-- ✅ Assume the new version has issues (CSS rendering broken)
 - ✅ Execute immediate rollback to previous version
 - ✅ Verify all pods are back to `perl` image
 - ✅ Confirm rollback completed successfully

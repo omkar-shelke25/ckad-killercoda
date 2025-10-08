@@ -231,49 +231,10 @@ After completion, you should have:
 5. ✅ **All 10 replicas** running and ready
 6. ✅ **Rollout history** showing both update and rollback revisions
 
----
 
-### 🔍 Troubleshooting Tips
-
-If rollout gets stuck:
-```bash
-# Pause the rollout
-kubectl -n prod rollout pause deployment/web1
-
-# Resume the rollout
-kubectl -n prod rollout resume deployment/web1
-
-# Check pod events
-kubectl -n prod get events --sort-by='.lastTimestamp'
-```
-
-If you need to check specific revision:
-```bash
-# View specific revision details
-kubectl -n prod rollout history deployment/web1 --revision=2
-```
 
 ---
 
-### 📚 Key kubectl Commands Reference
-
-```bash
-# Rollout management
-kubectl rollout status deployment/web1 -n prod
-kubectl rollout history deployment/web1 -n prod
-kubectl rollout undo deployment/web1 -n prod
-kubectl rollout pause deployment/web1 -n prod
-kubectl rollout resume deployment/web1 -n prod
-
-# Image updates
-kubectl set image deployment/web1 nginx=IMAGE -n prod
-kubectl set image deployment/web1 nginx=IMAGE -n prod --record
-
-# Monitoring
-kubectl get deployment web1 -n prod -w
-kubectl get pods -l app=web-frontend -n prod -w
-kubectl describe deployment web1 -n prod
-```
 
 </details>
 

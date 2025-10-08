@@ -287,18 +287,3 @@ kubectl describe deployment web1 -n prod
 
 ---
 
-## 🎯 Quick Command Reference
-
-```bash
-# View current deployment
-kubectl -n prod get deployment web1
-
-# Check rollout status
-kubectl -n prod rollout status deployment/web1
-
-# View rollout history
-kubectl -n prod rollout history deployment/web1
-
-# Rollback to previous version
-kubectl -n prod rollout undo deployment/web1
-```

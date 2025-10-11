@@ -31,7 +31,7 @@ kubectl wait --namespace metallb-system \
 sleep 10
 
 echo "🌐 Configuring MetalLB IP Address Pool..."
-cat <<'MB' | kubectl apply -f -
+cat <<'YAML' | kubectl apply -f -
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
@@ -49,7 +49,7 @@ metadata:
 spec:
   ipAddressPools:
   - default-address-pool
-MB
+YAML
 
 sleep 5
 

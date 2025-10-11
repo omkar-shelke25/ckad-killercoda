@@ -1,5 +1,5 @@
 {
-  "title": "CKAD: Configure Ingress with Multiple Path Routing",
+  "title": "CKAD: Configure DNS resolution & Ingress with Multiple Path Routing",
   "description": "Create an Ingress resource to expose a Node.js application with multiple endpoints (/terminal and /app) using path-based routing.",
   "details": {
     "steps": [

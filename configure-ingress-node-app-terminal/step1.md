@@ -8,8 +8,6 @@ The Node.js application is running in the `node-app` namespace with two endpoint
 - **Namespace**: `node-app`
 - **Deployment**: `multi-endpoint-app` (1 replica)
 - **Service**: `multi-endpoint-service` (LoadBalancer, Port 80 → 3000)
-- **Endpoints**: `/terminal` and `/app`
-- **Domain**: `node.app.terminal.io` (needs to be configured)
 
 ### 📝 Task Requirements
 

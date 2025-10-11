@@ -189,8 +189,11 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 3000
-  type: LoadBalancer
+  type: ClusterIP
 YAML
+
+kubectl -n ingress-nginx patch svc ingress-nginx-controller \
+  -p '{"spec":{"type":"LoadBalancer"}}' --type=merge
 
 echo "⏳ Waiting for deployment to be ready..."
 kubectl -n "$NAMESPACE" rollout status deployment/multi-endpoint-app --timeout=120s || echo "Rollout may still be in progress"

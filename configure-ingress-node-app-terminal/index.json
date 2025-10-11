@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Configure Ingress with Multiple Path Routing",
+  "description": "Create an Ingress resource to expose a Node.js application with multiple endpoints (/terminal and /app) using path-based routing.",
+  "details": {
+    "steps": [
+      {
+        "title": "Create Ingress and Configure DNS",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

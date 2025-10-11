@@ -1,4 +1,5 @@
 # 🔧 Create Ingress with Multiple Path Routing
+> Wait for 2 minutes for the LoadBalancer to set up for Ingress.
 
 ## 📋 Mission Brief
 

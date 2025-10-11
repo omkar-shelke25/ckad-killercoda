@@ -6,7 +6,7 @@ echo "🚀 Setting up multi-endpoint application environment..."
 NAMESPACE="node-app"
 
 # Create namespace
-kubectl get ns $NAMESPACE >/dev/null 2>&1 || kubectl create ns $NAMESPACE
+kubectl get ns "$NAMESPACE" >/dev/null 2>&1 || kubectl create ns "$NAMESPACE"
 
 echo "📦 Installing NGINX Ingress Controller..."
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/baremetal/deploy.yaml
@@ -31,7 +31,7 @@ kubectl wait --namespace metallb-system \
 sleep 10
 
 echo "🌐 Configuring MetalLB IP Address Pool..."
-cat <<EOF | kubectl apply -f -
+cat <<'MB' | kubectl apply -f -
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
@@ -49,18 +49,19 @@ metadata:
 spec:
   ipAddressPools:
   - default-address-pool
-EOF
+MB
 
 sleep 5
 
 echo "🚀 Deploying Multi-Endpoint Node.js Application..."
 
-cat <<EOF | kubectl apply -f -
+# Use a quoted here-doc so shell won't expand JS ${...}, then envsubst only for ${NAMESPACE}
+cat <<'YAML' | envsubst '${NAMESPACE}' | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: multi-endpoint-app
-  namespace: $NAMESPACE
+  namespace: ${NAMESPACE}
   labels:
     app: multi-endpoint
 spec:
@@ -82,7 +83,7 @@ spec:
         args:
           - -c
           - |
-            cat > /server.js << 'EOFJS'
+            cat > /server.js <<'EOFJS'
             const http = require('http');
             const url = require('url');
 
@@ -180,7 +181,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: multi-endpoint-service
-  namespace: $NAMESPACE
+  namespace: ${NAMESPACE}
 spec:
   selector:
     app: multi-endpoint
@@ -189,10 +190,10 @@ spec:
     port: 80
     targetPort: 3000
   type: LoadBalancer
-EOF
+YAML
 
 echo "⏳ Waiting for deployment to be ready..."
-kubectl -n $NAMESPACE rollout status deployment/multi-endpoint-app --timeout=90s
+kubectl -n "$NAMESPACE" rollout status deployment/multi-endpoint-app --timeout=120s || echo "Rollout may still be in progress"
 
 echo "⏳ Waiting for LoadBalancer IP assignment..."
 sleep 10
@@ -201,13 +202,13 @@ echo ""
 echo "✅ Environment setup complete!"
 echo ""
 echo "📊 Current deployment status:"
-kubectl -n $NAMESPACE get deployment multi-endpoint-app
+kubectl -n "$NAMESPACE" get deployment multi-endpoint-app
 echo ""
 echo "🌐 Current service:"
-kubectl -n $NAMESPACE get service multi-endpoint-service
+kubectl -n "$NAMESPACE" get service multi-endpoint-service
 echo ""
 echo "📦 Running pods:"
-kubectl -n $NAMESPACE get pods -l app=multi-endpoint
+kubectl -n "$NAMESPACE" get pods -l app=multi-endpoint
 echo ""
 echo "⚠️  Current Issues:"
 echo "   • No Ingress resource configured"

@@ -56,12 +56,12 @@ sleep 5
 echo "🚀 Deploying Multi-Endpoint Node.js Application..."
 
 # Use a quoted here-doc so shell won't expand JS ${...}, then envsubst only for ${NAMESPACE}
-cat <<'YAML' | envsubst '${NAMESPACE}' | kubectl apply -f -
+cat <<'YAML' | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: multi-endpoint-app
-  namespace: ${NAMESPACE}
+  namespace: node-app
   labels:
     app: multi-endpoint
 spec:
@@ -181,7 +181,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: multi-endpoint-service
-  namespace: ${NAMESPACE}
+  namespace: node-app
 spec:
   selector:
     app: multi-endpoint

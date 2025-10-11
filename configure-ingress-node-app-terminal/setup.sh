@@ -17,7 +17,7 @@ kubectl wait --namespace ingress-nginx \
   --selector=app.kubernetes.io/component=controller \
   --timeout=120s 2>/dev/null || echo "Waiting for ingress controller..."
 
-sleep 10
+sleep 3
 
 echo "🔧 Installing MetalLB for LoadBalancer support..."
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.5/config/manifests/metallb-native.yaml
@@ -28,7 +28,7 @@ kubectl wait --namespace metallb-system \
   --selector=component=controller \
   --timeout=120s 2>/dev/null || echo "Waiting for MetalLB..."
 
-sleep 10
+sleep 5
 
 echo "🌐 Configuring MetalLB IP Address Pool..."
 cat <<'YAML' | kubectl apply -f -
@@ -195,36 +195,3 @@ YAML
 kubectl -n ingress-nginx patch svc ingress-nginx-controller \
   -p '{"spec":{"type":"LoadBalancer"}}' --type=merge
 
-echo "⏳ Waiting for deployment to be ready..."
-kubectl -n "$NAMESPACE" rollout status deployment/multi-endpoint-app --timeout=120s || echo "Rollout may still be in progress"
-
-echo "⏳ Waiting for LoadBalancer IP assignment..."
-sleep 10
-
-echo ""
-echo "✅ Environment setup complete!"
-echo ""
-echo "📊 Current deployment status:"
-kubectl -n "$NAMESPACE" get deployment multi-endpoint-app
-echo ""
-echo "🌐 Current service:"
-kubectl -n "$NAMESPACE" get service multi-endpoint-service
-echo ""
-echo "📦 Running pods:"
-kubectl -n "$NAMESPACE" get pods -l app=multi-endpoint
-echo ""
-echo "⚠️  Current Issues:"
-echo "   • No Ingress resource configured"
-echo "   • Application endpoints not accessible via custom domain"
-echo "   • DNS not configured for node.app.terminal.io"
-echo ""
-echo "🎯 Your Mission:"
-echo "   1. Create an Ingress resource named 'multi-endpoint-ingress'"
-echo "   2. Configure path-based routing for /terminal and /app endpoints"
-echo "   3. Set host to 'node.app.terminal.io'"
-echo "   4. Add DNS entry to /etc/hosts"
-echo "   5. Verify both endpoints using curl commands"
-echo ""
-echo "📋 Available Endpoints:"
-echo "   • /terminal - Terminal interface"
-echo "   • /app - Application dashboard"

@@ -25,8 +25,8 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.5/confi
 echo "⏳ Waiting for MetalLB to be ready..."
 kubectl wait --namespace metallb-system \
   --for=condition=ready pod \
-  --selector=app=metallb \
-  --timeout=90s 2>/dev/null || echo "Waiting for MetalLB..."
+  --selector=component=controller \
+  --timeout=120s 2>/dev/null || echo "Waiting for MetalLB..."
 
 sleep 10
 
@@ -75,14 +75,14 @@ spec:
     spec:
       containers:
       - name: app-container
-        image: public.ecr.aws/docker/library/node:alpine
+        image: node:18-alpine
         ports:
         - containerPort: 3000
         command: ["/bin/sh"]
         args:
           - -c
           - |
-            cat > server.js << 'EOFJS'
+            cat > /server.js << 'EOFJS'
             const http = require('http');
             const url = require('url');
 
@@ -116,10 +116,10 @@ spec:
                   <body>
                     <div class="terminal">
                       <h1>$ Terminal Endpoint</h1>
-                      <p>> System initialized...</p>
-                      <p>> Pod: \\\${process.env.HOSTNAME || 'local'}</p>
-                      <p>> Status: Running</p>
-                      <p>> Timestamp: \\\${new Date().toISOString()}</p>
+                      <p>&gt; System initialized...</p>
+                      <p>&gt; Pod: ${process.env.HOSTNAME || 'local'}</p>
+                      <p>&gt; Status: Running</p>
+                      <p>&gt; Timestamp: ${new Date().toISOString()}</p>
                     </div>
                   </body>
                   </html>
@@ -153,17 +153,17 @@ spec:
                   <body>
                     <div class="container">
                       <h1>Application Dashboard</h1>
-                      <p><strong>Pod Name:</strong> \\\${process.env.HOSTNAME || 'local'}</p>
+                      <p><strong>Pod Name:</strong> ${process.env.HOSTNAME || 'local'}</p>
                       <p><strong>Status:</strong> Active</p>
                       <p><strong>Version:</strong> 1.0.0</p>
-                      <p><strong>Timestamp:</strong> \\\${new Date().toLocaleString()}</p>
+                      <p><strong>Timestamp:</strong> ${new Date().toLocaleString()}</p>
                     </div>
                   </body>
                   </html>
                 `);
               } else {
                 res.writeHead(404, { 'Content-Type': 'text/plain' });
-                res.end('404 - Not Found\\n\\nAvailable endpoints:\\n- /terminal\\n- /app');
+                res.end('404 - Not Found\n\nAvailable endpoints:\n- /terminal\n- /app');
               }
             });
 
@@ -174,7 +174,7 @@ spec:
               console.log('  - /app');
             });
             EOFJS
-            node server.js
+            node /server.js
 ---
 apiVersion: v1
 kind: Service

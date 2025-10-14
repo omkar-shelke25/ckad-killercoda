@@ -14,7 +14,6 @@ metadata:
   name: frontend-pod
   namespace: $NS
   labels:
-    wrong: label
     type: frontend
 spec:
   containers:
@@ -29,7 +28,6 @@ metadata:
   name: backend-pod
   namespace: $NS
   labels:
-    wrong: label
     type: backend
 spec:
   containers:
@@ -44,7 +42,6 @@ metadata:
   name: target-pod
   namespace: $NS
   labels:
-    wrong: label
     type: target
 spec:
   containers:

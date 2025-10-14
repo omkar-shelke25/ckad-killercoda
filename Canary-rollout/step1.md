@@ -115,10 +115,6 @@ kubectl scale deploy/frontend --replicas=4
 
 → Ensures 4 stable Pods + 1 canary Pod = \~80/20 traffic split.
 
-Here’s your command sequence rewritten clearly, professionally, and **grammatically correct** 👇
-
----
-
 ### ✅ **Verify Pod Labels, Selectors, and IP Addresses**
 
 Use the following commands to inspect the Service, Deployments, Pods, and Endpoints in detail:

@@ -1,14 +1,14 @@
-# 🚀 Challenge: Team Pluto – Internal Service with Port Redirect
+# 🚀CKAD: Team Pluto – Internal Service with Port Redirect
 
-Create a Pod called **project-plt-6cc-api** in the **pluto** namespace using the image **nginx:1.17.3-alpine**.
-The Pod should be labelled with **project=plt-6cc-api**.
+Create a Pod called **`project-plt-6cc-api`** in the **`pluto`** namespace using the image **`nginx:1.17.3-alpine`**.
+The Pod should be labelled with **`project=plt-6cc-api`**.
 
-Create a ClusterIP Service called **project-plt-6cc-svc** in the **pluto** namespace.
-The service should use tcp port redirection of **3333:80**
+Create a ClusterIP Service called **`project-plt-6cc-svc`** in the **`pluto`** namespace.
+The service should use tcp port redirection of **`3333:80`**
 
-From a temporary client Pod in the same namespace, make an HTTP request to **http://project-plt-6cc-svc:3333/**
+From a temporary client Pod in the same namespace, make an HTTP request to **`http://project-plt-6cc-svc:3333/`**
 
-* 💾 Save the response body to `/opt/course/10/service_test.html`, and 📄 service_test.html should contain the HTML code from the Nginx default directory. 🌐 Use wget/curl for that.
+* 💾 Save the response body to `/opt/course/10/service_test.html`, and 📄 service_test.html should contain the HTML code from the Nginx default directory. 🌐 Use `wget/curl` for that.
 * 💾 Save the `wget/curl` logs from the Pod project-plt-6cc-api to `/opt/course/10/service_test.log`.
 
 ## ✅ **Solution**

@@ -1,19 +1,35 @@
-# Pod Creation with Status Command Requirement
+## 🧩 **Pod Creation with Status Command Requirement**
 
-Work in the **default** namespace.
+**Namespace:** `default`
 
-## Task
+### **Task Description**
 
-- Create a Pod named **pod1** that runs a single container:
-  - Container name: **pod1-container**
-  - Image: **httpd:2.4.41-alpine**
+1. Create a Pod named **`pod1`** in the **default** namespace.
 
-- Provide a shell script at: **/opt/course/2/pod1-status-command.sh**
+   * The Pod should contain **one container** with the following details:
 
-The script must use **kubectl** to print the **status phase** of Pod `pod1` in the `default` namespace  
-(e.g., `Running`, `Pending`, `Succeeded`, etc.).
+     * **Container name:** `pod1-container`
+     * **Image:** `httpd:2.4.41-alpine`
 
-> You must run the script **/opt/course/2/pod1-status-command.sh** at least once before submission (before clicking Check).
+2. Create a shell script at the path:
+   **`/opt/course/2/pod1-status-command.sh`**
+
+   The script must use `kubectl` to print the **status phase** of the Pod `pod1`
+   (for example: `Running`, `Pending`, `Succeeded`, etc.).
+
+3. You must **execute the script at least once** before submitting your work
+   (i.e., run `/opt/course/2/pod1-status-command.sh` before clicking “Check”).
+
+---
+
+### ✅ **Example Expected Script Output**
+
+If the Pod is running successfully, executing the script should print:
+
+```
+Running
+```
+
 
 ## Solution
 

@@ -83,7 +83,6 @@ metadata:
   name: frontend-canary
   labels:
     app: frontend
-    version: v2
 spec:
   replicas: 1
   selector:

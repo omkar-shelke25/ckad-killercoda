@@ -1,10 +1,13 @@
 # 🧪 Canary Deployment: 20% Traffic on nginx:1.20
 
-You have an existing deployment named **frontend** running image **nginx:1.19** with **5 replicas** in the **default** namespace.
-  
-Create a **canary deployment** that runs **nginx:1.20** alongside the existing pods, handling **20% of the traffic**. Canary deployment name should be `frontend-canary`.
+You have an existing deployment named **`frontend`** running the image **`nginx:1.19`** with **5 replicas** in the **default** namespace.
 
-Assume a **Service** exists targeting the `frontend` pods by label.  
+Create a **canary deployment** named **`frontend-canary`** that runs the image **`nginx:1.20`** alongside the existing pods, handling **20% of the traffic**.
+
+Add a pod template label **`version: v2`** to the canary deployment.
+
+Assume a **Service** already exists that targets the `frontend` pods by label.
+
 
 
 

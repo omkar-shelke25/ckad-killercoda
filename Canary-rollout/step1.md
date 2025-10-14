@@ -114,4 +114,36 @@ kubectl scale deploy/frontend --replicas=4
 ```
 
 → Ensures 4 stable Pods + 1 canary Pod = \~80/20 traffic split.
+
+Here’s your command sequence rewritten clearly, professionally, and **grammatically correct** 👇
+
+---
+
+### ✅ **Verify Pod Labels, Selectors, and IP Addresses**
+
+Use the following commands to inspect the Service, Deployments, Pods, and Endpoints in detail:
+
+```bash
+# View Service details including selectors and cluster IP
+kubectl get svc -o wide
+
+# View Deployment details including labels and selectors
+kubectl get deploy -o wide
+
+# List Pods with their labels and IP addresses
+kubectl get pods --show-labels -o wide
+
+# Describe Endpoints to verify which Pods are linked to the Service
+kubectl describe ep
+```
+
+---
+
+### 💡 Explanation:
+
+* **`-o wide`** → shows extended information (like node names, pod IPs, etc.)
+* **`--show-labels`** → displays all labels assigned to each pod
+* **`kubectl describe ep`** → helps confirm that the Service endpoints map correctly to the intended Pods.
+
+
 </details>

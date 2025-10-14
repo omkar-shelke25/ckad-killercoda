@@ -1,12 +1,12 @@
 # Mount ConfigMap as Files into an NGINX Pod (default namespace)
 
 ## Requirements
-1. Create `ConfigMap` **html-config** with keys and contents:
+1. Create `ConfigMap` **`html-config`** with keys and contents:
    - `index.html`: `<h1>Welcome to Kubernetes</h1>`
    - `error.html`: `<h1>Error Page</h1>`
-2. Create Pod **web-pod** using image `nginx:1.29.0`.
+2. Create Pod **`web-pod`** using image **`nginx:1.29.0`**.
 3. Mount the ConfigMap as a volume at **`/usr/share/nginx/html`**.
-4. Verify that **index.html** and **error.html** exist in the container at that path (and contain the expected text).
+4. Verify that **`index.html`** and **`error.html`** exist in the container at that path (and contain the expected text).
 
 ---
 

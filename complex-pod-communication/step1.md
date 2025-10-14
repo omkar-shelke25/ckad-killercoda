@@ -56,7 +56,7 @@ From the policies, we can see:
 
 ### ✅ Step 2: Apply the correct labels
 
-Since the Pods were created with the wrong labels (`wrong=label`), update them:
+Since the Pods were created with the wrong labels update them:
 
 ```bash
 # Label the target pod (this pod will be isolated by the NetworkPolicies)
@@ -111,10 +111,9 @@ You should see:
 
 ```bash
 # Test that target-pod can be reached from frontend-pod
-kubectl -n netpol-challenge exec frontend-pod -- wget -qO- --timeout=2 target-pod
-
+kubectl -n netpol-challenge exec frontend-pod -- wget -qO- --timeout=2 <IP-target-pod>
 # Test that target-pod can be reached from backend-pod  
-kubectl -n netpol-challenge exec backend-pod -- wget -qO- --timeout=2 target-pod
+kubectl -n netpol-challenge exec backend-pod -- wget -qO- --timeout=2 <IP-target-pod>
 ```
 
 ---

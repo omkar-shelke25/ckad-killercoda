@@ -8,7 +8,7 @@ The Node.js application is running in the `node-app` namespace with two endpoint
 ### 🎯 Current State
 - **Namespace**: `node-app`
 - **Deployment**: `multi-endpoint-app` (1 replica)
-- **Service**: `multi-endpoint-service` (LoadBalancer, Port 80 → 3000)
+- **Service**: `multi-endpoint-service` (ClusterIP, Port 80 → 3000)
 
 ### 📝 Task Requirements
 

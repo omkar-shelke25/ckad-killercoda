@@ -6,7 +6,7 @@ Create a new deployment called **`web-app-green`** running **`nginx:1.20`** with
 
 Then, update the existing service **`web-app-service`** to send traffic to the **`green`** deployment pods instead of **`blue`** with **zero downtime**.
 
-`Web-app-service` selector switched to color=green → traffic now goes to **`GREEN`**
+**`Web-app-service`** selector switched to color=green → traffic now goes to **`GREEN`**
 
 ---
 

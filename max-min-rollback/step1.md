@@ -8,7 +8,7 @@ The production web platform `web1` needs to be updated to a new version with **z
 - **Namespace**: `prod`
 - **Deployment**: `web1`
 - **Current Image**: `public.ecr.aws/nginx/nginx:perl`
-- **Replicas**: 10
+- **Replicas**: `10`
 - **Status**: Default rolling update strategy (not suitable for production)
 
 ### 📝 Task Requirements

@@ -6,11 +6,11 @@ The finance team needs to automate their database backup process using a **Kuber
 - Name: **`db-backup`**  
 - Schedule: **Every 10 minutes**
 - Container Image: **`busybox`**  
-- Command: print the current date and the message **"Starting backup"**  
+- Command: print the current date and the message **"`Starting backup`"**  
 - Restart Policy: **`OnFailure`**  
 - Retain **3 successful job histories** 
 - Retain **1 failed job history**
-- Allow missed jobs to start within **100 seconds**
+- Allow missed jobs to start within **`100` seconds**
 
 ---
 

@@ -145,7 +145,7 @@ kubectl describe deployment demon-slayer -n manga
 kubectl describe pod <naruto-pod-name> -n manga   | grep -i "qos"
 kubectl describe pod <demon-slayer-pod-name> -n manga | grep -i "qos"
 #alternative
-kubectl describe po | grep -i "qos"
+kubectl describe po -n manga | grep -i "qos"
 ```
 
 

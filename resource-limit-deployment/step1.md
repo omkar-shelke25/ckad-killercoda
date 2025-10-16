@@ -25,7 +25,7 @@ Update the **`demon-slayer`** deployment in the **`manga`** namespace to include
 - CPU: `200m`
 
 ### Task 3:
-- Use the kubectl describe command to check and compare the resource configurations of both Deployments, and see the QoS class of their Pods.
+- Use the kubectl describe command to compare the resource configurations of both Deployments and verify that their Pods have different `QoS class`.
 
 ## Try it yourself first!
 

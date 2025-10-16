@@ -6,13 +6,13 @@ You're working as a DevOps engineer for a fintech company. The security team has
 
 In namespace **`payment-platform`**, three microservices pods exist:
 
-- **frontend-service** 
-- **database-service** 
-- **payment-processor** 
+- **`frontend-service`** 
+- **`database-service`** 
+- **`payment-processor`** 
 
 ## 🎯 Task Requirements
 
-The **`payment-processor`** pod must be able to communicate **bidirectionally** with both the `frontend-service` and `database-service` pods, as defined by the existing NetworkPolicies.
+The **`payment-processor`** pod must be able to communicate **`bidirectionally`** with both the `frontend-service` and `database-service` pods, as defined by the existing NetworkPolicies.
 
 ### 🚫 Important Constraints
 - You are **NOT allowed** to create, modify, or delete any NetworkPolicy

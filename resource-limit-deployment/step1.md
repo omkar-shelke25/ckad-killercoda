@@ -125,3 +125,29 @@ kubectl rollout status deployment/demon-slayer -n manga
 
 </details>
 
+
+<details><summary>✅ Describe resources of containers and deployments</summary>
+
+
+### 🧱 Describe the **Deployments**
+
+```bash
+kubectl describe deployment naruto -n manga
+kubectl describe deployment demon-slayer -n manga
+```
+
+> ✅ Shows the **pod template resources** (requests/limits) configured inside each Deployment.
+
+---
+
+### 🧩 Describe the **Pods** (replace Pod name as needed)
+
+```bash
+kubectl describe pod <naruto-pod-name> -n manga
+kubectl describe pod <demon-slayer-pod-name> -n manga
+```
+
+
+> ✅ Shows **actual resource requests and limits applied** to running containers after scheduling.
+
+</details>

@@ -142,11 +142,15 @@ kubectl describe deployment demon-slayer -n manga
 ### 🧩 Describe the **Pods** (replace Pod name as needed)
 
 ```bash
-kubectl describe pod <naruto-pod-name> -n manga
-kubectl describe pod <demon-slayer-pod-name> -n manga
+kubectl describe pod <naruto-pod-name> -n manga   | grep -i "qos"
+kubectl describe pod <demon-slayer-pod-name> -n manga | grep -i "qos"
+#alternative
+kubectl describe po | grep -i "qos"
 ```
 
 
 > ✅ Shows **actual resource requests and limits applied** to running containers after scheduling.
+
+
 
 </details>

@@ -1,68 +1,30 @@
 # CKAD: Configure Resource Requests and Limits
 
-Two anime-themed deployments are running in the **manga** namespace, but they don't have any resource requests or limits configured. This can lead to resource contention and unstable cluster performance.
+Two anime-themed deployments are running in the **`manga`** namespace, but they don't have any resource requests or limits configured. This can lead to resource contention and unstable cluster performance.
 
 Your mission is to configure appropriate resource constraints for both deployments following Kubernetes best practices.
 
 ## 📋 Your Tasks
 
-### Task 1: Configure Resources for naruto Deployment
+### Task 1: Configure Resources for `naruto` Deployment
 
-Update the **naruto** deployment in the **manga** namespace to include:
+Update the **`naruto`** deployment in the **`manga`** namespace to include:
 
 **Resource Requests:**
 - Memory: `100Mi`
 - CPU: `100m`
 
-> **Note:** Requests define the minimum resources guaranteed to a container. The scheduler uses these to decide which node to place the pod on.
 
-### Task 2: Configure Resources for demon-slayer Deployment
 
-Update the **demon-slayer** deployment in the **manga** namespace to include:
+### Task 2: Configure Resources for `demon-slayer` Deployment
+
+Update the **`demon-slayer`** deployment in the **`manga`** namespace to include:
 
 **Resource Limits:**
 - Memory: `200Mi`
 - CPU: `200m`
 
-> **Note:** Limits define the maximum resources a container can use. If a container exceeds its memory limit, it will be terminated. If it exceeds CPU limits, it will be throttled.
-
----
-
-## 🔍 Verify Your Work
-
-After completing the tasks, verify your configuration:
-
-```bash
-# Check naruto deployment resources
-kubectl describe deployment naruto -n manga | grep -A 10 "Containers:"
-
-# Check demon-slayer deployment resources
-kubectl describe deployment demon-slayer -n manga | grep -A 10 "Containers:"
-
-# View all pods and their resource configurations
-kubectl get pods -n manga -o custom-columns=NAME:.metadata.name,CPU-REQUEST:.spec.containers[0].resources.requests.cpu,CPU-LIMIT:.spec.containers[0].resources.limits.cpu,MEM-REQUEST:.spec.containers[0].resources.requests.memory,MEM-LIMIT:.spec.containers[0].resources.limits.memory
-```
-
----
-
-## 💡 CKAD Exam Tips
-
-1. **Imperative Commands:** You can use `kubectl set resources` command for quick updates
-2. **Units Matter:** 
-   - CPU: Use `m` for millicores (1000m = 1 CPU core)
-   - Memory: Use `Mi` (Mebibytes) or `Gi` (Gibibytes)
-3. **Requests vs Limits:**
-   - Requests: Minimum guaranteed resources
-   - Limits: Maximum allowed resources
-4. **Both can be set:** A pod can have both requests AND limits
-5. **QoS Classes:** Kubernetes assigns QoS based on requests/limits:
-   - **Guaranteed:** requests = limits for all resources
-   - **Burstable:** requests < limits or only requests set
-   - **BestEffort:** No requests or limits set
-
----
-
-# Try it yourself first!
+## Try it yourself first!
 
 <details><summary>✅ Solution - Method 1: Imperative Commands</summary>
 

@@ -1,6 +1,6 @@
 # CKAD: Fix RBAC for Deployment
 
-The Straw Hat Pirates need their monitoring systems to access deployment information. Currently, both **monkey.d.luffy** and **crew-monitor** deployments in the **one-piece** namespace are showing RBAC errors in their logs.
+The Straw Hat Pirates need their monitoring systems to access deployment information. Currently, both **`monkey.d.luffy`** and **`crew-monitor`** deployments in the **`one-piece`** namespace are showing RBAC errors in their logs.
 
 You should see errors like:
 ```
@@ -17,24 +17,24 @@ Error from server (Forbidden): deployments.apps is forbidden: User "system:servi
 
 ### Part 1: Fix monkey.d.luffy Deployment
 
-1. Create a ServiceAccount named **thousand-sunny** in the **one-piece** namespace.
+1. Create a ServiceAccount named **`thousand-sunny`** in the **one-piece** namespace.
 
-2. Create a Role named **strawhat-role** in the **one-piece** namespace that grants the following permissions on Deployments:
+2. Create a Role named **`strawhat-role`** in the **`one-piece`** namespace that grants the following permissions on Deployments:
    - `get`
    - `list`
    - `watch`
 
-3. Create a RoleBinding named **strawhat-rb** in the **one-piece** namespace that binds the **strawhat-role** to the **thousand-sunny** ServiceAccount.
+3. Create a RoleBinding named **`strawhat-rb`** in the **`one-piece`** namespace that binds the **`strawhat-role`** to the **`thousand-sunny`** ServiceAccount.
 
-4. Update the existing Deployment **monkey.d.luffy** to use the **thousand-sunny** ServiceAccount.
+4. Update the existing Deployment **`monkey.d.luffy`** to use the **`thousand-sunny`** ServiceAccount.
 
 ### Part 2: Fix crew-monitor Deployment
 
-The **crew-monitor** deployment already has a ServiceAccount (**nami-navigator**), but it's missing the Role and RoleBinding!
+The **`crew-monitor`** deployment already has a ServiceAccount (**`nami-navigator`**), but it's missing the Role and RoleBinding!
 
-5. Create a Role named **navigator-role** in the **one-piece** namespace with the same permissions (`get`, `list`, `watch` on deployments).
+5. Create a Role named **`navigator-role`** in the **`one-piece`** namespace with the same permissions (`get`, `list`, `watch` on deployments).
 
-6. Create a RoleBinding named **navigator-rb** that binds **navigator-role** to the **nami-navigator** ServiceAccount.
+6. Create a RoleBinding named **`navigator-rb`** that binds **`navigator-role`** to the **`nami-navigator`** ServiceAccount.
 
 ---
 

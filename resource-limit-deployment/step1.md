@@ -24,6 +24,10 @@ Update the **`demon-slayer`** deployment in the **`manga`** namespace to include
 - Memory: `200Mi`
 - CPU: `200m`
 
+### Task 3:
+- Use the kubectl describe command to verify and compare the resource configurations of both Deployments.
+- Observe the difference between Requests and Limits shown in their container specifications.
+
 ## Try it yourself first!
 
 <details><summary>✅ Solution - Method 1: Imperative Commands</summary>

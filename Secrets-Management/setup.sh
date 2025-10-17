@@ -28,15 +28,19 @@ spec:
     spec:
       containers:
       - name: db-client
-        image: busybox:latest
-        command: ['sleep', '3600']
+        image: public.ecr.aws/docker/library/mysql:latest
+        ports:
+        - containerPort: 3306
         env:
         - name: DB_USER
-          value: "olduser"
+          value: "bankadmin"
         - name: DB_PASS
-          value: "oldpassword"
+          value: "securePass123"
         - name: DB_HOST
           value: "mysql-service"
+        - name: MYSQL_ROOT_PASSWORD
+          value: "securePass123"
 EOF
+
 
 echo "Environment ready!"

@@ -1,23 +1,17 @@
+
 # Database Credentials Security Challenge
 
-## **Question (Weightage: 4)**
+There is a pod called `db-client` in the `banking` namespace.
+The Pod currently has plain environment variables for database credentials.
 
-A Deployment named `db-client` exists in the `banking` namespace. It currently uses hardcoded environment variables for database credentials.
-
-### **Task:**
-
-**Create a Secret named `db-secret` in the `banking` namespace with:**
-- DB_USER=bankadmin
-- DB_PASS=securePass123
-- DB_HOST=mysql-service
-
-**Update the `db-client` Deployment so that the environment variables `DB_USER`,`DB_PASS` & `DB_HOST` are loaded from the Secret instead of plain values.**
-
-**Ensure the updated Pods are running with the new configuration.**
-
-
+**Task:**
+Find the plain environment variables used for the database inside the Pod.
+Move those credentials into a Secret named `db-secret` in the `banking` namespace.
+Then, update the `db-client` Deployment to use the values from the Secret instead of plain environment variables.
+Make sure the new Pods are running correctly with the updated configuration.
 
 ---
+
 
 ## **Solution**
 

@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: db-client
-        image: public.ecr.aws/docker/library/mysql:latest
+        image: public.ecr.aws/docker/library/postgres:alpine
         ports:
         - containerPort: 3306
         env:

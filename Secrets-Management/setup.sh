@@ -28,16 +28,17 @@ spec:
     spec:
       containers:
       - name: db-client
-        image: public.ecr.aws/nginx/nginx:stable-alpine
+        image: public.ecr.aws/docker/library/postgres:alpine
+        command: ["sleep","3600"]
         ports:
-        - containerPort: 80
+        - containerPort: 5432
         env:
         - name: DB_USER
           value: "bankadmin"
         - name: DB_PASS
           value: "securePass123"
         - name: DB_HOST
-          value: "mysql-service"
+          value: "sql-service"
 EOF
 
 

@@ -75,8 +75,7 @@ spec:
     spec:
       containers:
       - name: db-client
-        image: busybox:latest
-        command: ['sleep', '3600']
+        image: public.ecr.aws/nginx/nginx:stable-alpine
         env:
         - name: DB_USER
           valueFrom:

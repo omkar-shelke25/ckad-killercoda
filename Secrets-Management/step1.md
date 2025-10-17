@@ -7,7 +7,7 @@ The Pod currently has plain environment variables for database credentials.
 **Task:**
 - Find the plain environment variables used for the database inside the Pod.
 - Move those credentials into a Secret named `db-secret` in the `banking` namespace.
-- Then, update the `db-client` Deployment to use the values from the Secret instead of plain environment variables.
+- Then, update the `db-client` pod to use the values from the Secret instead of plain environment variables.
 - Make sure the new Pods are running correctly with the updated configuration.
 
 ---

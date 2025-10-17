@@ -1,5 +1,5 @@
 {
-  "title": "CKAD: Convert hardcoded environment variables into Kubernetes Secrets.",
+  "title": "CKAD: Convert hardcoded environment variables into Kubernetes Secrets",
   "description": "Replace hardcoded database credentials with Kubernetes Secrets",
   "details": {
     "steps": [

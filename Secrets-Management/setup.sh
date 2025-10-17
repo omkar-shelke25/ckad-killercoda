@@ -28,9 +28,9 @@ spec:
     spec:
       containers:
       - name: db-client
-        image: public.ecr.aws/docker/library/postgres:alpine
+        image: public.ecr.aws/nginx/nginx:stable-alpine
         ports:
-        - containerPort: 3306
+        - containerPort: 80
         env:
         - name: DB_USER
           value: "bankadmin"

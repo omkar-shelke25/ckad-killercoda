@@ -1,5 +1,4 @@
-
-# Database Credentials Security Challenge
+# CKAD: Convert hardcoded environment variables into Kubernetes Secrets
 
 There is a Deployment called `db-client` in the `banking` namespace.
 The Deployment currently has plain environment variables for database credentials.

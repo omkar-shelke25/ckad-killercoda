@@ -74,7 +74,10 @@ spec:
     spec:
       containers:
       - name: db-client
-        image: public.ecr.aws/nginx/nginx:stable-alpine
+        image: public.ecr.aws/docker/library/postgres:alpine
+        command: ["sleep", "3600"]
+        ports:
+        - containerPort: 5432
         env:
         - name: DB_USER
           valueFrom:
@@ -92,6 +95,7 @@ spec:
               name: db-secret
               key: DB_HOST
 EOF
+
 ```
 
 ### **Step 3: Verify the Solution**

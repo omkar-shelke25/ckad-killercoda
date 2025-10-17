@@ -103,7 +103,7 @@ POD_STATUS=$(kubectl get pods -n banking -l app=db-client -o jsonpath='{.items[0
 HOST_OK=false
 POD_OK=false
 
-if [ "$DB_HOST_VALUE" = "mysql-service" ]; then
+if [ "$DB_HOST_VALUE" = "sql-service" ]; then
     echo "✅ DB_HOST environment variable preserved correctly"
     HOST_OK=true
 else

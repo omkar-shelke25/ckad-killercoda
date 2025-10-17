@@ -38,8 +38,6 @@ spec:
           value: "securePass123"
         - name: DB_HOST
           value: "mysql-service"
-        - name: MYSQL_ROOT_PASSWORD
-          value: "securePass123"
 EOF
 
 

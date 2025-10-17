@@ -82,7 +82,7 @@ echo
 
 # Test 5: Check no hardcoded credentials remain (1 point)
 echo "[5/6] Checking for hardcoded credentials..."
-HARDCODED_USER=$(echo "$DEPLOYMENT" | grep -A 2 "name: DB_USER" | grep "value:" | grep -v "mysql-service" 2>/dev/null)
+HARDCODED_USER=$(echo "$DEPLOYMENT" | grep -A 2 "name: DB_USER" | grep "value:" | grep -v "sql-service" 2>/dev/null)
 HARDCODED_PASS=$(echo "$DEPLOYMENT" | grep -A 2 "name: DB_PASS" | grep "value:" 2>/dev/null)
 
 if [ -z "$HARDCODED_USER" ] && [ -z "$HARDCODED_PASS" ]; then
@@ -107,7 +107,7 @@ if [ "$DB_HOST_VALUE" = "sql-service" ]; then
     echo "✅ DB_HOST environment variable preserved correctly"
     HOST_OK=true
 else
-    echo "❌ DB_HOST should remain as plain value 'mysql-service'"
+    echo "❌ DB_HOST should remain as plain value 'sql-service'"
 fi
 
 if [ "$POD_STATUS" = "Running" ]; then

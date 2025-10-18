@@ -1,5 +1,5 @@
 {
-  "title": "Pod with Two Containers and Shared fsGroup",
+  "title": "CKAD: Pod with Two Containers and Shared fsGroup",
   "description": "Create a Pod with two containers running the same image but with different user IDs, while sharing a common fsGroup.",
   "details": {
     "steps": [

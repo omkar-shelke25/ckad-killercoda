@@ -20,7 +20,6 @@ Their note says:
 - Both containers must:
   - Use the **same image** (e.g., `busybox:1.36`).  
   - Stay alive (e.g., `sleep 1d`).  
-- Security requirements for containers:
   - `preproc` → runs as UID **1000**  
   - `shipper` → runs as UID **2000**  
 - Pod-level `fsGroup` so they share file group ownership.

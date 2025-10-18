@@ -1,12 +1,12 @@
 # CKAD: Convert Pod → Deployment (namespace: pluto)
 
-In Namespace **pluto** there is single Pod named holy-api. It has been working okay for a while now but Team Pluto needs it to be more reliable.
+In Namespace **`pluto`** there is single Pod named holy-api. It has been working okay for a while now but Team Pluto needs it to be more reliable.
 
-Convert the Pod into a Deployment named **holy-api** with **3 replicas** &  delete the single Pod once done. The raw Pod template file is available at **/opt/course/9/holy-api-pod.yaml**.
+Convert the Pod into a Deployment named **`holy-api`** with **`3` replicas** &  delete the single Pod once done. The raw Pod template file is available at **`/opt/course/9/holy-api-pod.yaml`**.
 
-In addition, the new Deployment should set **allowPrivilegeEscalation: false** and **privileged: false** for the security context on container level.
+In addition, the new Deployment should set **`allowPrivilegeEscalation: false`** and **`privileged: false`* for the security context on container level.
 
-Please create the Deployment and save its yaml under **/opt/course/9/holy-api-deployment.yaml.**
+Please create the Deployment and save its yaml under **`/opt/course/9/holy-api-deployment.yaml`.**
 
 ---
 

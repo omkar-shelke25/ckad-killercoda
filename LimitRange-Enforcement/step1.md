@@ -3,15 +3,15 @@
 **Objective:** Enforce memory governance in a new namespace and validate defaulting via LimitRange.
 
 ## Requirements
-1. Create a namespace: **team-a**.
-2. In **team-a**, create a **LimitRange** named **mem-limit-range** (type: `Container`) with:
-   - **min** memory request: `64Mi`
-   - **max** memory limit: `512Mi`
-   - **defaultRequest** (memory): `128Mi`
-   - **default** (memory): `256Mi`
-3. Create a Pod **busy-pod** in **team-a** using image **busybox**.
+1. Create a namespace: **`team-a`**.
+2. In **`team-a`**, create a **LimitRange** named **`mem-limit-range`** (type: `Container`) with:
+   - **`min`** memory request: `64Mi`
+   - **`max`** memory limit: `512Mi`
+   - **`defaultRequest`** (memory): `128Mi`
+   - **`default`** (memory): `256Mi`
+3. Create a Pod **`busy-pod`** in **`team-a`** using image **`public.ecr.aws/docker/library/busybox:latest`**.
    - **Do not** set any resources in the Pod spec (no requests/limits).
-4. Confirm the Pod **starts successfully** and received memory **request=128Mi** and **limit=256Mi** from the LimitRange.
+4. Confirm the Pod **starts successfully** and received memory **`request=128Mi`** and **`limit=256Mi`** from the LimitRange.
 
    > Below Command it’s just for your own verification.
    
@@ -45,7 +45,7 @@ metadata:
 spec:
   containers:
   - name: bb
-    image: busybox:1.37.0
+    image: public.ecr.aws/docker/library/busybox:latest
     command: ["sh","-c","sleep 3600"]
 ```
 

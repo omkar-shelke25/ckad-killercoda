@@ -14,8 +14,8 @@ Their note says:
 
 ## Task
 
-- Work in namespace **sec-ctx**.  
-- Create a Pod named **twin-uid**.  
+- Work in namespace **`sec-ctx`**.  
+- Create a Pod named **`twin-uid`**.  
 - It should run **two containers** (`preproc` and `shipper`).  
 - Both containers must:
   - Use the **same image** → `public.ecr.aws/docker/library/busybox:stable`

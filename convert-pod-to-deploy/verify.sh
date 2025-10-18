@@ -19,7 +19,7 @@ REPLICAS=$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.replicas}')
 
 # 3) Container image (first container)
 IMG=$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].image}')
-[[ "$IMG" == "busybox:1.31.0" ]] || fail "Expected image busybox:1.31.0 (found $IMG)."
+[[ "$IMG" == "public.ecr.aws/docker/library/busybox:stable" ]] || fail "Expected image public.ecr.aws/docker/library/busybox:stable (found $IMG)."
 
 # 4) At least one container has the required securityContext
 JSON=$(kubectl -n "$NS" get deploy "$DEP" -o json)

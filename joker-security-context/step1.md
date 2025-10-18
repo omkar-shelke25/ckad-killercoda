@@ -8,17 +8,18 @@ The manifest file for the existing Deployment can be found at `/opt/course/20/jo
 
 ## 🎯 Task
 
-Modify the existing Deployment named **joker-deployment** running in namespace **joker** so that its containers:
+Modify the existing Deployment named **`joker-deployment`** running in namespace **`joker`** so that its containers:
 
-1. **Run with user ID 3000**
+1. **Run with user ID `3000`**
 2. **Privilege escalation is forbidden** (set `allowPrivilegeEscalation: false`)
 3. **Add the following Linux capabilities:**
    - `NET_BIND_SERVICE`
    - `NET_RAW`
    - `NET_ADMIN`
+4. Check the logs of the deployment.
 
 **Requirements:**
-- Save your modified YAML to `/opt/course/20/joker-deployment-new.yaml`
+- Save your modified YAML to **`/opt/course/20/joker-deployment-new.yaml`**
 - Apply the changes to update the running deployment
 - Verify all pods are running successfully with the new security configuration
 

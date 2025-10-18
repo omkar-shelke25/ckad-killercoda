@@ -18,7 +18,7 @@ Their note says:
 - Create a Pod named **twin-uid**.  
 - It should run **two containers** (`preproc` and `shipper`).  
 - Both containers must:
-  - Use the **same image** (e.g., `busybox:1.36`).  
+  - Use the **same image** → `public.ecr.aws/docker/library/busybox:stable`
   - Stay alive (e.g., `sleep 1d`).  
   - `preproc` → runs as UID **1000**  
   - `shipper` → runs as UID **2000**  
@@ -44,12 +44,12 @@ spec:
     fsGroup: 3000
   containers:
   - name: preproc
-    image: busybox:1.36
+    image: public.ecr.aws/docker/library/busybox:stable 
     securityContext:
       runAsUser: 1000
     command: ["sh","-c","sleep 1d"]
   - name: shipper
-    image: busybox:1.36
+    image: public.ecr.aws/docker/library/busybox:stable
     securityContext:
       runAsUser: 2000
     command: ["sh","-c","sleep 1d"]

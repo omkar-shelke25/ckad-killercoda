@@ -1,4 +1,4 @@
-# CKAD: SecurityContext & Capabilities (Weightage: 8%)
+# CKAD: SecurityContext & Capabilities (Weightage: 6%)
 
 ## 📋 Background
 

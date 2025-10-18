@@ -26,7 +26,7 @@ metadata:
 spec:
   containers:
   - name: app
-    image: busybox:1.31.0
+    image: public.ecr.aws/docker/library/busybox:stable
     command: ["/bin/sh","-c","sleep 1d"]
 EOF
 

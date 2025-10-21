@@ -21,6 +21,7 @@ Assume a **Service** already exists that targets the `frontend` pods by label.
   <br/>
   <b>Figure 2:</b> Canary deployment visualization in Headlamp.
 </div>
+
 > ⚠️ Note:
 > Visualizing the Canary Deployment in Headlamp is only for learning purposes and not part of the CKAD exam.
 

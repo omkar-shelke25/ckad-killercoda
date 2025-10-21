@@ -19,7 +19,7 @@ Assume a **Service** already exists that targets the `frontend` pods by label.
        alt="Canary Deployment Visualization" 
        style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.25); margin: 10px 0;" />
   <br/>
-  <b>Figure 2:</b> Canary deployment visualization in Headlamp.
+  <b>Figure 1:</b> Canary deployment visualization in Headlamp.
 </div>
 
 > ⚠️ Note:

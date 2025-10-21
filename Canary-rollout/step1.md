@@ -12,7 +12,7 @@ Almost — just a small grammatical fix for clarity and flow. Here are the corre
 
 
 
-> Headlamp is running on NodePort **30080**. You can visualize the canary deployment at [http://localhost:3333](http://localhost:30080).
+> Headlamp is running on NodePort **30080**. You can visualize the canary deployment at [http://localhost:30080](http://localhost:30080).
 > The access token is saved at **`/root/headlamp-token`**.
 
 

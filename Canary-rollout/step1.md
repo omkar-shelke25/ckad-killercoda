@@ -14,13 +14,13 @@ Assume a **Service** already exists that targets the `frontend` pods by label.
 >🔑 Token: `cat /root/headlamp-token; echo`. Wait ~1 min for Headlamp to be ready
 
 #### Visualize the Canary Deployment
-<p align="center">
+<div align="center">
   <img src="https://github.com/user-attachments/assets/0fa1fcc1-2950-49e8-b1b7-b65c4475275b" 
        alt="Canary Deployment Visualization" 
-       width="100%" 
-       style="border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.15);" />
-</p>
-
+       style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.25); margin: 10px 0;" />
+  <br/>
+  <b>Figure 2:</b> Canary deployment visualization in Headlamp.
+</div>
 > ⚠️ Note:
 > Visualizing the Canary Deployment in Headlamp is only for learning purposes and not part of the CKAD exam.
 

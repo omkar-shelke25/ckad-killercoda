@@ -1,6 +1,6 @@
 # 🧪 Canary Deployment: 20% Traffic on nginx:1.20
 
-You have an existing deployment named **`frontend`** running the image **`nginx:1.19`** with **5 replicas** in the **default** namespace.
+You have an existing deployment named **`frontend`** running the image **`nginx:1.19`** with **`5` replicas** in the **`default`** namespace.
 
 Create a **canary deployment** named **`frontend-canary`** that runs the image **`nginx:1.20`** alongside the existing pods, handling **20% of the traffic**.
 
@@ -12,8 +12,9 @@ Almost — just a small grammatical fix for clarity and flow. Here are the corre
 
 
 
-> Headlamp is running on NodePort **30080**. You can visualize the canary deployment at [http://localhost:30080](http://localhost:30080).
+> Headlamp is running on NodePort **`30080`**. You can visualize the canary deployment at NodePort **`30080`**
 > The access token is saved at **`/root/headlamp-token`**.
+
 
 
 ## Try to solve this yourself first!

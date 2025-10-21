@@ -70,21 +70,3 @@ echo "Setup complete: namespace 'ios', BLUE deployment and Service ready."
 
 
 
-# Create namespace
-kubectl create namespace headlamp
-
-# Add Headlamp repo
-helm repo add headlamp https://kubernetes-sigs.github.io/headlamp/
-helm repo update
-
-# Install Headlamp with NodePort
-helm install headlamp headlamp/headlamp \
-  --namespace headlamp \
-  --set service.type=NodePort \
-  --set service.nodePort=30080
-
-# Create and save token
-kubectl create token headlamp -n headlamp > /root/headlamp-token
-
-echo "Headlamp installed successfully"
-

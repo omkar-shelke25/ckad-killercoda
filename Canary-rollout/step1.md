@@ -10,9 +10,11 @@ Assume a **Service** already exists that targets the `frontend` pods by label.
 
 Almost — just a small grammatical fix for clarity and flow. Here are the corrected versions you can use:
 
-> Headlamp is running on NodePort 33333. You can visualize the canary deployment at [http://localhost:33333](http://localhost:33333).
+Here are the corrected and polished versions with your addition 👇
 
----
+> Headlamp is running on NodePort **33333**. You can visualize the canary deployment at [http://localhost:33333](http://localhost:33333).
+> The access token is saved at **`/root/headlamp-token`**.
+
 
 ## Try to solve this yourself first!
 

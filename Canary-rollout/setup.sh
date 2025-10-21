@@ -51,3 +51,21 @@ kubectl -n "$NS" patch deploy "$DEP_STABLE" --type='json' -p='[
 
 kubectl -n "$NS" rollout status deploy/"$DEP_STABLE" --timeout=180s || true
 echo "Setup complete: stable '${DEP_STABLE}' = ${IMG_STABLE} with ${STABLE_REPLICAS} replicas; Service '${SVC}' selects app=frontend."
+
+# Create namespace
+kubectl create namespace headlamp
+
+# Add Headlamp repo
+helm repo add headlamp https://kubernetes-sigs.github.io/headlamp/
+helm repo update
+
+# Install Headlamp with NodePort
+helm install headlamp headlamp/headlamp \
+  --namespace headlamp \
+  --set service.type=NodePort \
+  --set service.nodePort=33333
+
+# Create and save token
+kubectl create token headlamp -n headlamp > /root/headlamp-token
+
+echo "Headlamp installed successfully"

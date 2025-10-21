@@ -63,7 +63,7 @@ helm repo update
 helm install headlamp headlamp/headlamp \
   --namespace headlamp \
   --set service.type=NodePort \
-  --set service.nodePort=33333
+  --set service.nodePort=30080
 
 # Create and save token
 kubectl create token headlamp -n headlamp > /root/headlamp-token

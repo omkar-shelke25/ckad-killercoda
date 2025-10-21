@@ -12,8 +12,11 @@ Almost — just a small grammatical fix for clarity and flow. Here are the corre
 
 
 
-> Headlamp is running on NodePort **`30080`**. You can visualize the canary deployment at NodePort **`30080`**
-> The access token is saved at **`/root/headlamp-token`**.
+>🟢 Headlamp running on NodePort 30080. You can visualize the canary deployment via the Headlamp dashboard.  
+>🌐 Open: https://[[HOST_SUBDOMAIN]]-30080-[[KILLERCODA_HOST]].killercoda.com/  
+>🔑 Token: /root/headlamp-token  
+>⏳ Wait ~1 min for Headlamp to be ready
+
 
 
 

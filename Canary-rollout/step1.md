@@ -8,8 +8,6 @@ Add a pod template label **`version: v2`** to the canary deployment.
 
 Assume a **Service** already exists that targets the `frontend` pods by label.
 
-Almost — just a small grammatical fix for clarity and flow. Here are the corrected versions you can use:
-
 
 
 >🟢 Headlamp running on NodePort `30080`. You can visualize the canary deployment via the Headlamp dashboard.  

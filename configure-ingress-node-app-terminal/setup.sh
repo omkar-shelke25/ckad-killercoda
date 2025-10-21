@@ -19,17 +19,43 @@ kubectl wait --namespace ingress-nginx \
 
 sleep 3
 
-echo "🔧 Patching Ingress Controller to use NodePort..."
-kubectl -n ingress-nginx patch svc ingress-nginx-controller \
-  -p '{"spec":{"type":"NodePort"}}' --type=merge
+echo "🔧 Installing MetalLB for LoadBalancer support..."
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.5/config/manifests/metallb-native.yaml
 
-echo "📋 Getting NodePort details..."
-sleep 2
-kubectl -n ingress-nginx get svc ingress-nginx-controller
+echo "⏳ Waiting for MetalLB to be ready..."
+kubectl wait --namespace metallb-system \
+  --for=condition=ready pod \
+  --selector=component=controller \
+  --timeout=120s 2>/dev/null || echo "Waiting for MetalLB..."
 
-echo ""
+sleep 5
+
+echo "🌐 Configuring MetalLB IP Address Pool..."
+cat <<'YAML' | kubectl apply -f -
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: default-address-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.1.240-192.168.1.250
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: default-l2
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - default-address-pool
+YAML
+
+sleep 5
+
 echo "🚀 Deploying Multi-Endpoint Node.js Application..."
 
+# Use a quoted here-doc so shell won't expand JS ${...}, then envsubst only for ${NAMESPACE}
 cat <<'YAML' | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment
@@ -166,10 +192,6 @@ spec:
   type: ClusterIP
 YAML
 
-echo ""
-echo "✅ Setup complete!"
-echo ""
-echo "📝 Access your application using NodePort:"
-echo "   Run: kubectl -n ingress-nginx get svc ingress-nginx-controller"
-echo "   Then access via: http://<node-ip>:<nodeport>/terminal"
-echo "   Or: http://<node-ip>:<nodeport>/app"
+kubectl -n ingress-nginx patch svc ingress-nginx-controller \
+  -p '{"spec":{"type":"LoadBalancer"}}' --type=merge
+

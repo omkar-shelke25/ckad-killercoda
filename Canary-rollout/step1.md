@@ -11,7 +11,7 @@ Assume a **Service** already exists that targets the `frontend` pods by label.
 
 
 >🟢 Headlamp running on NodePort `30080`. You can visualize the canary deployment via the Headlamp dashboard.  
->🔑 Token: `/root/headlamp-token`. Wait ~1 min for Headlamp to be ready
+>🔑 Token: `cat /root/headlamp-token; echo`. Wait ~1 min for Headlamp to be ready
 
 
 ## Try to solve this yourself first!

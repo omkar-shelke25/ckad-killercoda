@@ -23,7 +23,7 @@ Create an Ingress named `multi-endpoint-ingress` in the `node-app` namespace wit
 
 #### Part 2: Configure DNS Resolution
 - ✅ Add DNS entry to `/etc/hosts` for `node.app.terminal.io`
-- ✅ Point to the Ingress Controller's external IP
+- ✅ Point to the Ingress Controller's external IP. Ensure that the ingress `multi-endpoint-ingress` has obtained an IP address.
 
 #### Part 3: Verify Access
 - ✅ Use `curl` to test `/terminal` endpoint

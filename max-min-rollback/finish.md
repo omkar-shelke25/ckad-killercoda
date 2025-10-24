@@ -34,8 +34,6 @@ Update Process (Zero Downtime):
   3. Terminate 1 old pod
   4. Repeat until complete
          ↓
-Failure Detected (CSS Issue)
-         ↓
 Rollback Initiated
          ↓
 All Pods Back to Stable Version

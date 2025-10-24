@@ -25,7 +25,7 @@ Update the deployment `web1` to use:
 - ✅ Monitor the rollout progress, including how pods are terminated and replaced during the image update
 - ✅ Verify all pods are updated successfully
 
-#### Part 3: Simulate Failure and Rollback
+#### Part 3: Rollback previous version
 - ✅ Execute immediate rollback to previous version
 - ✅ Verify all pods are back to `perl` image
 - ✅ Confirm rollback completed successfully

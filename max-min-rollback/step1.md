@@ -1,4 +1,4 @@
-# 🔄 Configure and Execute Rolling Update
+# 🔄CKAD: Configure and Execute Rolling Update
 
 ## 📋 Mission Brief
 

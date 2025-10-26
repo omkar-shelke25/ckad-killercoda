@@ -1,6 +1,6 @@
 {
-  "title": "Ingress: Route /api and /video to Different Services",
-  "description": "Create a single Ingress that routes app.example.com/api to api-service and /video to video-service.",
+  "title": "CKAD: Configure DNS and Traefik Ingress for Path-Based Traffic Routing",
+  "description": "Create a single Ingress that routes to api-service and /video to video-service.",
   "details": {
     "steps": [
       {

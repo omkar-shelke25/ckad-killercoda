@@ -1,4 +1,4 @@
-## 🧩 **CKAD: Configure a Single Ingress for Path Routing**
+## **CKAD: Configure a Single Ingress for Path Routing**
 
 You are working in a Kubernetes cluster where the following Deployments are already running in the **`streaming`** namespace:
 

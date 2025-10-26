@@ -32,30 +32,12 @@ Both rules must use **`pathType: Prefix`**, and the Ingress should use the **`tr
    ```
    <NODE_IP>  streams.local
    ```
-
-   Example:
-
-   ```
-   172.30.2.2  streams.local
-   ```
-
 2. Verify that the Ingress routes work through the Traefik NodePort (**30099**):
 
    ```bash
    curl http://streams.local:30099/api
    curl http://streams.local:30099/video
    ```
-
-**Expected Output:**
-
-```
-hello-from-api
-hello-from-video
-```
-
--
-
-
 ---
 
 ## Try it yourself first!

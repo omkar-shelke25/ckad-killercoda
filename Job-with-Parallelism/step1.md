@@ -16,6 +16,8 @@ Requirements:
 <details> <summary>✅ Solution</summary>
 
 # Step 1: Create the YAML file
+
+```bash
 cat <<EOF > /opt/course/3/job.yaml
 apiVersion: batch/v1
 kind: Job
@@ -36,6 +38,7 @@ spec:
         command: ["sh", "-c", "sleep 2 && echo done"]
       restartPolicy: Never     # Pods will not restart after completion or failure
 EOF
+```
 
 Apply and verify:
 

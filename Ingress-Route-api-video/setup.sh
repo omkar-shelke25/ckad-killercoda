@@ -6,8 +6,6 @@ echo "🚀 Preparing lab environment for Ingress task (Helm-only Traefik)..."
 # --- CONFIGURATION ---
 NS="streaming"
 TRAEFIK_NS="traefik"
-HTTP_NODEPORT=30099
-HTTPS_NODEPORT=30443
 TEST_HOST="streams.local"
 # ---------------------
 
@@ -105,8 +103,8 @@ helm repo update >/dev/null 2>&1
 helm upgrade --install traefik traefik/traefik \
   --namespace "${TRAEFIK_NS}" \
   --set service.type=NodePort \
-  --set service.nodePorts.http=${HTTP_NODEPORT} \
-  --set service.nodePorts.https=${HTTPS_NODEPORT} \
+  --set service.nodePorts.http=30099 \
+  --set service.nodePorts.https=300443 \
   --set service.externalTrafficPolicy=Cluster
 
 echo "✅ Traefik installed/upgraded via Helm and exposed via NodePort ${HTTP_NODEPORT}/${HTTPS_NODEPORT}."

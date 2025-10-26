@@ -37,8 +37,7 @@ Verify that the Ingress routes work through the Traefik NodePort (**30099**):
 ✅ Solution (expand to view)
 <details><summary>Solution</summary></summary>
 
-
-1. Apply Ingress:
+#### Apply Ingress:
 
 ```bash
 kubectl apply -f - <<'EOF'
@@ -68,19 +67,15 @@ spec:
 EOF
 ```
 
-2. Add hosts entry (replace `<NODE_IP>`):
+#### Add hosts entry (replace `<NODE_IP>`):
 
 ```bash
-echo "<NODE_IP> streams.local" | sudo tee -a /etc/hosts
+echo "172.30.2.2 streams.local" | sudo tee -a /etc/hosts
 ```
-
-3. Test via Traefik NodePort 30099:
+#### Test via Traefik NodePort 30099:
 
 ```bash
 curl http://streams.local:30099/api   # -> hello-from-api
 curl http://streams.local:30099/video # -> hello-from-video
 ```
-
-Done.
-
 </details>

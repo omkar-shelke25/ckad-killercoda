@@ -7,12 +7,13 @@ echo "🚀 Preparing lab environment for Ingress task (Helm-only Traefik)..."
 NS="streaming"
 TRAEFIK_NS="traefik"
 TEST_HOST="streams.local"
+HTTP_NODEPORT=30099
+HTTPS_NODEPORT=30443
 # ---------------------
 
 # Create namespaces if not exist
 kubectl get ns "${NS}" >/dev/null 2>&1 || kubectl create namespace "${NS}"
 kubectl get ns "${TRAEFIK_NS}" >/dev/null 2>&1 || kubectl create namespace "${TRAEFIK_NS}"
-
 echo "✅ Namespaces created or already exist."
 
 # === BACKEND SERVICES ===
@@ -96,17 +97,17 @@ echo "✅ Backend services deployed."
 
 # === TRAEFIK INSTALL VIA HELM ONLY ===
 echo "⚙️ Installing/upgrading Traefik via Helm (NodePort mode)..."
-
 helm repo add traefik https://traefik.github.io/charts >/dev/null 2>&1 || true
 helm repo update >/dev/null 2>&1
 
 helm upgrade --install traefik traefik/traefik \
   --namespace "${TRAEFIK_NS}" \
   --set service.type=NodePort \
-  --set service.nodePorts.http=30099 \
-  --set service.nodePorts.https=300443 \
-  --set service.externalTrafficPolicy=Cluster
+  --set ports.web.nodePort=${HTTP_NODEPORT} \
+  --set ports.websecure.nodePort=${HTTPS_NODEPORT}
 
 echo "✅ Traefik installed/upgraded via Helm and exposed via NodePort ${HTTP_NODEPORT}/${HTTPS_NODEPORT}."
 
-kubectl -n traefik patch svc traefik -p '{"spec":{"type":"NodePort","ports":[{"name":"web","protocol":"TCP","port":80,"targetPort":8000,"nodePort":30099},{"name":"websecure","protocol":"TCP","port":443,"targetPort":8443,"nodePort":30443}]}}'
+# Verify the service
+echo "🔍 Verifying Traefik service..."
+kubectl -n "${TRAEFIK_NS}" get svc traefik

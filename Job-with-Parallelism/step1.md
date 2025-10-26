@@ -4,36 +4,38 @@ Team **Neptune** needs a **Job** template located at `/opt/course/3/job.yaml`.
 
 Requirements:
 - The **Job** should:
-  - Use image `busybox:1.31.0`
+  - Use image `public.ecr.aws/docker/library/busybox:stable`
   - Execute the command: `sleep 2 && echo done`
 - Namespace: `neptune`
 - Name: `neb-new-job`
 - Container name: `neb-new-job-container`
-- The Job should run **3 completions** and allow **2 runs in parallel**
+- The Job should run **`3` completions** and allow **`2` runs in parallel**
 - Each Pod created should have a label: `id=awesome-job`
+- *Job* template located at `/opt/course/3/job.yaml`
 
 <details> <summary>✅ Solution</summary>
 
-```yaml
-apiVersion: batch/v1        # Using batch/v1 API for Job
-kind: Job                   # Resource type is Job
+# Step 1: Create the YAML file
+cat <<EOF > /opt/course/3/job.yaml
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: neb-new-job         # Job name
-  namespace: neptune        # Placed in namespace 'neptune'
+  name: neb-new-job
+  namespace: neptune
 spec:
-  parallelism: 2            # 2 Pods can run in parallel
-  completions: 3            # Job should complete 3 successful runs
+  parallelism: 2              # Two pods can run at the same time
+  completions: 3              # Total of three successful pod completions needed
   template:
     metadata:
       labels:
-        id: awesome-job     # Add label to Pods
+        id: awesome-job       # Label added to identify pods
     spec:
       containers:
-      - name: neb-new-job-container          # Container name
-        image: busybox:1.31.0                # Container image
-        command: ["sh", "-c", "sleep 2 && echo done"]  # Command to run
-      restartPolicy: Never   # Required for Jobs (no restart on success/failure)
-````
+      - name: neb-new-job-container
+        image: public.ecr.aws/docker/library/busybox:stable
+        command: ["sh", "-c", "sleep 2 && echo done"]
+      restartPolicy: Never     # Pods will not restart after completion or failure
+EOF
 
 Apply and verify:
 

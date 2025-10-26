@@ -38,7 +38,7 @@ spec:
         command: ["sh", "-c", "sleep 2 && echo done"]
       restartPolicy: Never     # Pods will not restart after completion or failure
 EOF
-```{{copy}}
+```
 
 Apply and verify:
 

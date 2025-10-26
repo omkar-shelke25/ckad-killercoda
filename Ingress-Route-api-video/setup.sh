@@ -108,3 +108,26 @@ helm upgrade --install traefik traefik/traefik \
   --set service.externalTrafficPolicy=Cluster
 
 echo "✅ Traefik installed/upgraded via Helm and exposed via NodePort ${HTTP_NODEPORT}/${HTTPS_NODEPORT}."
+
+kubectl -n traefik patch svc traefik -p '{
+  "spec": {
+    "type": "NodePort",
+    "ports": [
+      {
+        "name": "web",
+        "protocol": "TCP",
+        "port": 80,
+        "targetPort": 8000,
+        "nodePort": 30099
+      },
+      {
+        "name": "websecure",
+        "protocol": "TCP",
+        "port": 443,
+        "targetPort": 8443,
+        "nodePort": 30443
+      }
+    ]
+  }
+}'
+

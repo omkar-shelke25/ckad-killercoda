@@ -11,6 +11,7 @@ Both use `pathType: Prefix`.
 
 ### 🔁 Traffic Flow
 
+```md
 Browser (streams.local)
         │
         ▼
@@ -20,5 +21,4 @@ Browser (streams.local)
 Ingress (app-ingress)
    ├── /api   → api-service → api-server Pod
    └── /video → video-service → video-processor Pod
-
-
+```

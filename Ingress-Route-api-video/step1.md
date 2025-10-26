@@ -20,24 +20,16 @@ Create an **Ingress** resource named **`app-ingress`** in the **`streaming`** na
 
 * Path `/api` → Service **`api-service`** on port **80**
 * Path `/video` → Service **`video-service`** on port **80**
+* Add the node IP in your `/etc/hosts` file with `streams.local` DNS
 
 Both rules must use **`pathType: Prefix`**, and the Ingress should use the **`traefik`** Ingress class.
 
----
+Verify that the Ingress routes work through the Traefik NodePort (**30099**):
 
-### **Additional Configuration**
-
-1. Add the node IP in your `/etc/hosts` file:
-
-   ```
-   <NODE_IP>  streams.local
-   ```
-2. Verify that the Ingress routes work through the Traefik NodePort (**30099**):
-
-   ```bash
+```bash
    curl http://streams.local:30099/api
    curl http://streams.local:30099/video
-   ```
+```
 ---
 
 ## Try it yourself first!

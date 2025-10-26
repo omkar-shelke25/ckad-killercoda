@@ -1,6 +1,6 @@
 # 🎉 Ingress Config Complete!
 
-You created one Ingress for host **app.example.com** that routes by path:
+You created one Ingress for host **streams.local** that routes by path:
 
 - `/api` → `api-service:80`
 - `/video` → `video-service:80`

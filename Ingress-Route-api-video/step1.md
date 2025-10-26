@@ -37,6 +37,16 @@ Verify that the Ingress routes work through the Traefik NodePort (**30099**):
 ✅ Solution (expand to view)
 <details><summary>Solution</summary></summary>
 
+
+#### Imperative Way
+
+```bash
+kubectl create ingress app-ingress -n streaming \
+--class traefik \
+--rule=streams.local/api*=api-service:80 \
+--rule=streams.local/video*=video-service:80
+```
+
 #### Apply Ingress:
 
 ```bash

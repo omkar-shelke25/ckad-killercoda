@@ -49,8 +49,8 @@ if [ "$CONTAINER_NAME" != "neb-new-job-container" ]; then
   exit 1
 fi
 
-if [ "$IMAGE" != "busybox:1.31.0" ]; then
-  echo "❌ Expected image=busybox:1.31.0, found $IMAGE"
+if [ "$IMAGE" != "public.ecr.aws/docker/library/busybox:stable" ]; then
+  echo "❌ Expected image=public.ecr.aws/docker/library/busybox:stable, found $IMAGE"
   exit 1
 fi
 

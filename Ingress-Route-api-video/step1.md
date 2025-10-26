@@ -61,18 +61,24 @@ hello-from-video
 ## Try it yourself first!
 
 ✅ Solution (expand to view)
-<details><summary>YAML</summary></summary>
+<details><summary>Solution</summary></summary>
 
 
-```yaml
+1. Apply Ingress:
+
+```bash
+kubectl apply -f - <<'EOF'
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: app-ingress
   namespace: streaming
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
 spec:
+  ingressClassName: traefik
   rules:
-  - host: app.example.com
+  - host: streams.local
     http:
       paths:
       - path: /api
@@ -80,16 +86,29 @@ spec:
         backend:
           service:
             name: api-service
-            port:
-              number: 80
+            port: { number: 80 }
       - path: /video
         pathType: Prefix
         backend:
           service:
             name: video-service
-            port:
-              number: 80
-
+            port: { number: 80 }
+EOF
 ```
+
+2. Add hosts entry (replace `<NODE_IP>`):
+
+```bash
+echo "<NODE_IP> streams.local" | sudo tee -a /etc/hosts
+```
+
+3. Test via Traefik NodePort 30099:
+
+```bash
+curl http://streams.local:30099/api   # -> hello-from-api
+curl http://streams.local:30099/video # -> hello-from-video
+```
+
+Done.
 
 </details>

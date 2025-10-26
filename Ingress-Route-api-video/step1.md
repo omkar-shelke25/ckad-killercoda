@@ -73,8 +73,6 @@ kind: Ingress
 metadata:
   name: app-ingress
   namespace: streaming
-  annotations:
-    kubernetes.io/ingress.class: "traefik"
 spec:
   ingressClassName: traefik
   rules:

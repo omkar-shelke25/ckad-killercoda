@@ -1,12 +1,60 @@
-# Configure a Single Ingress for Path Routing
+## 🧩 **CKAD: Configure a Single Ingress for Path Routing**
 
-## Objective
-Create a single Ingress named **`app-ingress`** in namespace **`streaming`** to route traffic for host **`app.example.com`**:
-- `/api`   → **api-service:80**
-- `/video` → **video-service:80**
-Both rules must use **`pathType: Prefix`**.
+You are working in a Kubernetes cluster where the following Deployments are already running in the **`streaming`** namespace:
 
-> Note: You don't need a running Ingress controller for this task's verification — we validate the Ingress spec.
+```
+streaming   api-server
+streaming   video-processor
+```
+
+Each Deployment has an associated Service:
+
+* **`api-service`** (port 80 → container port 5678)
+* **`video-service`** (port 80 → container port 5678)
+
+---
+
+### **Task**
+
+Create an **Ingress** resource named **`app-ingress`** in the **`streaming`** namespace that routes traffic for host **`streams.local`** as follows:
+
+* Path `/api` → Service **`api-service`** on port **80**
+* Path `/video` → Service **`video-service`** on port **80**
+
+Both rules must use **`pathType: Prefix`**, and the Ingress should use the **`traefik`** Ingress class.
+
+---
+
+### **Additional Configuration**
+
+1. Add the node IP in your `/etc/hosts` file:
+
+   ```
+   <NODE_IP>  streams.local
+   ```
+
+   Example:
+
+   ```
+   172.30.2.2  streams.local
+   ```
+
+2. Verify that the Ingress routes work through the Traefik NodePort (**30099**):
+
+   ```bash
+   curl http://streams.local:30099/api
+   curl http://streams.local:30099/video
+   ```
+
+**Expected Output:**
+
+```
+hello-from-api
+hello-from-video
+```
+
+-
+
 
 ---
 

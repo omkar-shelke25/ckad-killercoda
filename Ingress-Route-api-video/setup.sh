@@ -100,14 +100,25 @@ echo "⚙️ Installing/upgrading Traefik via Helm (NodePort mode)..."
 helm repo add traefik https://traefik.github.io/charts >/dev/null 2>&1 || true
 helm repo update >/dev/null 2>&1
 
-helm upgrade --install traefik traefik/traefik \
-  --namespace "${TRAEFIK_NS}" \
-  --set service.type=NodePort \
-  --set ports.web.nodePort=${HTTP_NODEPORT} \
-  --set ports.websecure.nodePort=${HTTPS_NODEPORT}
+# Uninstall first to ensure clean state
+helm uninstall traefik -n "${TRAEFIK_NS}" 2>/dev/null || true
+sleep 2
 
-echo "✅ Traefik installed/upgraded via Helm and exposed via NodePort ${HTTP_NODEPORT}/${HTTPS_NODEPORT}."
+# Install with correct NodePort settings
+helm install traefik traefik/traefik \
+  --namespace "${TRAEFIK_NS}" \
+  --set ports.web.nodePort=${HTTP_NODEPORT} \
+  --set ports.websecure.nodePort=${HTTPS_NODEPORT} \
+  --set service.type=NodePort
+
+echo "✅ Traefik installed via Helm and exposed via NodePort ${HTTP_NODEPORT}/${HTTPS_NODEPORT}."
 
 # Verify the service
 echo "🔍 Verifying Traefik service..."
 kubectl -n "${TRAEFIK_NS}" get svc traefik
+
+echo ""
+echo "📝 Summary:"
+echo "  - HTTP available at: NodePort ${HTTP_NODEPORT}"
+echo "  - HTTPS available at: NodePort ${HTTPS_NODEPORT}"
+echo "  - Access via: curl http://<node-ip>:${HTTP_NODEPORT}"

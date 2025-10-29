@@ -1,4 +1,4 @@
-# CKAD: Allow Cross-Namespace Egress to Target Pod (TCP/80)
+## CKAD: Allow Cross-Namespace Egress to Target Pod (TCP/80)
 
 Two namespaces exist:
 
@@ -7,7 +7,7 @@ Two namespaces exist:
 
 Create a NetworkPolicy named `external-target` in the `netpol-demo9` namespace.
 The policy should select only the Pod with label `app=source` and have `policyTypes: [Egress]`.
-Allow egress traffic from the selected Pod **only** to Pods in the `external-ns` namespace with label `app=target` on **TCP port 80**.
+Allow egress traffic from the selected Pod **only** to Pods in the `external-ns` namespace with label `app=target` on **TCP port `80`**.
 
 
 ---

@@ -1,3 +1,6 @@
+
+📘 [Network Policies | Kubernetes](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
+
 ### CKAD: Allow Cross-Namespace Egress to Target Pod (TCP/80)
 
 Two namespaces exist:

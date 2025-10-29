@@ -1,78 +1,44 @@
-# CKAD: Restrict Pod Communication with Existing NetworkPolicy
-
-In namespace **`ckad00018`**, three Pods exist:
-
-- **web** (should be labeled `app=web`)  
-- **db** (should be labeled `app=db`)  
-- **ckad00018-newpod** (should be labeled `app=newpod`)  
-
-There is already a **NetworkPolicy** in this namespace.  
-You must ensure that **`ckad00018-newpod`** can only send and receive traffic with the Pods `web` and `db`.
-
-### Restrictions
-- You are **not allowed** to create, edit, or delete any NetworkPolicy.  
-- Only adjust the Pods to comply with the existing NetworkPolicy.  
-- The correct policy:  
-  - Applies to Pods labeled `app=newpod`  
-  - Has both **Ingress** and **Egress** rules  
-  - Allows communication only with Pods labeled `app=web` and `app=db`
+📘 [Network Policies | Kubernetes Docs](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
 
 
 
-## Try it yourself first!
+### 🧩 CKAD: Restrict Pod Communication Using Existing NetworkPolicies
 
-<details><summary> ✅ Solution (expand to view)</summary>
+In the namespace `ckad25`, ensure that the Pod named `ckad25-newpod` can communicate **only** with Pods labeled `app=web` and `app=db`.
 
+There are existing NetworkPolicies that already control traffic based on Pod labels — **do not create or modify any NetworkPolicy**.
 
+You must update the configuration of `ckad25-newpod` so that it complies with the existing rules and is able to reach only those two Pods.
 
-### ✅ Step 1: Label the Pods correctly
-
-Since the Pods were created with the wrong labels (`wrong=label`), update them:
-
-```bash
-kubectl -n ckad00018 label pod web app=web --overwrite
-kubectl -n ckad00018 label pod db app=db --overwrite
-kubectl -n ckad00018 label pod ckad00018-newpod app=newpod --overwrite
-```
+> Verify connectivity from `ckad25-newpod` using either `wget` or `curl`, for example:
 
 ---
 
-### ✅ Step 2: Verify labels
+#### ✅ Solution (expand to view)
+
+<details>
+<summary>Show Solution</summary>
+
+The existing NetworkPolicies allow communication between Pods with labels `app=web`, `app=db`, and `app=newpod`. 
+
+To enable `ckad25-newpod` to communicate with `web` and `db`, you must label it with `app=newpod`:
 
 ```bash
-kubectl -n ckad00018 get pods --show-labels
+kubectl label pod ckad25-newpod app=newpod -n ckad25
 ```
 
-You should see:
+**Verification:**
 
-```
-NAME                 READY   STATUS    RESTARTS   AGE   LABELS
-web                  1/1     Running   0          5m    app=web
-db                   1/1     Running   0          5m    app=db
-ckad00018-newpod     1/1     Running   0          5m    app=newpod
-```
-
----
-
-### ✅ Step 3: Inspect the NetworkPolicy
-
-Check that the policy already matches the requirement:
-
+Test connectivity from `ckad25-newpod` to `web`:
 ```bash
-kubectl -n ckad00018 describe netpol np-ckad00018
+kubectl exec -n ckad25 ckad25-newpod -- wget -qO- --timeout=2 web
 ```
 
-You should see:
+Test connectivity from `ckad25-newpod` to `db`:
+```bash
+kubectl exec -n ckad25 ckad25-newpod -- wget -qO- --timeout=2 db:5432
+```
 
-* **PodSelector: app=newpod**
-* **Ingress from:** Pods with labels `app=web` and `app=db`
-* **Egress to:** Pods with labels `app=web` and `app=db`
-* **PolicyTypes:** Ingress, Egress
-
----
-
-✅ **Final result:**
-
-* Pod `ckad00018-newpod` is isolated and can only send/receive traffic to/from Pods `web` and `db`, because the labels now align with the pre-existing NetworkPolicy.
+Both should succeed (or show connection attempts), indicating the NetworkPolicy allows the communication.
 
 </details>

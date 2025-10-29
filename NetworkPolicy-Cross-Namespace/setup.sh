@@ -36,8 +36,38 @@ spec:
     image: nginx:1.25
 EOF
 
-# Best-effort readiness waits
-kubectl wait --for=condition=Ready pod/source-pod -n netpol-demo9 --timeout=120s || true
-kubectl wait --for=condition=Ready pod/target-pod -n external-ns --timeout=120s || true
+# Create ClusterIP Service for source-pod (optional, for testing)
+kubectl apply -f - <<'EOF'
+apiVersion: v1
+kind: Service
+metadata:
+  name: source-svc
+  namespace: netpol-demo9
+spec:
+  selector:
+    app: source
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+EOF
 
-echo "Environment ready."
+# Create ClusterIP Service for target-pod
+kubectl apply -f - <<'EOF'
+apiVersion: v1
+kind: Service
+metadata:
+  name: target-svc
+  namespace: external-ns
+spec:
+  selector:
+    app: target
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+EOF
+
+# Wait for Pods to be ready
+kubectl wait --for=condition=Ready pod/source-pod -n netpol-demo9 --timeout=120s || true
+kubectl wait --for=condition=Ready pod/target-pod -n

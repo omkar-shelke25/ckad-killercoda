@@ -1,4 +1,4 @@
-## CKAD: Allow Cross-Namespace Egress to Target Pod (TCP/80)
+### CKAD: Allow Cross-Namespace Egress to Target Pod (TCP/80)
 
 Two namespaces exist:
 
@@ -15,7 +15,7 @@ Allow egress traffic from the selected Pod **only** to Pods in the `external-ns`
 
 ---
 
-## ✅ Solution (expand to view)
+#### ✅ Solution (expand to view)
 
 <details>
 <summary>Show YAML</summary>

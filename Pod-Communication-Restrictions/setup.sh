@@ -48,6 +48,7 @@ kind: Pod
 metadata:
   name: ckad25-newpod
   namespace: ckad25
+  # student must add: kubectl label pod/ckad25-newpod -n ckad25 app=newpod
 spec:
   containers:
   - name: alpine
@@ -55,7 +56,7 @@ spec:
     command: ["sleep", "3600"]
 EOF
 
-# Wait for Pods to be ready
+# Wait for Pods to be ready (best-effort)
 kubectl wait --for=condition=Ready pod/web -n ckad25 --timeout=180s || true
 kubectl wait --for=condition=Ready pod/db -n ckad25 --timeout=180s || true
 kubectl wait --for=condition=Ready pod/ckad25-newpod -n ckad25 --timeout=180s || true
@@ -162,6 +163,9 @@ spec:
           port: 53
         - protocol: TCP
           port: 53
+# If your cluster doesn't have the kube-system name label, you can instead
+# allow egress to any destination on port 53 by using `egress: - ports: [...]`
 EOF
 
-echo "Setup complete. NetworkPolicy is in place - you must label ckad25-newpod correctly!"
+echo "Setup complete. NetworkPolicy is in place - you must label ckad25-newpod with:"
+echo "  kubectl label pod/ckad25-newpod -n ckad25 app=newpod"

@@ -29,6 +29,10 @@ Allow egress traffic from the selected Pod **only** to Pods in the `external-ns`
 | 2️⃣  | Only `podSelector`                  | Pods with those labels in **same namespace** (since `podSelector` is namespace-scoped) |
 | 3️⃣  | `namespaceSelector` + `podSelector` | Pods matching that label **within the matching namespace(s)**                          |
 
+
+```bash
+wget -qO- target-svc.external-ns:80
+``
   
 ```yaml
 apiVersion: networking.k8s.io/v1

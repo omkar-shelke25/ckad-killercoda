@@ -1,4 +1,6 @@
-# 🔧 Configure Network Isolation for Production Workload
+📘 [Network Policies | Kubernetes ](https://kubernetes.io/docs/concepts/services-networking/network-policies/) 
+
+## 🔧 Configure Network Isolation for Production Workload
 
 ## 📖 Scenario Context
 

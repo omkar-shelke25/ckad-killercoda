@@ -1,17 +1,13 @@
-# Allow Egress from `source-pod` to `target-pod` (TCP/80)
-
-## **Question (Weightage: 4)**
+# CKAD: Allow Cross-Namespace Egress to Target Pod (TCP/80)
 
 Two namespaces exist:
-- `netpol-demo9` with a Pod `source-pod` (label `app=source`)
-- `external-ns` with a Pod `target-pod` (label `app=target`)
 
-### **Task**
+* `netpol-demo9` with a Pod named `source-pod` (label `app=source`)
+* `external-ns` with a Pod named `target-pod` (label `app=target`)
 
-Create a NetworkPolicy named `external-target` **in the `netpol-demo9` namespace** that:
-- Selects **only** the Pod with label `app=source`
-- Has `policyTypes: [Egress]`
-- Allows **egress** from the selected Pod **only** to Pods in namespace `external-ns` with label `app=target` on **TCP port 80**
+Create a NetworkPolicy named `external-target` in the `netpol-demo9` namespace.
+The policy should select only the Pod with label `app=source` and have `policyTypes: [Egress]`.
+Allow egress traffic from the selected Pod **only** to Pods in the `external-ns` namespace with label `app=target` on **TCP port 80**.
 
 
 ---
@@ -21,8 +17,12 @@ Create a NetworkPolicy named `external-target` **in the `netpol-demo9` namespace
 <details>
 <summary>Show YAML</summary>
 
-- **Same namespace → just use podSelector.**
-- **Cross namespace → use namespaceSelector + podSelector together (so you don’t accidentally allow Pods in other namespaces that reuse the same labels).**
+| Case | Selector Used                       | Access Granted To                                                                      |
+| ---- | ----------------------------------- | -------------------------------------------------------------------------------------- |
+| 1️⃣  | Only `namespaceSelector`            | All pods in that namespace                                                             |
+| 2️⃣  | Only `podSelector`                  | Pods with those labels in **same namespace** (since `podSelector` is namespace-scoped) |
+| 3️⃣  | `namespaceSelector` + `podSelector` | Pods matching that label **within the matching namespace(s)**                          |
+
   
 ```yaml
 apiVersion: networking.k8s.io/v1

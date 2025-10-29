@@ -10,9 +10,12 @@ The policy should select only the Pod with label `app=source` and have `policyTy
 Allow egress traffic from the selected Pod **only** to Pods in the `external-ns` namespace with label `app=target` on **TCP port `80`**.
 
 
+> Use the `wget` command to test communication.
+> Please don't change the pre-existing policy.
+
 ---
 
-## **Solution (expand to view)**
+## ✅ Solution (expand to view)
 
 <details>
 <summary>Show YAML</summary>

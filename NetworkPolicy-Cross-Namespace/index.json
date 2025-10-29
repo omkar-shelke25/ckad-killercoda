@@ -1,5 +1,5 @@
 {
-  "title": "CKAD: Allow Cross-Namespace Egress to Target Pod (TCP/80)",
+  "title": "CKAD: NetworkPolicy to Allow Cross-Namespace Egress to Target Pod (TCP/80)",
   "description": "Allow egress only from a specific source Pod to a target Pod in another namespace on TCP/80.",
   "details": {
     "steps": [

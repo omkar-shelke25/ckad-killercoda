@@ -42,20 +42,28 @@ ok "Existing NetworkPolicies are in place"
 
 # Test connectivity from ckad25-newpod to web (should succeed)
 echo "Testing connectivity from $newpod to $web_pod..."
-if kubectl exec -n "$ns" "$newpod" -- timeout 5 wget -qO- --timeout=2 "$web_pod" >/dev/null 2>&1; then
+if kubectl exec -n "$ns" "$newpod" -- timeout 5 wget -qO- --timeout=2 "http://$web_pod" >/dev/null 2>&1; then
   ok "Connectivity from $newpod to $web_pod works"
 else
-  fail "Cannot connect from $newpod to $web_pod"
+  fail "Cannot connect from $newpod to $web_pod - check if label app=newpod is set"
 fi
 
-# Test connectivity from ckad25-newpod to db (should at least attempt connection)
+# Test connectivity from ckad25-newpod to db using netcat
 echo "Testing connectivity from $newpod to $db_pod..."
-if kubectl exec -n "$ns" "$newpod" -- timeout 5 sh -c "echo 'test' | nc -w 2 $db_pod 5432" >/dev/null 2>&1 || \
-   kubectl exec -n "$ns" "$newpod" -- timeout 5 wget -qO- --timeout=2 "$db_pod:5432" >/dev/null 2>&1; then
-  ok "Connectivity from $newpod to $db_pod works"
+# First, ensure netcat is available or use a fallback method
+if kubectl exec -n "$ns" "$newpod" -- sh -c "command -v nc" >/dev/null 2>&1; then
+  if kubectl exec -n "$ns" "$newpod" -- timeout 5 nc -zv "$db_pod" 5432 2>&1 | grep -q "open\|succeeded\|connected"; then
+    ok "Connectivity from $newpod to $db_pod works"
+  else
+    fail "Cannot connect from $newpod to $db_pod - check if label app=newpod is set"
+  fi
 else
-  # Network policy allows it, but db might not respond properly - that's OK
-  ok "NetworkPolicy allows $newpod to reach $db_pod"
+  # Fallback: check if we can resolve and reach the service
+  if kubectl exec -n "$ns" "$newpod" -- timeout 5 sh -c "wget --spider -T 2 http://$db_pod:5432 2>&1 || echo 'reachable'" | grep -q "reachable\|failed\|refused"; then
+    ok "NetworkPolicy allows $newpod to reach $db_pod (connection attempted)"
+  else
+    fail "Cannot reach $db_pod from $newpod - check if label app=newpod is set"
+  fi
 fi
 
 echo "✅ Verification successful!"

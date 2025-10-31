@@ -1,6 +1,6 @@
 ## **CKAD: Fix Pod Communication with NetworkPolicies**
 
-You're working in a simulated `**production**` namespace. 
+You're working in a simulated `production` namespace. 
 
 There are existing NetworkPolicies that strictly control pod-to-pod communication. You are NOT allowed to modify or create any NetworkPolicy. 
 

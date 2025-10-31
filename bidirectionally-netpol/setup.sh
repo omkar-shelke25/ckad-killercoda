@@ -16,12 +16,12 @@ metadata:
   name: frontend-service
   namespace: $NAMESPACE
   labels:
-    tier: misconfigured
+    component: frontend
     version: v1.2.3
 spec:
   containers:
   - name: frontend
-    image: nginx:1.21-alpine
+    image: public.ecr.aws/nginx/nginx:alpine
     ports:
     - containerPort: 80
 ---
@@ -31,14 +31,14 @@ metadata:
   name: database-service
   namespace: $NAMESPACE
   labels:
-    tier: misconfigured
+    component: database
     version: v2.1.0
 spec:
   containers:
   - name: database
-    image: nginx:1.21-alpine
+    image: public.ecr.aws/nginx/nginx:alpine
     ports:
-    - containerPort: 5432
+    - containerPort: 80
 ---
 apiVersion: v1
 kind: Pod
@@ -46,15 +46,14 @@ metadata:
   name: payment-processor
   namespace: $NAMESPACE
   labels:
-    tier: misconfigured
     component: payment
     version: v1.0.0
 spec:
   containers:
   - name: processor
-    image: nginx:1.21-alpine
+    image: public.ecr.aws/nginx/nginx:alpine
     ports:
-    - containerPort: 8080
+    - containerPort: 80
 EOF
 
 echo "🛡️  Applying security NetworkPolicies..."

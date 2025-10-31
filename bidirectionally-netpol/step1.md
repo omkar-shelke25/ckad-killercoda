@@ -18,7 +18,7 @@ The **`payment-processor`** pod must be able to communicate **`bidirectionally`*
 
 > Use curl or wget to test pod communication. DNS communication is blocked, so use the Pod IP instead.
 
-> You are **NOT allowed** to create, modify, or delete any NetworkPolicy`
+> You are **NOT allowed** to create, modify, or delete any NetworkPolicy
 
 ---
 

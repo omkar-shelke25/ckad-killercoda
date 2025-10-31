@@ -14,7 +14,7 @@ In namespace **`payment-platform`**, three microservices pods exist:
 
 ## 🎯 Task Requirements
 
-The **`payment-processor`** pod must be able to communicate **`bidirectionally`** with both the `frontend-service` and `database-service` pods, as defined by the existing NetworkPolicies.
+The **`payment-processor`** pod must be able to communicate **`bidirectionally`** with both the **`frontend-service`** and **`database-service`** pods, as defined by the existing NetworkPolicies.
 
 > Use curl or wget to test pod communication. DNS communication is blocked, so use the Pod IP instead.
 

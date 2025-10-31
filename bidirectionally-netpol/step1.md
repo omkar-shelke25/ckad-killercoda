@@ -27,7 +27,7 @@ The **`payment-processor`** pod must be able to communicate **`bidirectionally`*
 
 <details><summary>🔧 Solution (Click to expand)</summary>
 
-### Step 1: Examine the Current State
+#### Step 1: Examine the Current State
 
 First, check the current pod labels and NetworkPolicies:
 
@@ -39,7 +39,7 @@ kubectl -n payment-platform get pods --show-labels
 kubectl -n payment-platform get networkpolicy
 ```
 
-### Step 2: Analyze NetworkPolicy Requirements
+#### Step 2: Analyze NetworkPolicy Requirements
 
 Examine what labels each NetworkPolicy expects:
 
@@ -49,7 +49,7 @@ kubectl -n payment-platform describe networkpolicy payment-processor-policy
 
 You'll see the policy selects pods with `tier=payment` and allows traffic from/to pods with `tier=frontend` and `tier=database`.
 
-### Step 3: Update Pod Labels
+#### Step 3: Update Pod Labels
 
 Apply the correct labels to align with NetworkPolicies:
 
@@ -64,7 +64,7 @@ kubectl -n payment-platform label pod database-service tier=database --overwrite
 kubectl -n payment-platform label pod payment-processor tier=payment --overwrite
 ```
 
-### Step 4: Verify the Labels
+#### Step 4: Verify the Labels
 
 ```bash
 kubectl -n payment-platform get pods --show-labels
@@ -78,21 +78,21 @@ database-service    1/1     Running   0          5m    tier=database,version=v2.
 payment-processor   1/1     Running   0          5m    component=payment,tier=payment,version=v1.0.0
 ```
 
-### Step 5: Test Network Connectivity (Optional)
+#### Step 5: Test Network Connectivity (Optional)
 
 You can test the network policies by executing into pods and testing connectivity:
 
 ```bash
 # Test from payment-processor to frontend-service
-kubectl -n payment-platform exec payment-processor -- curl -m 5 frontend-service
+kubectl -n payment-platform exec payment-processor -- curl -m 5 POD-IP
 
 # Test from payment-processor to database-service  
-kubectl -n payment-platform exec payment-processor -- curl -m 5 database-service
+kubectl -n payment-platform exec payment-processor -- curl -m 5 POD_IP
 ```
 
 ---
 
-### 🎉 Success Criteria
+#### 🎉 Success Criteria
 
 ✅ **payment-processor** pod has label `tier=payment`  
 ✅ **frontend-service** pod has label `tier=frontend`  

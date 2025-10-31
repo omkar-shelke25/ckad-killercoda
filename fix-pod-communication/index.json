@@ -1,6 +1,6 @@
 {
-  "title": "CKAD: Fix Pod Communication Using NetworkPolicies",
-  "description": "Enable api-check pod to communicate with web-server and redis-server by adding correct labels without modifying NetworkPolicies.",
+  "title": "CKAD: Fix Pod Communication Without Modifying NetworkPolicies",
+  "description": "Enable api-check pod to communicate with web-server and redis-server without modifying NetworkPolicies.",
   "details": {
     "steps": [
       {

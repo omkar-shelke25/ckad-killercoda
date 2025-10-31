@@ -24,10 +24,6 @@ The **`payment-processor`** pod must be able to communicate **`bidirectionally`*
 
 ## 💡 Try It Yourself First!
 
-**Hint**: Examine the existing NetworkPolicies to understand what labels they expect:
-```bash
-kubectl -n payment-platform describe networkpolicy
-```
 
 <details><summary>🔧 Solution (Click to expand)</summary>
 

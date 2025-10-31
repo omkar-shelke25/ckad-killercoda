@@ -118,8 +118,14 @@ spec:
       - podSelector:
           matchLabels:
             tier: frontend
+      - podSelector:
+          matchLabels:
+            tier: payment     
   egress:
     - to:
+      - podSelector:
+          matchLabels:
+            tier: payment  
       - podSelector:
           matchLabels:
             tier: frontend

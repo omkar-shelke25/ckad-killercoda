@@ -91,9 +91,15 @@ spec:
     - from:
       - podSelector:
           matchLabels:
+            tier: database
+      - podSelector:
+          matchLabels:
             tier: payment
   egress:
     - to:
+      - podSelector:
+          matchLabels:
+            tier: database
       - podSelector:
           matchLabels:
             tier: payment

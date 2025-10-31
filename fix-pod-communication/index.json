@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Fix Pod Communication Using NetworkPolicies",
+  "description": "Enable api-check pod to communicate with web-server and redis-server by adding correct labels without modifying NetworkPolicies.",
+  "details": {
+    "steps": [
+      {
+        "title": "Fix pod communication by adding required labels",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

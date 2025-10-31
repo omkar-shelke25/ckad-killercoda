@@ -11,8 +11,7 @@ NS="production"
 kubectl get ns "${NS}" >/dev/null 2>&1 || kubectl create namespace "${NS}"
 echo "✅ Namespace '${NS}' ready."
 
-# Wait for namespace to be active
-kubectl wait --for=condition=Active namespace/${NS} --timeout=30s
+
 
 # === DEPLOY PODS ===
 echo "📦 Deploying pods in namespace '${NS}'..."

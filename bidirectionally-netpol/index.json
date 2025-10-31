@@ -1,5 +1,5 @@
 {
-  "title": "CKAD: Configure Pod Network Isolation with Existing NetworkPolicies",
+  "title": "CKAD: Fix Pod Network Isolation with Existing NetworkPolicies",
   "description": "Modify pod labels to align with existing NetworkPolicies for proper network segmentation in a production environment.",
   "details": {
     "steps": [

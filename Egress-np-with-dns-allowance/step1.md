@@ -9,6 +9,7 @@ Make sure the NetworkPolicy still allows outgoing traffic on UDP/TCP ports `53` 
 > Test using: `wget www.google.com` and `wget api:2222` from a Pod in the **frontend** Deployment.
 >
 > `wget www.google.com` ⇒ **failed**
+> 
 > `wget api:2222` ⇒ **worked**
 
 

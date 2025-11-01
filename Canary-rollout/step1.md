@@ -9,22 +9,6 @@ Add a pod template label **`version: v2`** to the canary deployment.
 Assume a **Service** already exists that targets the `frontend` pods by label.
 
 
-
->🟢 Headlamp running on NodePort `30080`. You can visualize the canary deployment via the Headlamp dashboard.  
->🔑 Token: `cat /root/headlamp-token; echo`. Wait ~1 min for Headlamp to be ready
-
-#### Visualize the Canary Deployment
-<div align="center">
-  <img src="https://github.com/user-attachments/assets/0fa1fcc1-2950-49e8-b1b7-b65c4475275b" 
-       alt="Canary Deployment Visualization" 
-       style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.25); margin: 10px 0;" />
-  <br/>
-  <b>Figure 1:</b> Canary deployment visualization in Headlamp.
-</div>
-
-> ⚠️ Note:
-> Visualizing the Canary Deployment in Headlamp is only for learning purposes and not part of the CKAD exam.
-
 ## Try to solve this yourself first!
 
 <details>

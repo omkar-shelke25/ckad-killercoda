@@ -16,7 +16,7 @@ Make sure the NetworkPolicy still allows outgoing traffic on UDP/TCP ports `53` 
 
 
 
-## Try it yourself first!
+## ✅ Try it yourself first!
 
 <details><summary>Solution</summary>
   

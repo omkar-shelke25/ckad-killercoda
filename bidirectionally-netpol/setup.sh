@@ -170,6 +170,11 @@ spec:
             tier: database
 EOF
 
+kubectl expose po/frontend-service -n payment-platform --port 80
+kubectl expose po/database-service -n payment-platform --port 80
+kubectl expose po/payment-processor -n payment-platform --port 80  
+
+
 echo "✅ Environment ready!"
 echo "📊 Current pod status:"
 kubectl -n $NAMESPACE get pods --show-labels

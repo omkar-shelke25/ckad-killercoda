@@ -5,10 +5,14 @@ All Deployments are exposed inside the cluster using Services.
 
 Create a **NetworkPolicy** named **`np-redis`** which restricts **incoming connections** to Deployment **`redis`** so that:
 
-* ✅ Only Pods from Deployment **`app1`** and **`app2`** can connect to Deployment **`redis`** on **TCP port 6379**.
+* ✅ Only Pods from Deployment **`app1`** and **`app2`** can connect to Deployment **`redis`** on **TCP port `6379`**.
 * ❌ No other Pods in the namespace should be able to connect to Deployment **`redis`**.
 * 🌐 Pods in Deployment **`redis`** should still be able to perform DNS lookups (`UDP`/`TCP` `53`).
 
+### 🧪 Test Requirements:
+* `kubectl exec -it <app1-pod> -- nc -zv redis 6379` (should succeed ✅)
+* `kubectl exec -it <app2-pod> -- nc -zv redis 6379` (should succeed ✅)  
+* `kubectl exec -it <test-pod-pod> -- nc -zv redis 6379` (should fail ❌)
 
 
 
@@ -16,10 +20,6 @@ Create a **NetworkPolicy** named **`np-redis`** which restricts **incoming conne
 
 <details><summary> 🎯 Solution (expand to view)</summary>
 
-### 🧪 Test Requirements:
-* `kubectl exec -it <app1-pod> -- nc -zv redis 6379` (should succeed ✅)
-* `kubectl exec -it <app2-pod> -- nc -zv redis 6379` (should succeed ✅)  
-* `kubectl exec -it <test-pod-pod> -- nc -zv redis 6379` (should fail ❌)
 
 
 ### 🔍 Step 1: Analyze the existing resources

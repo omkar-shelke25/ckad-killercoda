@@ -1,13 +1,45 @@
-# ✅ Completed
+# ✅ **Completed: Egress NetworkPolicy with DNS Exception**
 
-- Created a **NetworkPolicy `np1`** in namespace **venus**:
-  - Matches pods: `app=frontend`
-  - **policyTypes: [Egress]**
-  - Allows egress **TCP/2222** to pods `app=api`
-  - Allows DNS **UDP/53** and **TCP/53**
+### 🧱 **NetworkPolicy: `np1` (Namespace: `venus`)**
 
-**Tests**
-- `nslookup kubernetes.default.svc.cluster.local` from a frontend pod → ✅
-- `wget http://api:2222` from a frontend pod → ✅
+* 🎯 **Pod Selector:** `app=frontend`
+* 🔐 **Policy Type:** `Egress`
+* 🚦 **Allowed Egress Traffic:**
 
-Great job locking down egress while preserving DNS!
+  * 🔸 **TCP/2222 →** Pods with `app=api`
+  * 🌐 **DNS:** UDP/53 and TCP/53
+
+---
+
+### 🧪 **Tests**
+
+| Test Command                                    | Expected Result  | Status |
+| ----------------------------------------------- | ---------------- | :----: |
+| `nslookup kubernetes.default.svc.cluster.local` | DNS works        |    ✅   |
+| `wget http://api:2222`                          | API reachable    |    ✅   |
+| `wget www.google.com`                           | External blocked |   🔒   |
+
+### 🌐 **Network Flow Diagram**
+
+```text
+               ┌─────────────────────┐
+               │     frontend pod     │
+               │    (app=frontend)    │
+               └──────────┬───────────┘
+                          │
+       ┌──────────────────┼──────────────────┐
+       │                  │                  │
+       │                  │                  │
+   🌐 DNS 53          🔸 TCP 2222         🚫 Other Traffic
+       │                  │                  │
+┌───────────────┐   ┌──────────────┐   ┌──────────────────┐
+│ kube-dns      │   │  api pods    │   │  External sites  │
+│ CoreDNS (53)  │   │ (app=api)    │   │  (e.g., Google)  │
+└───────────────┘   └──────────────┘   └──────────────────┘
+       ✅                 ✅                   ❌
+```
+
+
+💡 *Great job — you’ve securely locked down egress while preserving necessary functionality!* 🚀
+
+

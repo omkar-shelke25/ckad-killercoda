@@ -1,13 +1,13 @@
 # 🔐 CKAD: NetworkPolicy - Restrict Redis Access
 
-In namespace **jupiter** 🪐, you'll find three Deployments named **app1**, **app2**, and **redis**.
+In namespace **`jupiter`** 🪐, you'll find three Deployments named **`app1`**, **`app2`**, and **`redis`**.
 All Deployments are exposed inside the cluster using Services.
 
-Create a **NetworkPolicy** named **np-redis** which restricts **incoming connections** to Deployment **redis** so that:
+Create a **NetworkPolicy** named **`np-redis`** which restricts **incoming connections** to Deployment **`redis`** so that:
 
-* ✅ Only Pods from Deployment **app1** and **app2** can connect to Deployment **redis** on **TCP port 6379**.
-* ❌ No other Pods in the namespace should be able to connect to Deployment **redis**.
-* 🌐 Pods in Deployment **redis** should still be able to perform DNS lookups (UDP/TCP 53).
+* ✅ Only Pods from Deployment **`app1`** and **`app2`** can connect to Deployment **`redis`** on **TCP port 6379**.
+* ❌ No other Pods in the namespace should be able to connect to Deployment **`redis`**.
+* 🌐 Pods in Deployment **`redis`** should still be able to perform DNS lookups (`UDP`/`TCP` `53`).
 
 
 

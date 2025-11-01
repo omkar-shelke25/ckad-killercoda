@@ -1,8 +1,8 @@
-# CKAD: NetworkPolicy (egress) + DNS exception
+# 🧩 CKAD Scenario: NetworkPolicy (Egress) with DNS Exception
 
-You will create an **egress** NetworkPolicy that:
-- restricts outgoing TCP from **frontend** pods
-- only allows those TCP connections to **api**
-- still allows DNS traffic on **UDP/TCP 53**
+In this scenario, you will create an **egress NetworkPolicy** that controls outgoing traffic from specific Pods while allowing DNS resolution.
 
-Click **Start Scenario** to begin.
+Click **Start Scenario** to begin the exercise.
+
+
+

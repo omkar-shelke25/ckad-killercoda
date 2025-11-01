@@ -1,17 +1,18 @@
-# CKAD: DNS-Only Egress NetworkPolicy
+# 🧩 **CKAD Scenario: DNS-Only Egress NetworkPolicy**
 
-A Pod named `isolated` exists in the `netpol-demo2` namespace.  
+---
 
-Security requires that the Pod **must not accept any incoming traffic** and **must not send any traffic**, **except** it should be allowed to perform **DNS lookups** (UDP port **`53`**) to any destination.
+### 🧭 **Context**
 
-### **Task**
+A Pod named **`isolated`** exists in the namespace **`netpol-demo2`**.
+Your organization’s security policy requires this Pod to be **completely isolated** from the cluster network.
 
-Create a NetworkPolicy named `deny-all-except-dns` in the `netpol-demo2` namespace that:
+The Pod must:
 
-- Targets **only** the `isolated` Pod (use its label `app=isolated`).
-- **Denies all ingress** to that Pod.
-- **Denies all egress** from that Pod **except** UDP port **`53`** (DNS) to any destination.
-- Explicitly sets `policyTypes` to include **Ingress** and **Egress**.
+* 🚫 **Not accept any incoming traffic** (Ingress blocked).
+* 🚫 **Not send any outgoing traffic** (Egress blocked).
+* 🌐 **Only be allowed to perform DNS lookups** (UDP port `53`) to any destination.
+
 
 
 ---
@@ -40,8 +41,6 @@ spec:
   ingress: []   # default deny all ingress
   egress:
   - ports:
-    - protocol: TCP
-      port: 53
     - protocol: UDP
       port: 53  # allow DNS only
 ```

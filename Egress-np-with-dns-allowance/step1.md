@@ -1,3 +1,5 @@
+# CKAD: Egress NetworkPolicy with DNS allowance
+
 In Namespace `venus` you'll find two Deployments named api and frontend. 
 
 Both Deployments are exposed inside the cluster using Services. 

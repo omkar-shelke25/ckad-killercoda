@@ -1,5 +1,5 @@
 {
-  "title": "Kubernetes NetworkPolicy – DNS-Only Egress",
+  "title": "CKAD: Kubernetes NetworkPolicy – DNS-Only Egress",
   "description": "Deny all ingress/egress to a specific Pod, allowing only outbound DNS on UDP/53.",
   "details": {
     "steps": [

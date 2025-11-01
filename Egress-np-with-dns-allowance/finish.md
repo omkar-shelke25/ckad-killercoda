@@ -1,4 +1,4 @@
-# ✅ **Completed: Egress NetworkPolicy with DNS Exception**
+### ✅ **Completed: Egress NetworkPolicy with DNS Exception**
 
 ### 🧱 **NetworkPolicy: `np1` (Namespace: `venus`)**
 

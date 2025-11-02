@@ -102,24 +102,3 @@ pkill -f podman
 
 </details>
 
----
-
-## 🔍 Understanding OCI Format with Podman
-
-**Podman** has native support for OCI format, unlike Docker:
-
-- **OCI Archive**: `podman save --format oci-archive` creates a true OCI-compliant archive
-- **OCI Directory**: `podman save --format oci-dir` saves as a directory structure
-- **Docker Archive**: `podman save --format docker-archive` creates Docker-compatible format
-- **Docker Directory**: `podman save --format docker-dir` saves in Docker directory format
-
-**Key Differences:**
-- **Docker**: Limited OCI support, primarily uses Docker format
-- **Podman**: Native OCI support, better for cross-runtime compatibility
-- **OCI Format**: Works with Podman, CRI-O, containerd, and other OCI-compliant runtimes
-
-**Why OCI Format?**
-- ✅ Standardized and portable
-- ✅ Works across different container runtimes
-- ✅ Better for air-gapped environments
-- ✅ Future-proof container distribution

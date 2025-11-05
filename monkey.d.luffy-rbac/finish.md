@@ -2,19 +2,6 @@
 
 You successfully configured RBAC for **both** deployments in the **one-piece** namespace!
 
-## What You Accomplished
-
-### Part 1: monkey.d.luffy Deployment
-1. ✅ Created ServiceAccount **thousand-sunny**
-2. ✅ Created Role **strawhat-role** with `get`, `list`, and `watch` permissions
-3. ✅ Created RoleBinding **strawhat-rb** to bind the Role to the ServiceAccount
-4. ✅ Updated Deployment **monkey.d.luffy** to use the ServiceAccount
-
-### Part 2: crew-monitor Deployment
-5. ✅ Created Role **navigator-role** with deployment permissions
-6. ✅ Created RoleBinding **navigator-rb** to bind the Role to **nami-navigator** ServiceAccount
-7. ✅ Verified the deployment now has proper RBAC permissions
-
 ## 🛡️ RBAC Best Practices
 
 1. **Principle of Least Privilege**: Only grant permissions that are actually needed

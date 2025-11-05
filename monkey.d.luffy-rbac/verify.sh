@@ -3,7 +3,7 @@ set -euo pipefail
 
 #=== Config ==============================================================
 NS="one-piece"
-DEP="monkey.d.luffy"
+DEP="monkey-d-luffy"
 MONITOR_DEP="crew-monitor"
 SA="thousand-sunny"
 MONITOR_SA="nami-navigator"
@@ -38,7 +38,7 @@ kubectl get namespace "$NS" >/dev/null 2>&1 || fail "Namespace '$NS' not found."
 pass "Namespace '$NS' exists"
 
 #========================
-# Part 1: monkey.d.luffy
+# Part 1: monkey-d-luffy
 #========================
 echo ""
 echo "Checking $DEP configuration..."

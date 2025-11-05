@@ -1,21 +1,22 @@
 # CKAD: Fix RBAC for Deployment
 
-The Straw Hat Pirates need their monitoring systems to access deployment information. Currently, both **`monkey.d.luffy`** and **`crew-monitor`** deployments in the **`one-piece`** namespace are showing RBAC errors in their logs.
+The Straw Hat Pirates need their monitoring systems to access deployment information. Currently, both **`monkey-d-luffy`** and **`crew-monitor`** deployments in the **`one-piece`** namespace are showing RBAC errors in their logs.
 
 You should see errors like:
-```
+
+```vbnet
 Error from server (Forbidden): deployments.apps is forbidden: User "system:serviceaccount:one-piece:default" cannot list resource "deployments"
 ```
 
 or
 
-```
+```vbnet
 Error from server (Forbidden): deployments.apps is forbidden: User "system:serviceaccount:one-piece:nami-navigator" cannot list resource "deployments"
 ```
 
 ## 📋 Your Tasks
 
-### Part 1: Fix monkey.d.luffy Deployment
+### Part 1: Fix monkey-d-luffy Deployment
 
 1. Create a ServiceAccount named **`thousand-sunny`** in the **one-piece** namespace.
 
@@ -26,7 +27,7 @@ Error from server (Forbidden): deployments.apps is forbidden: User "system:servi
 
 3. Create a RoleBinding named **`strawhat-rb`** in the **`one-piece`** namespace that binds the **`strawhat-role`** to the **`thousand-sunny`** ServiceAccount.
 
-4. Update the existing Deployment **`monkey.d.luffy`** to use the **`thousand-sunny`** ServiceAccount.
+4. Update the existing Deployment **`monkey-d-luffy`** to use the **`thousand-sunny`** ServiceAccount.
 
 ### Part 2: Fix crew-monitor Deployment
 
@@ -44,7 +45,7 @@ After completing the tasks, check the logs again:
 
 ```bash
 # These should now show SUCCESS messages!
-kubectl logs deployment/monkey.d.luffy -n one-piece --tail=10
+kubectl logs deployment/monkey-d-luffy -n one-piece --tail=10
 kubectl logs deployment/crew-monitor -n one-piece --tail=10
 ```
 
@@ -55,7 +56,7 @@ kubectl logs deployment/crew-monitor -n one-piece --tail=10
 <details><summary>✅ Solution For Your Reference</summary>
 
 ```bash
-# Part 1: Fix monkey.d.luffy
+# Part 1: Fix monkey-d-luffy
 # ===========================
 
 # 1. Create ServiceAccount
@@ -74,10 +75,10 @@ kubectl create rolebinding strawhat-rb \
   -n one-piece
 
 # 4. Update Deployment to use the ServiceAccount
-kubectl set serviceaccount deployment monkey.d.luffy thousand-sunny -n one-piece
+kubectl set serviceaccount deployment monkey-d-luffy thousand-sunny -n one-piece
 
 # Wait for rollout
-kubectl rollout status deployment/monkey.d.luffy -n one-piece
+kubectl rollout status deployment/monkey-d-luffy -n one-piece
 
 
 # Part 2: Fix crew-monitor

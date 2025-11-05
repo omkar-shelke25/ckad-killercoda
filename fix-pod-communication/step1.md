@@ -4,9 +4,14 @@ You're working in a simulated `production` namespace.
 
 There are existing NetworkPolicies that strictly control pod-to-pod communication. You are NOT allowed to modify or create any NetworkPolicy. 
 
-A pod named `api-check` needs to both send and receive TCP traffic to/from the existing `web-server` and `redis-server` pods. Currently, the `api-check` pod cannot communicate with them.
+A pod named `api-check` needs to **send TCP traffic** to the existing `web-server` and `redis-server` pods. Currently, the `api-check` pod cannot communicate with them.
 
-Your goal is to make `api-check` able to both send requests to and accept replies from `web-server` and `redis-server` without touching any existing NetworkPolicy objects.
+Your goal is to make `api-check` able to **send requests to** `web-server` and `redis-server` **without touching any existing NetworkPolicy objects.**
+
+
+> Use the `nc -zv` command to test communication with the Redis server and the `curl` command to test communication with the  web server.
+
+
 
 ---
 

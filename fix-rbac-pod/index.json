@@ -1,1 +1,23 @@
-
+{
+  "title": "CKAD: Fix RBAC Access for Deployment Using a Predefined Role",
+  "description": "Identify and bind the correct predefined Role to fix RBAC permission errors for a Deployment's ServiceAccount",
+  "details": {
+    "steps": [
+      {
+        "title": "Fix RBAC for pod-explorer Deployment",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

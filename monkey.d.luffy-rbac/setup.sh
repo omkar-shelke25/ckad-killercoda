@@ -4,7 +4,7 @@ set -euo pipefail
 echo "Preparing lab environment..."
 
 NS="one-piece"
-DEP="monkey.d.luffy"
+DEP="monkey-d-luffy"
 MONITOR_DEP="crew-monitor"
 BASE_IMAGE="public.ecr.aws/bitnami/kubectl:latest"
 BASE_REPLICAS=2

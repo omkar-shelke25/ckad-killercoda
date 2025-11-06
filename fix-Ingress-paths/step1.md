@@ -1,6 +1,8 @@
-**CKAD:  Validate and Fix Ingress Paths**
+# **CKAD: Validate and Fix Ingress Paths**
+
 
 A Deployment setup for the **Food Delivery App** is already running in the namespace **`food-app`**.
+
 A manifest file located at **`/app/food-deliver.yaml`** already defines an **Ingress** resource with two paths — **`/menu`** and **`/order-details`**.
 
 ---

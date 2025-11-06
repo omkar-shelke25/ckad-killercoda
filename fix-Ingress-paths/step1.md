@@ -48,109 +48,50 @@ curl fast.delivery.io:32080/track-order | jq
 
 ## 💡 Complete Solution
 <details><summary>✅ Solution (Click to expand)</summary>
-<details><summary>🔍 Part 1: Fix Payment Service Selector (Click to expand)</summary>
+✅ **Final CKAD Solution (with explanation — clear and compact)**
 
-### Step 1: Identify the Issue
+---
 
-Check service endpoints:
-```bash
-kubectl -n food-app get endpoints payment-service
-```
+### **Step 1: Fix Payment Service Selector**
 
-You'll notice it has no endpoints.
+**Reason:**
+The `payment-service` had no endpoints because its selector was incorrect (`app: payments`) while pods were labeled `app: payment-service`.
+Kubernetes services find pods by matching `selector` labels — mismatch = no traffic routing.
 
-Check pod labels:
-```bash
-kubectl -n food-app get pods -l app=payment-service --show-labels
-```
+**Fix:**
+Update the selector so it matches pod labels.
 
-Check service selector:
-```bash
-kubectl -n food-app get service payment-service -o yaml | grep -A2 selector
-```
-
-**Problem**: Service selector is `app: payments` but pods have label `app: payment-service`.
-
-### Step 2: Fix the Selector
-
-Edit the service:
-```bash
-kubectl -n food-app edit service payment-service
-```
-
-Change:
-```yaml
-selector:
-  app: payments
-```
-
-To:
-```yaml
-selector:
-  app: payment-service
-```
-
-Save and exit.
-
-### Step 3: Verify the Fix
-
-```bash
-# Check endpoints now
-kubectl -n food-app get endpoints payment-service
-
-# Should show 2 pod IPs (2 replicas)
-```
-
-**Alternative Quick Fix:**
 ```bash
 kubectl -n food-app patch service payment-service -p '{"spec":{"selector":{"app":"payment-service"}}}'
 ```
 
-</details>
-
-<details><summary>📝 Part 2: Complete Ingress Configuration (Click to expand)</summary>
-
-### Step 1: View Current Ingress
+✅ After patching, verify endpoints are populated:
 
 ```bash
-cat /app/food-deliver.yaml
+kubectl -n food-app get endpoints payment-service
 ```
 
-You'll notice:
-- ⚠️ `/order-details` path has **wrong port 8005** (should be 8002)
-- ❌ Missing `/payment` and `/track-order` paths
-- ❌ Missing `ingressClassName` and `host`
+---
 
-### Step 2: Verify Correct Service Ports
+### **Step 2: Fix and Complete Ingress Configuration**
 
-```bash
-# Check all service ports
-kubectl -n food-app get svc
+**Reason:**
+The existing `/app/food-deliver.yaml` ingress:
 
-# Specifically check order-service
-kubectl -n food-app get svc order-service -o yaml | grep -A3 ports
-```
+* had **wrong port (8005)** for `/order-details`
+* was **missing** `/payment` and `/track-order` paths
+* lacked required **`ingressClassName`** and **`host`** fields
+  These are required for correct routing via Traefik and for external access.
 
-**Correct ports:**
-- menu-service: 8001
-- order-service: 8002 ⚠️ (manifest has 8005 - WRONG!)
-- payment-service: 8003
-- tracking-service: 8004
+---
 
-### Step 3: Edit the File
+**Fix:** Edit the manifest:
 
-```bash
-nano /app/food-deliver.yaml
-```
-
-Or:
 ```bash
 vi /app/food-deliver.yaml
 ```
 
-### Step 4: Complete Configuration
-
-Replace the content with:
+Replace contents with:
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -196,71 +137,73 @@ spec:
               number: 8004
 ```
 
-### Step 5: Apply the Configuration
+Apply:
 
 ```bash
 kubectl apply -f /app/food-deliver.yaml
 ```
 
-### Step 6: Verify Ingress
+✅ This ensures:
+
+* correct ingress class (`traefik`)
+* correct domain (`fast.delivery.io`)
+* all four paths routed to correct backend ports
+
+---
+
+### **Step 3: Verify Configuration**
+
+**Check Ingress and Endpoints**
 
 ```bash
 kubectl -n food-app get ingress food-app-ingress
 kubectl -n food-app describe ingress food-app-ingress
+kubectl -n food-app get endpoints payment-service
 ```
 
-</details>
+Expected:
 
-<details><summary>✅ Part 3: Test All Endpoints (Click to expand)</summary>
+* `Host: fast.delivery.io`
+* `Class: traefik`
+* Paths: `/menu`, `/order-details`, `/payment`, `/track-order`
+* Each service has active endpoints.
 
-### Test Menu Service
+---
+
+### **Step 4: Test All Endpoints**
+
+**Reason:**
+To confirm ingress routes traffic correctly through NodePort `32080`.
+
+**Run:**
 
 ```bash
-curl http://fast.delivery.io:32080/menu
+curl http://fast.delivery.io:32080/menu | jq
+curl http://fast.delivery.io:32080/order-details | jq
+curl http://fast.delivery.io:32080/payment | jq
+curl http://fast.delivery.io:32080/track-order | jq
 ```
 
-**Expected**: JSON with menu categories and items.
+✅ **Expected Results:**
+Each endpoint returns valid JSON and respective service messages:
 
-### Test Order Service
+* `/menu` → menu details
+* `/order-details` → order info
+* `/payment` → payment status
+* `/track-order` → tracking info
 
-```bash
-curl http://fast.delivery.io:32080/order-details
-```
+---
 
-**Expected**: JSON with order details (order_id, customer, items, status).
+**💡 Summary**
 
-### Test Payment Service
+| Change                                                       | Reason                           |
+| ------------------------------------------------------------ | -------------------------------- |
+| Fixed `payment-service` selector                             | to connect Service → Pods        |
+| Corrected `order-details` port from 8005 → 8002              | match real service port          |
+| Added `/payment` & `/track-order` paths                      | missing from ingress             |
+| Added `ingressClassName: traefik` & `host: fast.delivery.io` | required for routing             |
+| Verified via `curl`                                          | ensure all paths return HTTP 200 |
 
-```bash
-curl http://fast.delivery.io:32080/payment
-```
-
-**Expected**: JSON with payment transaction details.
-
-### Test Tracking Service
-
-```bash
-curl http://fast.delivery.io:32080/track-order
-```
-
-**Expected**: JSON with delivery tracking information.
-
-### Test All at Once
-
-```bash
-echo "Testing Menu Service:"
-curl -s http://fast.delivery.io:32080/menu | jq -r '.restaurant'
-
-echo -e "\nTesting Order Service:"
-curl -s http://fast.delivery.io:32080/order-details | jq -r '.customer'
-
-echo -e "\nTesting Payment Service:"
-curl -s http://fast.delivery.io:32080/payment | jq -r '.status'
-
-echo -e "\nTesting Tracking Service:"
-curl -s http://fast.delivery.io:32080/track-order | jq -r '.driver_name'
-```
-
-</details>
+✅ All services reachable → Ingress and Services correctly configured.
 
 </details>

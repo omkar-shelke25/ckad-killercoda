@@ -1,5 +1,7 @@
-# **CKAD: Validate and Fix Ingress Paths**
+[Kubernetes Ingress Documentation](https://kubernetes.io/docs/concepts/services-networking/ingress/)
+[Traefik Kubernetes Ingress](https://doc.traefik.io/traefik/providers/kubernetes-ingress/)
 
+# **CKAD: Validate and Fix Ingress Paths**
 
 A Deployment setup for the **Food Delivery App** is already running in the namespace **`food-app`**.
 
@@ -7,7 +9,7 @@ A manifest file located at **`/app/food-deliver.yaml`** already defines an **Ing
 
 ---
 
-### **Your Task**
+## **Your Task**
 
 1. **Check** the existing Ingress configuration inside `/app/food-deliver.yaml` and make sure the existing paths are correctly configured according to their respective services:
 

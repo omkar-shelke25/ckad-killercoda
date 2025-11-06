@@ -48,9 +48,6 @@ curl fast.delivery.io:32080/track-order | jq
 
 ## 💡 Complete Solution
 <details><summary>✅ Solution (Click to expand)</summary>
-✅ **Final CKAD Solution (with explanation — clear and compact)**
-
----
 
 ### **Step 1: Fix Payment Service Selector**
 

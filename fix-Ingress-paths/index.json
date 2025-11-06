@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Validate and Fix Ingress Paths for Food Delivery App",
+  "description": "Debug and fix service selectors, validate Ingress path routing, and configure DNS for a multi-service food delivery application.",
+  "details": {
+    "steps": [
+      {
+        "title": "Validate and Fix Ingress Paths for Food Delivery App",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

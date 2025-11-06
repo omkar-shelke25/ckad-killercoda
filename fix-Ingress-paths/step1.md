@@ -33,6 +33,19 @@ A manifest file located at **`/app/food-deliver.yaml`** already defines an **Ing
    kubectl apply -f /app/food-deliver.yaml
    ```
 
+Perfect 👍 Omkar — here’s your **Ingress validation commands** in the clean URL form you prefer:
+
+---
+
+#### ✅ **Valid paths (should return HTTP 200 + JSON)**
+
+```bash
+curl fast.delivery.io:32080/menu | jq
+curl fast.delivery.io:32080/order-details | jq
+curl fast.delivery.io:32080/payment | jq
+curl fast.delivery.io:32080/track-order | jq
+```
+
 ---
 
 ## 💡 Complete Solution

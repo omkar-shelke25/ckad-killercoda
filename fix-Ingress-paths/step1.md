@@ -1,7 +1,37 @@
+**CKAD:  Validate and Fix Ingress Paths**
 
+A Deployment setup for the **Food Delivery App** is already running in the namespace **`food-app`**.
+A manifest file located at **`/app/food-deliver.yaml`** already defines an **Ingress** resource with two paths — **`/menu`** and **`/order-details`**.
+
+---
+
+### **Your Task**
+
+1. **Check** the existing Ingress configuration inside `/app/food-deliver.yaml` and make sure the existing paths are correctly configured according to their respective services:
+
+   * `/menu`
+   * `/order-details`
+
+2. **Add** the following missing paths (if not already present) and route them to the specified backends:
+
+   * `/payment` → service **`payment-service`**, port **8003**
+   * `/track-order` → service **`tracking-service`**, port **8004**
+
+3. **Update** the Ingress to include the following top-level settings:
+
+   * `ingressClassName: traefik`
+   * `host: fast.delivery.io`
+
+4. **Apply** the manifest after making the changes by editing **only** `/app/food-deliver.yaml` and running:
+
+   ```bash
+   kubectl apply -f /app/food-deliver.yaml
+   ```
+
+---
 
 ## 💡 Complete Solution
-<details><summary>Solution (Click to expand)</summary>
+<details><summary>✅ Solution (Click to expand)</summary>
 <details><summary>🔍 Part 1: Fix Payment Service Selector (Click to expand)</summary>
 
 ### Step 1: Identify the Issue

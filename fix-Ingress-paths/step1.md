@@ -1,4 +1,5 @@
 [Kubernetes Ingress Documentation](https://kubernetes.io/docs/concepts/services-networking/ingress/)
+
 [Traefik Kubernetes Ingress](https://doc.traefik.io/traefik/providers/kubernetes-ingress/)
 
 # **CKAD: Validate and Fix Ingress Paths**

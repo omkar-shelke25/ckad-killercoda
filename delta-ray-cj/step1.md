@@ -17,8 +17,10 @@ Each job created by this CronJob should automatically terminate if it runs longe
 And the pod inside the job should have its restart policy set to **`Never`**.
 
 Use the following command in the container to simulate the Delta-Ray diagnostic sequence:
+```bash
+command: ["/bin/sh", "-c", "echo 'Initiating Delta-Ray Diagnostic...'; for i in $(seq 1 5); do echo 'Cycle '$i'/5 — Scanning cosmic field...'; date; sleep 5; done; echo 'Telemetry uplink complete — Mission success'"]
+```{{copy}}
 
-`command: ["/bin/sh", "-c", "echo '🛰️ Initiating Delta-Ray Diagnostic...'; for i in $(seq 1 5); do echo '🔭 Cycle '$i'/5 — Scanning cosmic field...'; date; sleep 5; done; echo '💾 Telemetry uplink complete — ✅ Mission success ✨'"]`
 
 
 After creating the CronJob, create a separate Job named **`manual-delta-ray`** in the same namespace using the same configuration as the CronJob to perform manual testing.

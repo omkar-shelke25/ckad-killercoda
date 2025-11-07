@@ -12,7 +12,7 @@ Create a CronJob named **`delta-ray`** in the **`delta`** namespace using the im
 
 The CronJob should run every **`45` minutes** and must retain the last **`33` successful jobs** and **`19` failed jobs** in its history.
 
-Each job created by this CronJob should automatically terminate if it runs longer than **`30 `seconds**.
+Each job created by this CronJob should automatically terminate if it runs longer than **`50`seconds**.
 
 And the pod inside the job should have its restart policy set to **`Never`**.
 
@@ -69,7 +69,7 @@ spec:
   failedJobsHistoryLimit: 19
   jobTemplate:
     spec:
-      activeDeadlineSeconds: 30
+      activeDeadlineSeconds: 50
       template:
         spec:
           restartPolicy: Never
@@ -92,7 +92,7 @@ metadata:
   name: manual-delta-ray
   namespace: delta
 spec:
-  activeDeadlineSeconds: 30
+  activeDeadlineSeconds: 50
   template:
     spec:
       restartPolicy: Never
@@ -127,7 +127,7 @@ kubectl edit cronjob delta-ray -n delta
 # Add:
 #   successfulJobsHistoryLimit: 33
 #   failedJobsHistoryLimit: 19
-#   jobTemplate.spec.activeDeadlineSeconds: 30
+#   jobTemplate.spec.activeDeadlineSeconds: 50
 #   jobTemplate.spec.template.spec.restartPolicy: Never
 
 # Create manual job from cronjob

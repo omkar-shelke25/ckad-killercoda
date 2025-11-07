@@ -17,9 +17,10 @@ Each job created by this CronJob should automatically terminate if it runs longe
 And the pod inside the job should have its restart policy set to **`Never`**.
 
 Use the following command in the container to simulate the Delta-Ray diagnostic sequence:
+
 ```bash
 command: ["/bin/sh", "-c", "echo 'Initiating Delta-Ray Diagnostic...'; for i in $(seq 1 5); do echo 'Cycle '$i'/5 — Scanning cosmic field...'; date; sleep 5; done; echo 'Telemetry uplink complete — Mission success'"]
-```{{copy}}
+``` 
 
 
 
@@ -61,7 +62,8 @@ kubectl create cronjob delta-ray \
   --image=public.ecr.aws/docker/library/busybox:stable \
   --schedule="*/45 * * * *" \
   -n delta \
-  -- /bin/sh -c "echo '🛰️ Initiating Delta-Ray Diagnostic...'; for i in \$(seq 1 5); do echo '🔭 Cycle '\$i'/5 — Scanning cosmic field...'; date; sleep 5; done; echo '💾 Telemetry uplink complete — ✅ Mission success ✨'"
+  -- /bin/sh -c "echo 'Initiating Delta-Ray Diagnostic...'; for i in \$(seq 1 5); do echo 'Cycle '\$i'/5 - Scanning cosmic field...'; date; sleep 5; done; echo 'Telemetry uplink complete - Mission success'"
+
 
 # Edit to add history limits and activeDeadlineSeconds
 kubectl edit cronjob delta-ray -n delta

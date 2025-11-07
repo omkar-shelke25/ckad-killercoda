@@ -9,7 +9,7 @@ EXPECTED_IMAGE="public.ecr.aws/docker/library/busybox:stable"
 EXPECTED_SCHEDULE="*/45 * * * *"
 EXPECTED_SUCCESS_HISTORY=33
 EXPECTED_FAILED_HISTORY=19
-EXPECTED_DEADLINE=30
+EXPECTED_DEADLINE=50
 EXPECTED_RESTART_POLICY="Never"
 
 #=== Helpers ============================================================

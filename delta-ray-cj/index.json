@@ -1,0 +1,23 @@
+{
+  "title": "CKAD: Delta-Ray Diagnostic CronJob Configuration",
+  "description": "Create and configure a CronJob with specific scheduling, history retention, and timeout requirements.",
+  "details": {
+    "steps": [
+      {
+        "title": "Create Delta-Ray CronJob and Manual Job",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

@@ -22,6 +22,7 @@ Use the following command in the container to simulate the Delta-Ray diagnostic 
 command: ["/bin/sh", "-c", "echo '🛰️ Initiating Delta-Ray Diagnostic...'; for i in $(seq 1 5); do echo '🔭 Cycle '$i'/5 — Scanning cosmic field...'; date; sleep 5; done; echo '💾 Telemetry uplink complete — ✅ Mission success ✨'"]
 ```{{copy}}
 
+
 After creating the CronJob, create a separate Job named **`manual-delta-ray`** in the same namespace using the same configuration as the CronJob to perform manual testing.
 
 Ensure that the **manual job** runs successfully and displays the expected diagnostic messages from the command output.

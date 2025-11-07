@@ -52,67 +52,7 @@ Important fields to configure:
 - `spec.jobTemplate.spec.template.spec.restartPolicy` - pod restart policy
 
 
-
-```bash
-# Part 1: Create CronJob
-# =======================
-
-cat <<EOF | kubectl apply -f -
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: delta-ray
-  namespace: delta
-spec:
-  schedule: "*/45 * * * *"
-  successfulJobsHistoryLimit: 33
-  failedJobsHistoryLimit: 19
-  jobTemplate:
-    spec:
-      activeDeadlineSeconds: 50
-      template:
-        spec:
-          restartPolicy: Never
-          containers:
-          - name: delta-diagnostic
-            image: public.ecr.aws/docker/library/busybox:stable
-            command: ["/bin/sh", "-c", "echo '🛰️ Initiating Delta-Ray Diagnostic...'; for i in \$(seq 1 5); do echo '🔭 Cycle '\$i'/5 — Scanning cosmic field...'; date; sleep 5; done; echo '💾 Telemetry uplink complete — ✅ Mission success ✨'"]
-EOF
-
-# Verify CronJob creation
-kubectl get cronjob delta-ray -n delta
-
-# Part 2: Create Manual Job
-# ==========================
-
-cat <<EOF | kubectl apply -f -
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: manual-delta-ray
-  namespace: delta
-spec:
-  activeDeadlineSeconds: 50
-  template:
-    spec:
-      restartPolicy: Never
-      containers:
-      - name: delta-diagnostic
-        image: public.ecr.aws/docker/library/busybox:stable
-        command: ["/bin/sh", "-c", "echo '🛰️ Initiating Delta-Ray Diagnostic...'; for i in \$(seq 1 5); do echo '🔭 Cycle '\$i'/5 — Scanning cosmic field...'; date; sleep 5; done; echo '💾 Telemetry uplink complete — ✅ Mission success ✨'"]
-EOF
-
-# Wait for manual job to complete
-kubectl wait --for=condition=complete job/manual-delta-ray -n delta --timeout=60s
-
-# View the logs
-kubectl logs job/manual-delta-ray -n delta
-
-# Monitor for CronJob-created jobs (will appear based on schedule)
-kubectl get jobs -n delta --watch
-```
-
-**Alternative: Using kubectl create command**
+**Using kubectl create command**
 
 ```bash
 # Create CronJob (then edit to add history limits)

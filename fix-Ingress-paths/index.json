@@ -1,5 +1,5 @@
 {
-  "title": "CKAD: Validate and Fix Ingress Paths for Food Delivery App",
+  "title": "CKAD: Fix and Validate Ingress Paths for Food Delivery App",
   "description": "Debug and fix service selectors, validate Ingress path routing, and configure DNS for a multi-service food delivery application.",
   "details": {
     "steps": [

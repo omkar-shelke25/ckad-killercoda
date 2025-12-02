@@ -14,9 +14,13 @@ Each lab is scenario-driven, exam-focused, and runnable instantly in your browse
 This repository contains **real CKAD-style challenges**, including Pods, Deployments, Services, Ingress, NetworkPolicies, RBAC, CronJobs, ConfigMaps, Secrets, Container lifecycle, and more.
 
 Every scenario mirrors real exam patterns:
+
 ✔ Minimal instructions
+
 ✔ Hands-on Kubernetes CLI
+
 ✔ Exact exam difficulty
+
 ✔ Production-style debugging tasks
 
 ---

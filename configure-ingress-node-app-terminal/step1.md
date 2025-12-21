@@ -30,7 +30,7 @@ Create an Ingress named `multi-endpoint-ingress` in the `node-app` namespace wit
 - ✅ Use `curl` to test `/app` endpoint
 - ✅ Confirm both endpoints respond correctly
 
-> curl http://node.app.terminal.io/ | jq
+> curl http://node.app.terminal.io/
 
 ---
 

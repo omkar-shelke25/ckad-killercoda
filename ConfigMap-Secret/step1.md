@@ -1,5 +1,15 @@
 # Externalize Runtime Configuration (ConfigMap + Secret → Env)
 
+### 📚 **Official Kubernetes Documentation**:
+
+- [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
+- [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
+- [Using Secrets as Environment Variables](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-environment-variables)
+- [Using ConfigMaps as Environment Variables](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#add-configmap-data-to-a-)
+
+---
+
+
 A workload in `apps` needs a database endpoint (non‑sensitive) and a third‑party API credential (sensitive). The workload reads both **only via environment variables** at runtime.
 
 ## Task

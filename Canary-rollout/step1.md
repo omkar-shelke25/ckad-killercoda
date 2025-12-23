@@ -1,5 +1,14 @@
 # 🧪 Canary Deployment: 20% Traffic on nginx:1.20
 
+## 📚 **Official Kubernetes Documentation**:
+
+- [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+- [Rolling Updates and Rollbacks](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-update-deployment)
+- [Labels and Selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
+- [Services](https://kubernetes.io/docs/concepts/services-networking/service/)
+- [Traffic Splitting with Multiple Deployments](https://kubernetes.io/docs/concepts/services-networking/service/#services-without-selectors)
+
+
 You have an existing deployment named **`frontend`** running the image **`nginx:1.19`** with **`5` replicas** in the **`default`** namespace.
 
 Create a **canary deployment** named **`frontend-canary`** that runs the image **`nginx:1.20`** alongside the existing pods, handling **20% of the traffic**.

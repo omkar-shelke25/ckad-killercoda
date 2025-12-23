@@ -1,4 +1,16 @@
-# Use a TLS Secret as a Volume in a Pod (namespace: security)
+## CKAD: Use a TLS Secret as a Volume in a Pod (namespace: security)
+
+
+## 📚 **Official Kubernetes Documentation**:
+
+- [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
+- [TLS Secrets](https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets)
+- [Create a Secret from Files](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#create-a-secret)
+- [Using Secrets as Files](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-files-from-a-pod)
+- [Volumes](https://kubernetes.io/docs/concepts/storage/volumes/)
+- [Pods](https://kubernetes.io/docs/concepts/workloads/pods/)
+
+---
 
 ## Objective
 Create a **TLS Secret** (`kubernetes.io/tls`) and mount it into a Pod at `/etc/tls`.

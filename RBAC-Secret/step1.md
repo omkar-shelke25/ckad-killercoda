@@ -18,7 +18,6 @@ Create a ServiceAccount `specific-secret-reader-sa` in the **finance** namespace
 - Create a **Role** named **`single-secret-getter-role`** in **finance** that uses **`resourceNames`** to restrict `get` to only `api-key-v2` on resource **`secrets`** in API group `""` (core).
 - Create a **RoleBinding** named **`single-secret-getter-binding`** to grant this role to that ServiceAccount.
 
-> ℹ️ **Tip:** Use plural resource name `secrets`. Imperative short form accepts `secrets` or `secrets.` with group hints like `secrets` (core) — `cronjobs.batch` style is for non-core groups.
 
 ---
 

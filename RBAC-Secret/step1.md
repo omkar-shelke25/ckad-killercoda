@@ -1,4 +1,13 @@
-# Grant Read-only Access to a Single Secret via `resourceNames`
+# CKAD: Grant Read-only Access to a Single Secret via `resourceNames`
+
+## 📚 **Official Kubernetes Documentation**: 
+
+- [Using RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
+- [Role and ClusterRole](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole)
+- [RoleBinding and ClusterRoleBinding](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding)
+- [ServiceAccounts](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/)
+- [Managing Service Accounts](https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/)
+
 
 ## Objective
 Create a ServiceAccount `specific-secret-reader-sa` in the **finance** namespace that can **only** `get` the Secret named **`api-key-v2`**, and **nothing else**.

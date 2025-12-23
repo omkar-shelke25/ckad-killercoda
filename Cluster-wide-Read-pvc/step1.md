@@ -1,4 +1,11 @@
-# Grant Cluster-wide Read-only Access to PVCs & StorageClasses
+# CKAD : Grant Cluster-wide Read-only Access to PVCs & StorageClasses
+
+### 📚 **Official Kubernetes Documentation**: 
+
+- [Role and ClusterRole](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole)
+- [RoleBinding and ClusterRoleBinding](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding)
+- [ServiceAccounts](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/)
+
 
 ## Objective
 A new DevOps engineer, **sara.jones@example.com**, has joined the team. Grant her **cluster-wide read-only** access to all **PersistentVolumeClaims (PVCs)** and **StorageClasses**.

@@ -1,5 +1,5 @@
 {
-  "title": "🔭 RBAC — Cluster-wide Node Reader (Monitoring)",
+  "title": "CKAD: Grant a monitoring ServiceAccount cluster-wide read-only access",
   "description": "Grant a monitoring ServiceAccount cluster-wide read-only access to Node resources using ClusterRole and ClusterRoleBinding. Assign the SA to a Deployment and verify via impersonation.",
   "details": {
     "steps": [

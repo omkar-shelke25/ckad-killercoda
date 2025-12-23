@@ -1,5 +1,5 @@
 {
-  "title": "Mount a TLS Secret in a Pod (security namespace)",
+  "title": "CKAD: Mount a TLS Secret in a Pod (security namespace)",
   "description": "Create a kubernetes.io/tls Secret from a key & cert and mount it into a Pod as /etc/tls.",
   "details": {
     "steps": [

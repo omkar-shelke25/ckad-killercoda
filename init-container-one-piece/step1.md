@@ -1,5 +1,15 @@
 # CKAD: Deploy Strawhat Crew with InitContainer
 
+## 📚 **Official Kubernetes Documentation**:
+
+- [Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)
+- [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
+- [Create ConfigMap from File](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#create-a-configmap-from-a-file)
+- [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+- [Services](https://kubernetes.io/docs/concepts/services-networking/service/)
+- [NodePort Services](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport)
+
+
 In the `one-piece` namespace, deploy an Nginx application serving custom Strawhat crew HTML using ConfigMap and InitContainer.
 
 ## Your Tasks

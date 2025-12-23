@@ -124,7 +124,7 @@ kubectl logs -n mercury deployment/cleaner -c logger-con
 - The `logger-con` container is defined as an `initContainer` with `restartPolicy: Always`
 - This makes it a sidecar that runs alongside the main container
 - Both containers share the same `logs` volume
-- The sidecar uses `tail -f` to continuously stream the log file to stdout
+- The sidecar uses `tail -F` to continuously stream the log file to stdout
 - The logs reveal "WARNING: 3 records missing!" - the missing data incidents!
 
 </details>

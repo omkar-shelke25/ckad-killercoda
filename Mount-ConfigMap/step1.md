@@ -1,6 +1,16 @@
-# CKAD: Mount Config Files & Gate Readiness
+## CKAD: Mount Config Files & Gate Readiness
 
-**weightage 8**
+
+### 📚 **Official Kubernetes Documentation**:
+
+- [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
+- [Using ConfigMaps as Files](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#add-configmap-data-to-a-volume)
+- [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+- [Container Probes](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes)
+- [Readiness Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
+- [Exec Probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-a-command)
+
+---
 
 Create a ConfigMap named `app-config` in the `apps` namespace with the following data:
 - **APP_MODE=production**  

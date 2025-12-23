@@ -1,5 +1,14 @@
 # CKAD: Fix RBAC for Deployment
 
+### 📚 **Official Kubernetes Documentation**: 
+
+- [Using RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
+- [Role and ClusterRole](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole)
+- [RoleBinding and ClusterRoleBinding](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding)
+- [ServiceAccounts](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/)
+- [Managing Service Accounts](https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/)
+
+---
 The Straw Hat Pirates need their monitoring systems to access deployment information. Currently, both **`monkey-d-luffy`** and **`crew-monitor`** deployments in the **`one-piece`** namespace are showing RBAC errors in their logs.
 
 You should see errors like:

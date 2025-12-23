@@ -1,4 +1,14 @@
-# Grant CronJob-Only Permissions in a Namespace
+# CKAD: Grant CronJob-Only Permissions in a Namespace
+
+
+## 📚 **Official Kubernetes Documentation**: 
+
+- [Using RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
+- [Role and ClusterRole](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole)
+- [RoleBinding and ClusterRoleBinding](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding)
+- [ServiceAccounts](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/)
+
+---
 
 ## Objective
 A data science team needs permissions to **manage the lifecycle of CronJobs** in their dedicated namespace, **`batch-processing`**, but they **must not** be able to manage other workload types like **Deployments** or **Pods** directly.

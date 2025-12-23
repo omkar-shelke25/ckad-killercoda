@@ -1,5 +1,5 @@
 {
-  "title": "RBAC Fix: Allow SA to List ConfigMaps",
+  "title": "CKAD: Fix RBAC to Allow a ServiceAccount to List ConfigMaps",
   "description": "Investigate and fix an RBAC Role misconfiguration preventing a ServiceAccount from listing ConfigMaps in its namespace.",
   "details": {
     "steps": [

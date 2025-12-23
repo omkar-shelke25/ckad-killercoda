@@ -1,5 +1,15 @@
 # 🟢 Create Green, then Switch Service (namespace: `ios`)
 
+## 📚 **Official Kubernetes Documentation**:
+
+- [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+- [Updating a Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment)
+- [Labels and Selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
+- [Services](https://kubernetes.io/docs/concepts/services-networking/service/)
+- [Service Selectors](https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service)
+
+---
+
 You have a live deployment named **`web-app-blue`** running **`nginx:1.19`** with **`3 replicas`** in the **`ios`** namespace. 
 
 Create a new deployment called **`web-app-green`** running **`nginx:1.20`** with **`3 replicas`**, **but do not route traffic to it yet**.

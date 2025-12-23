@@ -1,4 +1,15 @@
-# Use multiple ConfigMaps and a Secret as environment variables (namespace: `api`)
+## CKAD: Use multiple ConfigMaps and a Secret as environment variables (namespace: `api`)
+
+### 📚 **Official Kubernetes Documentation**:
+
+- [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
+- [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
+- [Using Secrets as Environment Variables](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-environment-variables)
+- [Using ConfigMaps as Environment Variables](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#add-configmap-data-to-a-pod)
+- [Define Environment Variables for a Container](https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/)
+- [Pods](https://kubernetes.io/docs/concepts/workloads/pods/)
+
+---
 
 ## Requirements
 - Namespace: **api**

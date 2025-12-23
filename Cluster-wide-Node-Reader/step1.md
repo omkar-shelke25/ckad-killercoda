@@ -1,4 +1,4 @@
-# 🧩 ClusterRole & ClusterRoleBinding for Node Read + Attach SA (Weight: 6)
+# 🧩 CKAD: ClusterRole & ClusterRoleBinding for Node Read + Attach SA
 
 ### 📚 **Official Kubernetes Documentation**: 
 

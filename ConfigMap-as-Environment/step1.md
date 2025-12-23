@@ -1,5 +1,14 @@
 # ConfigMap → Environment Variables (default namespace)
 
+## 📚 **Official Kubernetes Documentation**:
+
+- [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
+- [Create ConfigMap from Literal Values](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#create-a-configmap)
+- [Using ConfigMaps as Files](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#add-configmap-data-to-a-volume)
+- [Volumes](https://kubernetes.io/docs/concepts/storage/volumes/)
+
+---
+
 ## Objective
 Create a **ConfigMap** and expose its keys as **environment variables** in a Pod (running in the **default** namespace).
 

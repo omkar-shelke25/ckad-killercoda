@@ -1,6 +1,16 @@
-# Investigate & Fix the RBAC Role
+# CKAD: Investigate & Fix the RBAC Role
+
+## 📚 **Official Kubernetes Documentation**: 
+
+- [Using RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
+- [Role and ClusterRole](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole)
+- [RoleBinding and ClusterRoleBinding](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding)
+- [ServiceAccounts](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/)
+
 
 A developer using ServiceAccount **`dev-user-1`** in **`project-alpha`** cannot list ConfigMaps, even though there is a Role and RoleBinding in place.
+
+
 
 ## Task
 
@@ -11,34 +21,6 @@ A developer using ServiceAccount **`dev-user-1`** in **`project-alpha`** cannot 
 
 ---
 
-<details>
-<summary>short notes on RBAC `resources`</summary>
-
-# 📒 RBAC Resources – Short Notes
-
-### 🔑 Rules
-
-* Always use **plural** names in `resources` (e.g., `configmaps`, not `configmap`).
-* Names must match **API resource list** → check with:
-
-  ```bash
-  kubectl api-resources
-  ```
-* ❌ Singular / Short names (e.g., `cm`, `svc`) are invalid.
-* ✅ Always lowercase.
-
----
-
-### ✅ Common Plural Names
-
-* Pod → `pods`
-* Service → `services`
-* ConfigMap → `configmaps`
-
-</details>
-
-
-<details> 
 <summary>Solution (expand to view)</summary>
 
 

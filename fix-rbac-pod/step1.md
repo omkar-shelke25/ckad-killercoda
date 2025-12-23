@@ -1,5 +1,15 @@
 ### 🧩 **CKAD: Fix RBAC Access for Deployment Using a Predefined Role**
 
+
+### 📚 **Official Kubernetes Documentation**: 
+
+- [Using RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
+- [Role and ClusterRole](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole)
+- [RoleBinding and ClusterRoleBinding](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding)
+- [ServiceAccounts](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/)
+- [Managing Service Accounts](https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/)
+
+
 A Deployment named **`pod-explorer`** in the **`qa-tools`** namespace is failing with the following error:
 
 ```

@@ -1,5 +1,5 @@
 {
-  "title": "RBAC: Read a Specific Secret Only",
+  "title": "CKAD: RBAC Read a Specific Secret Only",
   "description": "Grant a ServiceAccount read-only access to a single named Secret via resourceNames in a Role.",
   "details": {
     "steps": [

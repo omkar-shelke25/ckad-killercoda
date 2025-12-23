@@ -1,6 +1,14 @@
 # 🔧 Scale Deployment and Create NodePort Service
 
-## 📋 Mission Brief
+## 📚 **Official Kubernetes Documentation**:
+
+- [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+- [Scaling Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#scaling-a-deployment)
+- [Labels and Selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
+- [Services](https://kubernetes.io/docs/concepts/services-networking/service/)
+- [NodePort Services](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport)
+
+### 📋 Mission Brief
 
 You're preparing the e-commerce platform for a major product launch. The current deployment `ecommerce-frontend-deployment` needs to be scaled and exposed externally to handle the expected traffic surge.
 

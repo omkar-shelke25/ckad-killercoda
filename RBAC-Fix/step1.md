@@ -7,6 +7,7 @@
 - [RoleBinding and ClusterRoleBinding](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#rolebinding-and-clusterrolebinding)
 - [ServiceAccounts](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/)
 
+---
 
 A developer using ServiceAccount **`dev-user-1`** in **`project-alpha`** cannot list ConfigMaps, even though there is a Role and RoleBinding in place.
 

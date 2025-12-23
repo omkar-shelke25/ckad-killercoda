@@ -1,5 +1,5 @@
 {
-  "title": "RBAC: Manage CronJobs in a Single Namespace",
+  "title": "CKAD: RBAC Manage CronJobs in a Single Namespace",
   "description": "Grant a ServiceAccount permissions to manage CronJobs in the batch-processing namespace, but not other workload types.",
   "details": {
     "steps": [

@@ -1,4 +1,13 @@
-# Mount ConfigMap as Files into an NGINX Pod (default namespace)
+## CKAD: Mount ConfigMap as Files into an NGINX Pod (default namespace)
+
+### 📚 **Official Kubernetes Documentation**:
+
+- [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
+- [Create ConfigMap from Literal Values](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#create-a-configmap)
+- [Using ConfigMaps as Files](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#add-configmap-data-to-a-volume)
+- [Volumes](https://kubernetes.io/docs/concepts/storage/volumes/)
+
+---
 
 ## Requirements
 1. Create `ConfigMap` **`html-config`** with keys and contents:

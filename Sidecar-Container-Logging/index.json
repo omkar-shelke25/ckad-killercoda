@@ -1,5 +1,5 @@
 {
-  "title": "CKAD: Sidecar Container for Logging",
+  "title": "CKAD: Create Sidecar Container for Logging",
   "description": "Add a sidecar container to an existing Deployment to capture and stream log files to stdout.",
   "details": {
     "steps": [

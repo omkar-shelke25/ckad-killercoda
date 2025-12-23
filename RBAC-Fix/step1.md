@@ -22,6 +22,8 @@ A developer using ServiceAccount **`dev-user-1`** in **`project-alpha`** cannot 
 
 ---
 
+<details>
+  
 <summary>Solution (expand to view)</summary>
 
 

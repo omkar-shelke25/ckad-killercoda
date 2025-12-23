@@ -36,23 +36,22 @@ Do the following:
 <details>
 <summary>📖 Solution</summary>
 
+
 #### Kubernetes Sidecar Init Containers (Restartable Init Containers)
 
-As of **Kubernetes v1.29+**, **restartable init containers** (also called **sidecar init containers**) are officially supported under the `SidecarContainers` feature gate, which is **enabled by default**.  
-These containers start **before** the main containers, **stay running afterward**, and can **restart independently** of the main application container.  
-They are typically used for **logging**, **monitoring**, or **proxy** sidecar processes inside a Pod.
-
-📘 **Official Docs:**  
-https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/
-
----
+- As of **Kubernetes v1.29+**, **restartable init containers** (also called **sidecar init containers**) are officially supported under the `SidecarContainers` feature gate, which is **enabled by default**.  
+- These containers start **before** the main containers, **stay running afterward**, and can **restart independently** of the main application container.  
+- They are typically used for **logging**, **monitoring**, or **proxy** sidecar processes inside a Pod.
 
 ### ⚙️ Key Exam Tip (CKA / CKAD)
 In **CKA** and **CKAD** exams, you may be asked to:
 - Use an **`initContainer`** with **`restartPolicy: Always`** to create a **restartable sidecar container**.
 - Demonstrate that it continues running after the main application container starts.
 - Understand the difference between **regular init containers** and **restartable sidecar init containers**.
-
+- If the question does not mentioned co-located container, then use **restartable sidecar init containers**.
+- If the question says co-located containers → ❌ Do NOT use **restartable sidecar container**. 
+  - ✅ Use normal sidecar containers under spec.containers
+  
 
 ```bash
 # First, examine the existing deployment

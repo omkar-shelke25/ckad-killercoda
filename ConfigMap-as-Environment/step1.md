@@ -1,4 +1,4 @@
-# ConfigMap → Environment Variables (default namespace)
+# CKAD: ConfigMap → Environment Variables (default namespace)
 
 ## 📚 **Official Kubernetes Documentation**:
 

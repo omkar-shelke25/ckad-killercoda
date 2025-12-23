@@ -1,4 +1,15 @@
-# CKAD: Create Sidecar Container for Logging (Weightage: 6%)
+# CKAD: Create Sidecar Container for Logging
+
+## 📚 **Official Kubernetes Documentation**:
+
+- [Sidecar Containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)
+- [Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)
+- [Pods](https://kubernetes.io/docs/concepts/workloads/pods/)
+- [Volumes](https://kubernetes.io/docs/concepts/storage/volumes/)
+- [EmptyDir Volumes](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir)
+- [kubectl logs](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_logs/)
+
+---
 
 ## 📋 Background
 

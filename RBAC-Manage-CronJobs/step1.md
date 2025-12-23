@@ -20,9 +20,6 @@ A data science team needs permissions to **manage the lifecycle of CronJobs** in
 - Create a **RoleBinding** named **`bind-cron-manager`** to grant the role to the ServiceAccount **`cron-manager-sa`**.
 - Verify the service account **can create a CronJob** but **cannot create a Pod**.
 
-> 📝 **Scope Notes**
-> - Use **Role**/**RoleBinding** (namespace-scoped), not ClusterRole/ClusterRoleBinding.
-> - Resource should be **`cronjobs`** in API group **`batch`** (you can use `cronjobs.batch` in imperative commands).
 
 ---
 

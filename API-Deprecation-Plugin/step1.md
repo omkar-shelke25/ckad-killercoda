@@ -1,11 +1,20 @@
 # CKAD: API Deprecation and Deployment
 
+## 📚 **Official Kubernetes Documentation**:
+
+- [Deprecated API Migration Guide](https://kubernetes.io/docs/reference/using-api/deprecation-guide/)
+- [API Versioning](https://kubernetes.io/docs/reference/using-api/#api-versioning)
+- [kubectl-convert Plugin](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-kubectl-convert-plugin)
+- [Install kubectl on Linux](https://https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
+- [kubectl Plugins Overview](https://kubernetes.io/docs/tasks/exte)
+
+
 You are working in a Kubernetes cluster (v1.33). A manifest file contains **deprecated API versions** that are no longer supported.
 
-## Scenario
+### Scenario
 The development team at your company has provided a manifest file at `/ancient-tiger/app.yaml` that was created for Kubernetes v1.28. However, your cluster is running v1.33, and some API versions have been deprecated and removed.
 
-## Your Tasks
+### Your Tasks
 
 1. **Inspect the manifest file** at `/ancient-tiger/app.yaml` to identify deprecated API versions.
 

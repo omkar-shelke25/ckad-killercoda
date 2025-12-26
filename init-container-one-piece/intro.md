@@ -1,4 +1,4 @@
-# CKA: ConfigMap & InitContainer - One Piece Mission 🏴‍☠️
+# CKAD: ConfigMap & InitContainer - One Piece Mission 🏴‍☠️
 
 Welcome aboard the Thousand Sunny! Practice deploying applications with InitContainers and ConfigMaps.
 

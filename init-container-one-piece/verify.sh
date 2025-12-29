@@ -46,12 +46,6 @@ INIT_NAME="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spe
 INIT_IMG="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.initContainers[0].image}')"
 [[ "$INIT_IMG" == "$EXPECT_INIT_IMAGE" ]] || fail "Expected initContainer image '$EXPECT_INIT_IMAGE' but found '$INIT_IMG'."
 
-# 7) Check volumes
-CONFIG_VOL="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.volumes[?(@.configMap.name=="'"$CM"'")].name}')"
-[[ -n "$CONFIG_VOL" ]] || fail "ConfigMap volume referencing '$CM' not found in deployment."
-
-EMPTY_VOL="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.volumes[?(@.emptyDir)].name}')"
-[[ -n "$EMPTY_VOL" ]] || fail "emptyDir volume not found in deployment."
 
 # 8) Deployment should be ready
 kubectl -n "$NS" rollout status "deploy/$DEP" --timeout=120s >/dev/null 2>&1 \

@@ -1,5 +1,5 @@
 {
-  "title": "Helm CKAD: Delete, Exact Upgrade, and Install with Values",
+  "title": "CKAD: Helm Delete, Exact Upgrade, and Install with Values",
   "description": "Perform precise Helm operations in the sercury namespace and clean up a flagged release.",
   "details": {
     "steps": [

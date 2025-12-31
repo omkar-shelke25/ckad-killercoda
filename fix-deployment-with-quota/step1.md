@@ -1,5 +1,16 @@
 # Task: Fix Pods Failing Due to ResourceQuota
 
+## 📚 **Official Kubernetes Documentation**:
+
+- [Resource Quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/)
+- [How Resource Quotas Work](https://kubernetes.io/docs/concepts/policy/resource-quotas/#how-resource-quotas-work)
+- [Configure Memory and CPU Requests and Limits](https://kubernetes.io/docs/tasks/configure-pod-container/assign-memory-resource/)
+- [Assign CPU Resources to Containers](https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/)
+- [kubectl set resources](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#set_resources)
+- [Troubleshooting Pods](https://kubernetes.io/docs/tasks/debug/debug-application/debug-pods/)
+
+---
+
 In namespace **`payments-prod`**, the following resources already exist:
 
 - A **ResourceQuota** named `rq-payments-prod` that enforces:

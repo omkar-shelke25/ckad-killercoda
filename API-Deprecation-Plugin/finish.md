@@ -7,6 +7,12 @@ You successfully:
 - **Deployed** the application to the **viper** namespace
 - **Verified** that all 3 pods are running successfully
 
+
+## 💬 Have a doubt?
+
+🔗 **Discord Link:**
+[https://killercoda.com/discord](https://killercoda.com/discord)
+
 ## Key Takeaways
 
 ### API Deprecations

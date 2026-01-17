@@ -2,6 +2,12 @@
 
 You externalized configuration and injected it as environment variables.
 
+
+## 💬 Have a doubt?
+
+🔗 **Discord Link:**
+[https://killercoda.com/discord](https://killercoda.com/discord)
+
 ## You accomplished
 - ✅ Created `app-config` ConfigMap with key `database.url`
 - ✅ Created `api-credentials` Secret with key `api.key`

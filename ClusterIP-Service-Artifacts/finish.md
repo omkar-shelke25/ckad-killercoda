@@ -2,6 +2,12 @@
 
 You created an internal Service with port redirect and proved it works.
 
+## 💬 Have a doubt?
+
+🔗 **Discord Link:**
+[https://killercoda.com/discord](https://killercoda.com/discord)
+
+
 ## You accomplished
 - ✅ Pod `project-plt-6cc-api` (nginx:1.17.3-alpine) with label `project=plt-6cc-api`
 - ✅ ClusterIP Service `project-plt-6cc-svc` mapping **3333 → 80/TCP**

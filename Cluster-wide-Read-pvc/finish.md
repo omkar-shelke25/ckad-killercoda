@@ -2,6 +2,13 @@
 
 You granted **cluster-wide read-only** access on storage resources to **sara.jones@example.com**.
 
+
+## 💬 Have a doubt?
+
+🔗 **Discord Link:**
+[https://killercoda.com/discord](https://killercoda.com/discord)
+
+
 ## What you completed
 - ✅ Created `ClusterRole` **storage-viewer-crole** with `get,list,watch` on:
   - `persistentvolumeclaims` (core API group)

@@ -1,4 +1,4 @@
-## 🦸 CKA - Configure Ingress with TLS
+## 🦸 CKAD - Configure Ingress with TLS
 
 > Wait a 2 minutes for MetalLB to set up.
 

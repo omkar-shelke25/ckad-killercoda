@@ -1,5 +1,5 @@
 {
-  "title": "CKAD: Configure Ingress with TLS - U.A. High School Hero Portal",
+  "title": "CKAD: Configure Ingress with TLS",
   "description": "Master Kubernetes Ingress configuration with TLS termination and path-based routing for the Hero Registration Portal.",
   "details": {
     "steps": [

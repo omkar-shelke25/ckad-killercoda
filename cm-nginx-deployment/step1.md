@@ -1,11 +1,12 @@
-# Create ConfigMap for Nginx Configuration
+# 🗺️ CKAD: Create ConfigMap for Nginx Configuration
 
-Team Moonpie has a nginx server Deployment called **`web-moon`** in namespace **`moon`**. Someone started configuring it but it was never completed. To complete this please create a ConfigMap called **`configmap-web-moon-html`** containing the content of file `/opt/course/15/web-moon.html` under the data key-name **`index.html`**.
+📋 Team Moonpie has a nginx server Deployment called **`web-moon`** in namespace **`moon`**. Someone started configuring it but it was never completed. 
+
+To complete this please create a ConfigMap called **`configmap-web-moon-html`** containing the content of file `/opt/course/15/web-moon.html` under the data key-name **`index.html`**.
 
 The Deployment **`web-moon`** is already configured to work with this ConfigMap and serve the content, for example by using `curl` from a temporary `nginx:alpine` Pod.
 
-
-## (Optional) Reference Solution
+## 💡Reference Solution
 
 <details>
 <summary>Click to view solution</summary>

@@ -1,1 +1,23 @@
-
+{
+  "title": "CKA: Configure Ingress with TLS - U.A. High School Hero Portal",
+  "description": "Master Kubernetes Ingress configuration with TLS termination and path-based routing for the Hero Registration Portal.",
+  "details": {
+    "steps": [
+      {
+        "title": "Configure Ingress with TLS",
+        "text": "step1.md",
+        "verify": "verify.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "courseData": "setup.sh"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "backend": {
+    "imageid": "kubernetes-kubeadm-2nodes"
+  }
+}

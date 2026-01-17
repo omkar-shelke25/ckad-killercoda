@@ -21,6 +21,7 @@ kubectl create configmap configmap-web-moon-html -n moon --from-file=index.html=
 kubectl get configmap configmap-web-moon-html -n moon -o yaml
 
 # 4. Check if the Deployment is ready to use the ConfigMap
+kubectl rollout restart deployment -n moon web-moon
 kubectl get deployment web-moon -n moon
 kubectl get pods -n moon
 

@@ -21,9 +21,10 @@ Create an Ingress named `hero-reg-ingress` in namespace `class-1a` that:
    - `heroes.ua-academy.com/verify` → `verify-service`
 3. Configure the DNS entry in `/etc/hosts` based on the Ingress LoadBalancer IP
 
->  curl -k -v https://heroes.ua-academy.com/register | jq
-
-> curl -k -v https://heroes.ua-academy.com/verify | jq
+```
+curl -k -v https://heroes.ua-academy.com/register | jq
+curl -k -v https://heroes.ua-academy.com/verify | jq
+```{{exec}}
 ---
 
 ### ✅ Solution

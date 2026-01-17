@@ -2,6 +2,13 @@
 
 You granted a **namespaced ServiceAccount** cluster-wide **read-only** access to **Node** resources with **ClusterRole** and **ClusterRoleBinding**, and correctly attached the SA to a workload.
 
+
+## 💬 Have a doubt?
+
+🔗 **Discord Link:**
+[https://killercoda.com/discord](https://killercoda.com/discord)
+
+
 ## ✅ You achieved
 - SA `node-inspector-sa` in `monitoring`
 - ClusterRole `node-reader-crole` (nodes: get, list)

@@ -18,7 +18,7 @@ Create a ConfigMap named `app-config` in the `apps` namespace with the following
 
 Verify the ConfigMap contains the exact values before proceeding.
 
-Create a deployment named `app-workload` in the `apps` namespace with 2 replicas using `nginx` image.
+Create a deployment named `app-workload` in the `apps` namespace with 2 replicas using `nginx` image. (labels of pod `app : app-workload`)
 
 Mount this ConfigMap to the deployment at `/etc/appconfig` so that each key becomes a separate file.
 

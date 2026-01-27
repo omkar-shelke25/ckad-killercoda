@@ -6,6 +6,6 @@ echo "📦 Setting up environment for CKAD Practice..."
 # Create mars namespace
 kubectl create namespace mars --dry-run=client -o yaml | kubectl apply -f -
 
-mkdir
+mkdir /opt/mars/
 
 echo "✅ mars namespace is ready for the scenario!"

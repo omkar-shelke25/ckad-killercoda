@@ -16,7 +16,7 @@ echo "📋 Checking Task 1: Deployment Creation (Weightage: 3 points)..."
 # Task 1 Verification (3 points)
 if ! kubectl get deployment app-server -n mars &>/dev/null; then
     echo "❌ FAILED: Deployment 'app-server' not found in 'mars' namespace"
-    echo "   Expected: kubectl create deployment app-server --image=nginx:1.21 --replicas=3 -n mars"
+    echo "   Expected: kubectl create deployment app-server --image=public.ecr.aws/nginx/nginx:stable-alpine --replicas=3 -n mars"
     echo "   Or apply YAML: kubectl apply -f app-server-deployment.yaml"
     echo "   Points: 0/3"
 else
@@ -36,11 +36,11 @@ else
     fi
     
     # Check image (1 point) 
-    if [ "$IMAGE" = "nginx:1.21" ]; then
+    if [ "$IMAGE" = "public.ecr.aws/nginx/nginx:stable-alpine" ]; then
         TASK1_POINTS=$((TASK1_POINTS + 1))
-        echo "   ✅ Image: nginx:1.21 (1 point)"
+        echo "   ✅ Image: public.ecr.aws/nginx/nginx:stable-alpine (1 point)"
     else
-        echo "   ❌ Image: expected nginx:1.21, found $IMAGE (0 points)"
+        echo "   ❌ Image: expected public.ecr.aws/nginx/nginx:stable-alpine, found $IMAGE (0 points)"
     fi
     
     # Check if pods are ready (1 point)

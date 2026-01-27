@@ -5,7 +5,8 @@
   "time": "8 minutes",
   "details": {
     "intro": {
-      "text": "intro.md"
+      "text": "intro.md",
+      "courseData": "setup.sh"
     },
     "steps": [
       {

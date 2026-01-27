@@ -10,7 +10,7 @@ Your manager initially asked you to deploy the service, and now — after some t
 ### Tasks
 
 #### Task 1 (Weightage: 2)
-In the **`mars`** namespace, create a Deployment named **`app-server`** using image **`nginx:1.21`** with **3** replicas.
+In the **`mars`** namespace, create a Deployment named **`app-server`** using image **`nginx:1.21`** with **`3`** replicas.
 
 #### Task 2 (Weightage: 2)
 Configure resource requests and limits so that the Pods run with QoS class: **`Burstable`**.

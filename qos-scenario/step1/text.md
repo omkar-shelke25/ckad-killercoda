@@ -10,7 +10,7 @@ Your manager initially asked you to deploy the service, and now — after some t
 ### Tasks
 
 #### Task 1 (Weightage: 2)
-In the **`mars`** namespace, create a Deployment named **`app-server`** using image **`nginx:1.21`** with **`3`** replicas.
+In the **`mars`** namespace, create a Deployment named **`app-server`** using image **`public.ecr.aws/nginx/nginx:stable-alpine`** with **`3`** replicas.
 
 #### Task 2 (Weightage: 2)
 Configure resource requests and limits so that the Pods run with QoS class: **`Burstable`**.
@@ -39,7 +39,7 @@ Create a script file **`/opt/mars/qos-check.sh`** that lists all Pod names and t
 
 
 #### Deployment Configuration
-The `app-server-deployment.yaml` file defines a Deployment in the `mars` namespace with 3 replicas using the `nginx:1.21` image. Resource requests and limits are set to ensure the **Burstable** QoS class.
+The `app-server-deployment.yaml` file defines a Deployment in the `mars` namespace with 3 replicas using the `public.ecr.aws/nginx/nginx:stable-alpine` image. Resource requests and limits are set to ensure the **Burstable** QoS class.
 
 ```yaml
 apiVersion: apps/v1
@@ -59,7 +59,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:1.21
+        image: public.ecr.aws/nginx/nginx:stable-alpine
         resources:
           requests:
             cpu: "200m"

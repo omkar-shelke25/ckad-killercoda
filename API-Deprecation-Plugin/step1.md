@@ -9,16 +9,16 @@
 - [kubectl Plugins Overview](https://kubernetes.io/docs/tasks/exte)
 
 
-You are working in a Kubernetes cluster (v1.33). A manifest file contains **deprecated API versions** that are no longer supported.
+You are working in a Kubernetes cluster (v1.34). A manifest file contains **deprecated API versions** that are no longer supported.
 
 ### Scenario
-The development team at your company has provided a manifest file at `/ancient-tiger/app.yaml` that was created for Kubernetes v1.28. However, your cluster is running v1.33, and some API versions have been deprecated and removed.
+The development team at your company has provided a manifest file at `/ancient-tiger/app.yaml` that was created for Kubernetes v1.28. However, your cluster is running v1.34, and some API versions have been deprecated and removed.
 
 ### Your Tasks
 
 1. **Inspect the manifest file** at `/ancient-tiger/app.yaml` to identify deprecated API versions.
 
-2. **Fix all API deprecation issues** in the manifest so that it becomes compatible with Kubernetes v1.33.
+2. **Fix all API deprecation issues** in the manifest so that it becomes compatible with Kubernetes v1.34.
    - **Download and install kubectl-convert plugin** (recommended approach) rather than manually editing
    - Save the updated file in the same location with the same name
 3. **Deploy the application** using the updated manifest file into the **viper** namespace.

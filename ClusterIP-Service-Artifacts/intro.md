@@ -1,7 +1,5 @@
-# Team Pluto – Internal ClusterIP Service
+# CKAD: ClusterIP Service with Port Redirect
 
-Create an internal Service with a port redirect and verify it from a temporary client.  
-You’ll also save the HTTP response body and the backend Pod’s access logs to the local filesystem.
-
+Create an nginx Pod, expose it via a ClusterIP Service with a **3333 → 80** port redirect, verify connectivity from a temporary client, and save the HTTP response and access logs to disk.
 
 Click **Start Scenario** to begin.

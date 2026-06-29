@@ -8,13 +8,11 @@
 ---
 
 ## 🧩 Scenario
-
 Team Pluto needs an internal nginx Pod exposed via a ClusterIP Service with a port redirect. Once running, you will verify connectivity from a temporary client Pod and save both the HTTP response and the nginx access logs to the local filesystem.
 
 ---
 
 ## 📋 Tasks
-
 All resources must be created in the **`pluto`** namespace.
 
 **1.** Create a Pod named **`project-plt-6cc-api`** with:
@@ -27,7 +25,7 @@ All resources must be created in the **`pluto`** namespace.
 - Protocol: `TCP`
 - Selector must match the Pod label above
 
-**3.** From a temporary client Pod in the `pluto` namespace, make an HTTP request to `http://project-plt-6cc-svc:3333/` and save the response body to:
+**3.** From a temporary client Pod in the `pluto` namespace, make an HTTP request (via `curl` or `wget`) to `http://project-plt-6cc-svc:3333/` and save the response body to:
 ```
 /opt/course/10/service_test.html
 ```
@@ -40,7 +38,6 @@ All resources must be created in the **`pluto`** namespace.
 ---
 
 ## ✅ Expected Result
-
 ```bash
 # Pod is running
 kubectl get pod project-plt-6cc-api -n pluto
@@ -59,7 +56,6 @@ cat /opt/course/10/service_test.log    # should show GET / request
 <summary>💡 Solution (try it yourself first!)</summary>
 
 **Step 1 — Create the Pod**
-
 ```bash
 kubectl -n pluto run project-plt-6cc-api \
   --image=nginx:1.17.3-alpine \
@@ -68,7 +64,6 @@ kubectl -n pluto run project-plt-6cc-api \
 ```
 
 **Step 2 — Expose it as a ClusterIP Service**
-
 ```bash
 kubectl -n pluto expose pod project-plt-6cc-api \
   --name=project-plt-6cc-svc \
@@ -80,26 +75,34 @@ kubectl -n pluto expose pod project-plt-6cc-api \
 
 **Step 3 — Save the HTTP response to service_test.html**
 
-Run a temporary client Pod and fetch the Service:
-
+Option A — using wget with a temporary `--rm` Pod:
 ```bash
- kubectl -n pluto run client   --image=busybox:latest   --restart=Never   --rm -i   --command -- wget -qO- http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html
+kubectl -n pluto run client --image=busybox:latest --restart=Never --rm -i \
+  --command -- wget -qO- http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html
 ```
 
-Verify it looks correct:
+Option B — using curl with a temporary `--rm` Pod:
+```bash
+kubectl -n pluto run client --image=curlimages/curl --restart=Never --rm -i \
+  --command -- curl -s http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html
+```
 
+> Note: `--rm` Pods sometimes print a `pod "client" deleted` line to stdout after the command finishes, which can land in your redirected file. If that happens, strip it with:
+> ```bash
+> sed -i '/pod .* deleted/d' /opt/course/10/service_test.html
+> ```
+
+Verify it looks correct:
 ```bash
 cat /opt/course/10/service_test.html
 ```
 
 **Step 4 — Save nginx access logs to service_test.log**
-
 ```bash
 kubectl -n pluto logs project-plt-6cc-api > /opt/course/10/service_test.log
 ```
 
 Verify the GET request was logged:
-
 ```bash
 cat /opt/course/10/service_test.log
 ```

@@ -1,10 +1,10 @@
 {
-  "title": "CKAD: Fix RBAC permission errors for Deployment ServiceAccount",
-  "description": "Configure ServiceAccount, Role, and RoleBinding for Deployments to list other Deployments in their namespace. Fix RBAC permission errors.",
+  "title": "CKAD: Fix RBAC permission errors for Deployment ServiceAccounts",
+  "description": "Configure ServiceAccounts, Roles, and RoleBindings so Deployments can list other Deployments in their namespace. Fix real RBAC Forbidden errors.",
   "details": {
     "steps": [
       {
-        "title": "Configure RBAC for monkey.d.luffy and crew-monitor Deployments",
+        "title": "Configure RBAC for monkey-d-luffy and crew-monitor",
         "text": "step1.md",
         "verify": "verify.sh"
       }

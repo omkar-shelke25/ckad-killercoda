@@ -1,14 +1,15 @@
+
 name: Lint Shell Scripts
 
 on:
   pull_request:
     paths:
-      - 'convert-pod-to-deploy/setup.sh.sh'
+      - 'RBAC-Secret/**/*.sh'
   push:
     branches:
       - main
     paths:
-      - 'convert-pod-to-deploy/setup.sh'
+      - 'RBAC-Secret/**/*.sh'
 
 jobs:
   shellcheck:
@@ -17,7 +18,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run ShellCheck on all .sh files
+      - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
         with:
           severity: warning
+          additional_files: |
+            RBAC-Secret/setup.sh
+            RBAC-Secret/verify.sh

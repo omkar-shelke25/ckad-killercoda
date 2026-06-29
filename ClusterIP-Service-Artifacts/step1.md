@@ -83,10 +83,7 @@ kubectl -n pluto expose pod project-plt-6cc-api \
 Run a temporary client Pod and fetch the Service:
 
 ```bash
-kubectl -n pluto run client --image=busybox:latest \
-  --restart=Never \
-  --rm -it \
-  -- wget -qO- http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html
+ kubectl -n pluto run client   --image=busybox:latest   --restart=Never   --rm -i   --command -- wget -qO- http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html
 ```
 
 Verify it looks correct:

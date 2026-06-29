@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
-# Create namespaces (idempotent)
+echo "Preparing lab environment..."
+
+# Namespaces
 kubectl create namespace netpol-demo9 --dry-run=client -o yaml | kubectl apply -f -
-kubectl create namespace external-ns --dry-run=client -o yaml | kubectl apply -f -
+kubectl create namespace external-ns  --dry-run=client -o yaml | kubectl apply -f -
 
-# Create source Pod in netpol-demo9
+# source-pod in netpol-demo9
 kubectl apply -f - <<'EOF'
 apiVersion: v1
 kind: Pod
@@ -17,12 +18,11 @@ metadata:
 spec:
   containers:
   - name: alpine
-    image: public.ecr.aws/docker/library/alpine:latest
+    image: alpine:latest
     command: ["sleep", "3600"]
-    # keep it simple and editable; we'll use wget (busybox) for connectivity tests
 EOF
 
-# Create target Pod in external-ns
+# target-pod in external-ns (nginx serves on port 80)
 kubectl apply -f - <<'EOF'
 apiVersion: v1
 kind: Pod
@@ -34,28 +34,12 @@ metadata:
 spec:
   containers:
   - name: nginx
-    image: public.ecr.aws/nginx/nginx:stable-alpine
+    image: nginx:alpine
     ports:
-      - containerPort: 80
+    - containerPort: 80
 EOF
 
-# Create ClusterIP Service for source-pod (optional, for testing)
-kubectl apply -f - <<'EOF'
-apiVersion: v1
-kind: Service
-metadata:
-  name: source-svc
-  namespace: netpol-demo9
-spec:
-  selector:
-    app: source
-  ports:
-  - port: 80
-    targetPort: 80
-    protocol: TCP
-EOF
-
-# Create ClusterIP Service for target-pod
+# Service for target-pod (students test via this DNS name)
 kubectl apply -f - <<'EOF'
 apiVersion: v1
 kind: Service
@@ -71,15 +55,12 @@ spec:
     protocol: TCP
 EOF
 
-# Wait for Pods to be ready (in their respective namespaces)
+# Wait for pods
 kubectl wait --for=condition=Ready pod/source-pod -n netpol-demo9 --timeout=180s || true
-kubectl wait --for=condition=Ready pod/target-pod -n external-ns --timeout=180s || true
+kubectl wait --for=condition=Ready pod/target-pod  -n external-ns  --timeout=180s || true
 
-# Apply NetworkPolicies (deny-by-default + specific allows)
+# Pre-existing NetworkPolicies (students must NOT change these)
 kubectl apply -f - <<'EOF'
-# -----------------------
-# netpol-demo9
-# -----------------------
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -88,8 +69,8 @@ metadata:
 spec:
   podSelector: {}
   policyTypes:
-    - Ingress
-    - Egress
+  - Ingress
+  - Egress
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -101,21 +82,17 @@ spec:
     matchLabels:
       app: source
   policyTypes:
-    - Egress
+  - Egress
   egress:
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: kube-system
-      ports:
-        - protocol: UDP
-          port: 53
-        - protocol: TCP
-          port: 53
-
-# -----------------------
-# external-ns
-# -----------------------
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -125,8 +102,8 @@ metadata:
 spec:
   podSelector: {}
   policyTypes:
-    - Ingress
-    - Egress
+  - Ingress
+  - Egress
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -138,18 +115,18 @@ spec:
     matchLabels:
       app: target
   policyTypes:
-    - Ingress
+  - Ingress
   ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: netpol-demo9
-          podSelector:
-            matchLabels:
-              app: source
-      ports:
-        - protocol: TCP
-          port: 80
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: netpol-demo9
+      podSelector:
+        matchLabels:
+          app: source
+    ports:
+    - protocol: TCP
+      port: 80
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -161,17 +138,25 @@ spec:
     matchLabels:
       app: target
   policyTypes:
-    - Egress
+  - Egress
   egress:
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: kube-system
-      ports:
-        - protocol: UDP
-          port: 53
-        - protocol: TCP
-          port: 53
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
 EOF
 
-echo "Script complete."
+echo ""
+echo "======================================"
+echo "Setup complete!"
+echo "  netpol-demo9 → source-pod (alpine)"
+echo "  external-ns  → target-pod (nginx) + target-svc"
+echo ""
+echo "Pre-existing NetworkPolicies applied."
+echo "Your task: Create the 'external-target' NetworkPolicy."
+echo "======================================"

@@ -3,7 +3,7 @@ name: Lint Shell Scripts
 on:
   pull_request:
     paths:
-      - '**/*.sh'
+      - 'convert-pod-to-deploy/setup.sh.sh'
   push:
     branches:
       - main

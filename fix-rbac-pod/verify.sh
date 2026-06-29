@@ -51,22 +51,30 @@ kubectl -n "$NS" get role "$CORRECT_ROLE" >/dev/null 2>&1 || fail "Role '$CORREC
 pass "Role '$CORRECT_ROLE' exists"
 
 # 6) Role has correct permissions for pods
+#    All three checks (apiGroup, resource, verbs) are scoped to the SAME rule,
+#    preventing false positives from permissions spread across multiple rules.
 ROLE_JSON="$(kubectl -n "$NS" get role "$CORRECT_ROLE" -o json)"
 
-# Check for core API group (empty string or "")
-echo "$ROLE_JSON" | jq_req '.rules[] | select((.apiGroups // []) | map(. == "") | any)' \
-  || fail "Role '$CORRECT_ROLE' must include core API group (empty string \"\")."
+# Check for core API group (empty string) in a rule that also covers pods
+echo "$ROLE_JSON" | jq_req '
+  .rules[] | select(
+    ((.apiGroups // []) | map(. == "") | any) and
+    ((.resources // []) | index("pods"))
+  )' \
+  || fail "Role '$CORRECT_ROLE' must include core API group (\"\") and resource 'pods' in the same rule."
 
-# Check for pods resource
-echo "$ROLE_JSON" | jq_req '.rules[] | select((.resources // []) | index("pods"))' \
-  || fail "Role '$CORRECT_ROLE' must include resource 'pods'."
-
-# Check for required verbs
+# Check each required verb exists in the rule that covers pods in the core API group
 for v in get list watch; do
-  echo "$ROLE_JSON" | jq_req ".rules[] | select((.verbs // []) | index(\"$v\"))" \
-    || fail "Role '$CORRECT_ROLE' must include verb '$v'."
+  echo "$ROLE_JSON" | jq_req \
+    --arg verb "$v" '
+    .rules[] | select(
+      ((.apiGroups // []) | map(. == "") | any) and
+      ((.resources // []) | index("pods")) and
+      ((.verbs // []) | index($verb))
+    )' \
+    || fail "Role '$CORRECT_ROLE' must include verb '$v' on resource 'pods' in the core API group."
 done
-pass "Role '$CORRECT_ROLE' has correct permissions (get, list, watch on pods)"
+pass "Role '$CORRECT_ROLE' has correct permissions (get, list, watch on pods in core API group)"
 
 # 7) RoleBinding exists
 kubectl -n "$NS" get rolebinding "$ROLEBINDING" >/dev/null 2>&1 || fail "RoleBinding '$ROLEBINDING' not found in '$NS'."
@@ -126,21 +134,33 @@ fi
 pass "ServiceAccount '$SA' correctly CANNOT create pods (least privilege maintained)"
 
 # 13) Check deployment logs contain success messages
+#     Polls up to 30s for logs to appear so the check is meaningful even
+#     immediately after the RoleBinding is created. Fails explicitly if no
+#     logs are produced (catches image-pull or CrashLoopBackOff situations).
 echo ""
 echo "Checking deployment logs for success indicators..."
 
-# Wait a bit for new logs to appear after RBAC fix
-sleep 10
+LOGS_FOUND=false
+for i in $(seq 1 6); do
+  RECENT_LOGS="$(kubectl logs -n "$NS" deployment/"$DEP" --tail=50 2>/dev/null || echo '')"
+  if [[ -n "$RECENT_LOGS" ]]; then
+    LOGS_FOUND=true
+    break
+  fi
+  echo "  Waiting for logs... (attempt $i/6)"
+  sleep 5
+done
 
-RECENT_LOGS="$(kubectl logs -n "$NS" deployment/"$DEP" --tail=50 2>/dev/null || echo '')"
+if [[ "$LOGS_FOUND" == false ]]; then
+  fail "No logs found from deployment '$DEP'. Pod may not be running — check 'kubectl get pods -n $NS'."
+fi
 
 if echo "$RECENT_LOGS" | grep -q "SUCCESS"; then
   pass "Deployment logs show successful pod listing"
 elif echo "$RECENT_LOGS" | grep -q "Forbidden"; then
   fail "Deployment logs still show 'Forbidden' errors. RBAC may not be working correctly."
 else
-  # Logs might not have cycled yet, check permissions are correct at least
-  pass "RBAC permissions verified (logs may take time to update)"
+  fail "Deployment logs found but neither SUCCESS nor Forbidden marker seen. Check pod status with 'kubectl get pods -n $NS'."
 fi
 
 echo ""

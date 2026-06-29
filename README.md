@@ -21,7 +21,7 @@ Every scenario drops you into a real Kubernetes cluster with a broken or incompl
 
 ## 🗂️ Repo Structure
 
-```bash
+```
 ckad-killercoda/
 ├── monkey.d.luffy-rbac/            # https://killercoda.com/omkar-shelke25/scenario/monkey.d.luffy-rbac
 │   ├── index.json                  # Killercoda scenario metadata

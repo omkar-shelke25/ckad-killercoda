@@ -80,7 +80,45 @@ kubectl -n pluto expose pod project-plt-6cc-api \
 
 ⚠️ **Avoid `kubectl run ... --rm -i ...`.** In practice this can fail silently: if the attach/stream to the Pod doesn't complete properly (slow node, brief network hiccup, pod exiting before the watch attaches), your redirected file ends up containing **only** kubectl's `pod "client" deleted` cleanup message — no actual HTTP response at all, with no error shown. Use the separate Pod + `exec` method below instead; it has no streaming/attach race to fail.
 
-**Example of a common mistake** — your file might end up looking like this:
+**Method (recommended) — separate Pod + `exec`**
+
+Create the client Pod on its own first and keep it running (no `--rm`):
+```bash
+kubectl -n pluto run client --image=curlimages/curl --restart=Never -- sleep 3600
+kubectl -n pluto wait --for=condition=Ready pod/client --timeout=60s
+```
+
+`exec` into it to run the request — this is a plain synchronous call, not a stream attach, so it doesn't have the same failure mode:
+```bash
+kubectl -n pluto exec client -- curl -s http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html
+```
+(If using a busybox image instead: `kubectl -n pluto exec client -- wget -qO- http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html`)
+
+Check the file looks right **before** deleting the Pod:
+```bash
+cat /opt/course/10/service_test.html
+```
+If it's empty or wrong, the Pod is still alive (`sleep 3600`) — just retry the `exec` line above, no need to recreate anything.
+
+Once it looks correct, delete the Pod as its own, separate, unredirected command — so its "pod deleted" message only prints to your terminal, never into the file:
+```bash
+kubectl -n pluto delete pod client
+```
+
+**One-line version of the same (recommended) method:**
+```bash
+kubectl -n pluto run client --image=busybox:latest --restart=Never -- sleep 3600 && kubectl -n pluto wait --for=condition=Ready pod/client --timeout=60s && kubectl -n pluto exec client -- wget -qO- http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html && kubectl -n pluto delete pod client
+```
+This chains the same four steps with `&&`. The `>` redirect only applies to the `exec` command in the middle, so the pod's "deleted" message still only prints to your terminal — it never touches the file.
+
+**Alternative — one-liner with `--rm`** (faster, but riskier — see warning above)
+
+```bash
+kubectl -n pluto run client --image=busybox:latest --restart=Never --rm -i \
+  --command -- wget -qO- http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html
+```
+
+**Example of a common mistake with this method** — your file might end up looking like this:
 ```
 <!DOCTYPE html>
 <html>
@@ -112,38 +150,6 @@ Everything through `</html>` is correct nginx output. The last line is **not** p
 sed -i '/pod .* deleted/d' /opt/course/10/service_test.html
 ```
 
-**Method (recommended) — separate Pod + `exec`**
-
-Create the client Pod on its own first and keep it running (no `--rm`):
-```bash
-kubectl -n pluto run client --image=curlimages/curl --restart=Never -- sleep 3600
-kubectl -n pluto wait --for=condition=Ready pod/client --timeout=60s
-```
-
-`exec` into it to run the request — this is a plain synchronous call, not a stream attach, so it doesn't have the same failure mode:
-```bash
-kubectl -n pluto exec client -- curl -s http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html
-```
-(If using a busybox image instead: `kubectl -n pluto exec client -- wget -qO- http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html`)
-
-Check the file looks right **before** deleting the Pod:
-```bash
-cat /opt/course/10/service_test.html
-```
-If it's empty or wrong, the Pod is still alive (`sleep 3600`) — just retry the `exec` line above, no need to recreate anything.
-
-Once it looks correct, delete the Pod as its own, separate, unredirected command — so its "pod deleted" message only prints to your terminal, never into the file:
-```bash
-kubectl -n pluto delete pod client
-```
-
-**Alternative — one-liner with `--rm`** (faster, but riskier — see warning above)
-
-```bash
-kubectl -n pluto run client --image=busybox:latest --restart=Never --rm -i \
-  --command -- wget -qO- http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html
-```
-
 After running this, always check the file actually contains the HTML and not just a deletion message:
 ```bash
 cat /opt/course/10/service_test.html
@@ -151,11 +157,6 @@ cat /opt/course/10/service_test.html
 If it only shows `pod "client" deleted from pluto namespace`, the request itself failed silently — delete the leftover file and switch to the `exec` method above:
 ```bash
 rm -f /opt/course/10/service_test.html
-```
-
-If the file has the HTML plus a stray deletion line at the end, strip just that line:
-```bash
-sed -i '/pod .* deleted/d' /opt/course/10/service_test.html
 ```
 
 **Step 4 — Save nginx access logs to service_test.log**

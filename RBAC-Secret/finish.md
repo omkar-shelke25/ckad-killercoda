@@ -1,13 +1,37 @@
-# ✅ Done!
+# ✅ Completed
 
 You granted **read-only access to a single Secret** using `resourceNames` in a Role.
 
-## You accomplished
-- ✅ Created Secret **api-key-v2**
-- ✅ Created ServiceAccount **specific-secret-reader-sa**
-- ✅ Created Role **single-secret-getter-role** with `verbs: [get]`, `resources: ["secrets"]`, and `resourceNames: ["api-key-v2"]`
-- ✅ Bound it via RoleBinding **single-secret-getter-binding**
-- ✅ Verified: SA can read **only** `secrets/api-key-v2` and no others
+## What You Built
 
-> Tip: `resourceNames` is perfect for granting access to **specific** objects without opening access to the entire resource type.
+```
+Namespace: finance
+├── Secret:         api-key-v2
+├── ServiceAccount: specific-secret-reader-sa
+├── Role:           single-secret-getter-role
+│   └── rules:
+│       apiGroups: [""]
+│       resources: ["secrets"]
+│       resourceNames: ["api-key-v2"]
+│       verbs: ["get"]
+└── RoleBinding:    single-secret-getter-binding
+    └── specific-secret-reader-sa → single-secret-getter-role
+```
 
+## What You Accomplished
+
+- ✅ Created Secret `api-key-v2`
+- ✅ Created ServiceAccount `specific-secret-reader-sa`
+- ✅ Created Role `single-secret-getter-role` with `resourceNames` restriction
+- ✅ Bound the Role via RoleBinding `single-secret-getter-binding`
+- ✅ SA can `get` only `secrets/api-key-v2` — nothing else
+
+> 💡 `resourceNames` is the key CKAD concept here — it restricts access to a **specific named object** rather than the entire resource type.
+
+---
+
+## 🐛 Found an Issue?
+
+This scenario is open source! If something is broken or unclear, please open an issue or PR:
+
+👉 **[github.com/omkar-shelke25/ckad-killercoda](https://github.com/omkar-shelke25/ckad-killercoda/tree/main/RBAC-Secret)**

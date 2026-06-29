@@ -1,23 +1,64 @@
-# 🚀CKAD: Team Pluto – Internal Service with Port Redirect
+# CKAD: Create a ClusterIP Service with Port Redirect
 
-Create a Pod called **`project-plt-6cc-api`** in the **`pluto`** namespace using the image **`nginx:1.17.3-alpine`**.
-The Pod should be labelled with **`project=plt-6cc-api`**.
+### 📚 Reference Docs
+- [Services](https://kubernetes.io/docs/concepts/services-networking/service/)
+- [Connecting Applications with Services](https://kubernetes.io/docs/tutorials/services/connect-applications-service/)
+- [kubectl expose](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_expose/)
 
-Create a ClusterIP Service called **`project-plt-6cc-svc`** in the **`pluto`** namespace.
-The service should use tcp port redirection of **`3333:80`**
+---
 
-From a temporary client Pod in the same namespace, make an HTTP request to **`http://project-plt-6cc-svc:3333/`**
+## 🧩 Scenario
 
-* 💾 Save the response body to `/opt/course/10/service_test.html`, and 📄 service_test.html should contain the HTML code from the Nginx default directory. 🌐 Use `wget/curl` for that.
-* 💾 Save the `wget/curl` logs from the Pod project-plt-6cc-api to `/opt/course/10/service_test.log`.
+Team Pluto needs an internal nginx Pod exposed via a ClusterIP Service with a port redirect. Once running, you will verify connectivity from a temporary client Pod and save both the HTTP response and the nginx access logs to the local filesystem.
 
-## ✅ **Solution**
+---
 
-Try to solve this yourself first, then check the solution if needed:
+## 📋 Tasks
 
-<details> <summary>🔍 Click to view Solution</summary> 
+All resources must be created in the **`pluto`** namespace.
 
-### **1️⃣ Pod with label project=plt-6cc-api**
+**1.** Create a Pod named **`project-plt-6cc-api`** with:
+- Image: `nginx:1.17.3-alpine`
+- Label: `project=plt-6cc-api`
+
+**2.** Create a ClusterIP Service named **`project-plt-6cc-svc`** with:
+- Port: `3333`
+- TargetPort: `80`
+- Protocol: `TCP`
+- Selector must match the Pod label above
+
+**3.** From a temporary client Pod in the `pluto` namespace, make an HTTP request to `http://project-plt-6cc-svc:3333/` and save the response body to:
+```
+/opt/course/10/service_test.html
+```
+
+**4.** Save the nginx access logs from Pod `project-plt-6cc-api` to:
+```
+/opt/course/10/service_test.log
+```
+
+---
+
+## ✅ Expected Result
+
+```bash
+# Pod is running
+kubectl get pod project-plt-6cc-api -n pluto
+
+# Service is configured correctly
+kubectl get svc project-plt-6cc-svc -n pluto
+
+# Artifacts exist and are non-empty
+cat /opt/course/10/service_test.html   # should show nginx HTML
+cat /opt/course/10/service_test.log    # should show GET / request
+```
+
+---
+
+<details>
+<summary>💡 Solution (try it yourself first!)</summary>
+
+**Step 1 — Create the Pod**
 
 ```bash
 kubectl -n pluto run project-plt-6cc-api \
@@ -26,7 +67,7 @@ kubectl -n pluto run project-plt-6cc-api \
   --restart=Never
 ```
 
-### **2️⃣ ClusterIP Service: port 3333 -> targetPort 80/TCP**
+**Step 2 — Expose it as a ClusterIP Service**
 
 ```bash
 kubectl -n pluto expose pod project-plt-6cc-api \
@@ -37,32 +78,33 @@ kubectl -n pluto expose pod project-plt-6cc-api \
   --protocol=TCP
 ```
 
-### **3️⃣ Using Wget/Curl**
+**Step 3 — Save the HTTP response to service_test.html**
 
-#### **🔄 Using With curl**
+Run a temporary client Pod and fetch the Service:
 
 ```bash
-kubectl -n pluto run tmp --image=nginx -it --rm --restart=Never -- \
-curl -s -m5 project-plt-6cc-svc:3333 | head -n25 > /opt/course/10/service_test.html
+kubectl -n pluto run client --image=busybox:latest \
+  --restart=Never \
+  --rm -it \
+  -- wget -qO- http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html
 ```
 
-#### **📡 Using With wget**
-
-* Run a temporary client Pod and directly fetch the Service:
+Verify it looks correct:
 
 ```bash
-kubectl -n pluto run svc-tester --image=busybox:1.36 --restart=Never --command -- sh -c "sleep 3600"
+cat /opt/course/10/service_test.html
 ```
 
-```bash
-kubectl -n pluto exec svc-tester -- sh -c "wget -qO- http://project-plt-6cc-svc:3333/" \> /opt/course/10/service_test.html 
-```
-
-### **4️⃣ 📜 Save backend pod logs to host**
+**Step 4 — Save nginx access logs to service_test.log**
 
 ```bash
-# Extract logs from the nginx Pod and save to local file
 kubectl -n pluto logs project-plt-6cc-api > /opt/course/10/service_test.log
+```
+
+Verify the GET request was logged:
+
+```bash
+cat /opt/course/10/service_test.log
 ```
 
 </details>

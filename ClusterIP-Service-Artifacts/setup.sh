@@ -1,13 +1,19 @@
 #!/bin/bash
-set -euo pipefail
 
 NS="pluto"
 
-# Namespace for the challenge
+# Create namespace
 kubectl get ns "$NS" >/dev/null 2>&1 || kubectl create namespace "$NS"
 
-# Host paths for saved artifacts
-sudo mkdir -p /opt/course/10
-sudo chmod -R 0777 /opt/course/10 || true
+# Create artifact directory with open permissions
+mkdir -p /opt/course/10
+chmod 0777 /opt/course/10
 
-echo "✅ Setup complete. Namespace '$NS' ready; artifacts dir /opt/course/10 prepared."
+echo ""
+echo "======================================"
+echo "Setup complete!"
+echo "Namespace  : $NS"
+echo "Artifacts  : /opt/course/10"
+echo ""
+echo "Your task: Create the Pod, Service, and save the artifacts."
+echo "======================================"

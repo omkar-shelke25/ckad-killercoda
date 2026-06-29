@@ -1,18 +1,20 @@
 #!/bin/bash
-set -euo pipefail
-
-echo "Preparing lab environment..."
+# Killercoda setup script – runs as root in the background before the scenario starts
+# Using || true on non-critical steps so a single hiccup doesn't abort everything.
 
 NS="one-piece"
 DEP="monkey-d-luffy"
 MONITOR_DEP="crew-monitor"
-BASE_IMAGE="public.ecr.aws/bitnami/kubectl:latest"
+# Docker Hub bitnami/kubectl is reliably available on Killercoda nodes
+BASE_IMAGE="bitnami/kubectl:latest"
 BASE_REPLICAS=2
 
-# Create namespace if it doesn't exist
+echo "Preparing lab environment..."
+
+# ---------- Namespace ----------
 kubectl create namespace "$NS" --dry-run=client -o yaml | kubectl apply -f -
 
-# Create the main Deployment (monkey.d.luffy) with kubectl image
+# ---------- Deployment 1: monkey-d-luffy (uses default SA — will fail RBAC) ----------
 cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment
@@ -32,34 +34,32 @@ spec:
       labels:
         app: luffy
     spec:
+      # No serviceAccountName → uses "default" SA (student must fix this)
       containers:
         - name: luffy-container
           image: $BASE_IMAGE
-          command:
-            - /bin/sh
-            - -c
+          command: ["/bin/sh", "-c"]
           args:
             - |
               echo "Luffy's pod starting..."
-              echo "Trying to list deployments without proper RBAC..."
               while true; do
-                kubectl get deployments --namespace=one-piece 2>&1 | head -5
-                echo "---"
+                echo "--- \$(date) ---"
+                kubectl get deployments -n one-piece 2>&1 | head -5
                 sleep 60
               done
           resources:
             requests:
+              cpu: "50m"
+              memory: "32Mi"
+            limits:
               cpu: "100m"
               memory: "64Mi"
-            limits:
-              cpu: "200m"
-              memory: "128Mi"
 EOF
 
-# Create ServiceAccount for crew-monitor (intentionally without RBAC)
+# ---------- ServiceAccount for crew-monitor (no Role/RoleBinding yet) ----------
 kubectl create serviceaccount nami-navigator -n "$NS" --dry-run=client -o yaml | kubectl apply -f -
 
-# Create the crew-monitor deployment WITH ServiceAccount but WITHOUT Role/RoleBinding
+# ---------- Deployment 2: crew-monitor (has SA, but no Role/RoleBinding yet) ----------
 cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment
@@ -87,53 +87,50 @@ spec:
       containers:
         - name: monitor-container
           image: $BASE_IMAGE
-          command:
-            - /bin/sh
-            - -c
+          command: ["/bin/sh", "-c"]
           args:
             - |
-              echo "Crew Monitor Starting..."
-              echo "Attempting to list deployments in namespace one-piece..."
+              echo "Crew Monitor starting..."
               while true; do
-                kubectl get deployments --namespace=one-piece 2>&1
-                if [ \$? -ne 0 ]; then
-                  echo "ERROR: Failed to list deployments. Check RBAC permissions."
+                echo "--- \$(date) ---"
+                if kubectl get deployments -n one-piece 2>&1; then
+                  echo "SUCCESS: deployments listed."
                 else
-                  echo "SUCCESS: Deployments listed successfully at \$(date)"
+                  echo "ERROR: RBAC denied. Fix the Role and RoleBinding!"
                 fi
                 sleep 30
               done
           resources:
             requests:
+              cpu: "50m"
+              memory: "32Mi"
+            limits:
               cpu: "100m"
               memory: "64Mi"
-            limits:
-              cpu: "200m"
-              memory: "128Mi"
           securityContext:
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
+            # readOnlyRootFilesystem intentionally NOT set:
+            # kubectl needs a writable /tmp to cache discovery info.
             runAsUser: 1000
             runAsGroup: 1000
 EOF
 
-# Wait for deployments to be ready
-kubectl -n "$NS" rollout status deploy/"$DEP" --timeout=120s || true
+# ---------- Wait (best-effort) ----------
+kubectl -n "$NS" rollout status deploy/"$DEP"        --timeout=120s || true
 kubectl -n "$NS" rollout status deploy/"$MONITOR_DEP" --timeout=120s || true
 
 echo ""
 echo "=========================================="
-echo "Setup complete!"
-echo "=========================================="
-echo "Namespace: $NS"
+echo "Lab environment ready!"
+echo "Namespace : $NS"
 echo ""
-echo "Deployments created:"
-echo "  1. $DEP - Running with default ServiceAccount (will show RBAC errors)"
-echo "  2. $MONITOR_DEP - Running with 'nami-navigator' ServiceAccount (will show RBAC errors)"
+echo "Deployments:"
+echo "  $DEP      → uses 'default' SA  (RBAC errors expected)"
+echo "  $MONITOR_DEP  → uses 'nami-navigator' SA (RBAC errors expected)"
 echo ""
-echo "Check the logs to see RBAC errors:"
-echo "  kubectl logs -f deployment/$DEP -n $NS"
-echo "  kubectl logs -f deployment/$MONITOR_DEP -n $NS"
+echo "View errors with:"
+echo "  kubectl logs deployment/$DEP -n $NS --tail=5"
+echo "  kubectl logs deployment/$MONITOR_DEP -n $NS --tail=5"
 echo ""
-echo "Your task: Configure RBAC so these deployments can list deployments!"
+echo "Your task: Fix RBAC so both deployments can list deployments!"
 echo "=========================================="

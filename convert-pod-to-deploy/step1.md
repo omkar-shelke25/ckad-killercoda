@@ -7,7 +7,6 @@
 - [Configure Service Accounts](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/)
 
 ---
-
 In namespace **`pluto`** there is a single Pod named **`holy-api`**. It has been working fine, but Team Pluto needs it to be more reliable.
 
 Your tasks:

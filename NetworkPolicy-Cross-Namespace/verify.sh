@@ -1,58 +1,111 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -uo pipefail
 
-ns_src="netpol-demo9"
-ns_tgt="external-ns"
-np="external-target"
-src_pod="source-pod"
-tgt_pod="target-pod"
+NS_SRC="netpol-demo9"
+NS_TGT="external-ns"
+NP="external-target"
+SRC_POD="source-pod"
+TGT_POD="target-pod"
 
-fail(){ echo "❌ $1"; exit 1; }
-ok(){ echo "✓ $1"; }
+pass() { echo "✅ $1"; }
+fail() { echo "❌ $1"; exit 1; }
 
-# Namespaces
-kubectl get ns "$ns_src" >/dev/null 2>&1 || fail "Namespace '$ns_src' not found"
-kubectl get ns "$ns_tgt" >/dev/null 2>&1 || fail "Namespace '$ns_tgt' not found"
-ok "Namespaces '$ns_src' and '$ns_tgt' exist"
+echo "========================================="
+echo "Verifying NetworkPolicy in '$NS_SRC'..."
+echo "========================================="
 
-# Pods
-kubectl get pod "$src_pod" -n "$ns_src" >/dev/null 2>&1 || fail "Pod '$src_pod' not found in '$ns_src'"
-kubectl get pod "$tgt_pod" -n "$ns_tgt" >/dev/null 2>&1 || fail "Pod '$tgt_pod' not found in '$ns_tgt'"
-ok "Pods '$src_pod' and '$tgt_pod' exist"
+# 1) Namespaces exist
+kubectl get ns "$NS_SRC" >/dev/null 2>&1 \
+  || fail "Namespace '$NS_SRC' not found."
+kubectl get ns "$NS_TGT" >/dev/null 2>&1 \
+  || fail "Namespace '$NS_TGT' not found."
+pass "Namespaces '$NS_SRC' and '$NS_TGT' exist"
 
-# NetworkPolicy
-kubectl get netpol "$np" -n "$ns_src" >/dev/null 2>&1 || fail "NetworkPolicy '$np' not found in '$ns_src'"
-ok "NetworkPolicy '$np' exists in '$ns_src'"
+# 2) Pods exist
+kubectl get pod "$SRC_POD" -n "$NS_SRC" >/dev/null 2>&1 \
+  || fail "Pod '$SRC_POD' not found in '$NS_SRC'."
+kubectl get pod "$TGT_POD" -n "$NS_TGT" >/dev/null 2>&1 \
+  || fail "Pod '$TGT_POD' not found in '$NS_TGT'."
+pass "Pods '$SRC_POD' and '$TGT_POD' exist"
 
-spec="$(kubectl get netpol "$np" -n "$ns_src" -o json)"
+# 3) NetworkPolicy exists
+kubectl get netpol "$NP" -n "$NS_SRC" >/dev/null 2>&1 \
+  || fail "NetworkPolicy '$NP' not found in '$NS_SRC'. Create it with the correct spec."
+pass "NetworkPolicy '$NP' exists in '$NS_SRC'"
 
-# policyTypes contains Egress
-echo "$spec" | jq -e '.spec.policyTypes|index("Egress")' >/dev/null || fail "policyTypes must include 'Egress'"
-ok "policyTypes includes Egress"
+SPEC="$(kubectl get netpol "$NP" -n "$NS_SRC" -o json)"
 
-# podSelector matches app=source
-src_label="$(echo "$spec" | jq -r '.spec.podSelector.matchLabels.app // empty')"
-[[ "$src_label" == "source" ]] || fail "podSelector must match label app=source"
-ok "podSelector matches app=source"
+# 4) policyTypes includes Egress
+echo "$SPEC" | jq -e '.spec.policyTypes | index("Egress") != null' >/dev/null \
+  || fail "policyTypes must include 'Egress'."
+pass "policyTypes includes Egress"
 
-# egress has at least one rule
-eg_len="$(echo "$spec" | jq '.spec.egress|length')"
-[[ "$eg_len" -ge 1 ]] || fail "egress must contain at least 1 rule"
-ok "egress has rules"
+# 5) podSelector matches app=source
+SRC_LABEL="$(echo "$SPEC" | jq -r '.spec.podSelector.matchLabels.app // empty')"
+[ "$SRC_LABEL" = "source" ] \
+  || fail "podSelector must match label app=source (found: '${SRC_LABEL}')."
+pass "podSelector matches app=source"
 
-# Find a rule that has namespaceSelector for external-ns and podSelector app=target and port TCP/80
-match_rule=$(echo "$spec" | jq -e \
-  --arg ns "$ns_tgt" \
-  '.spec.egress[] | select(
-     (.to[]? | (.namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == $ns)
-      and (.podSelector.matchLabels.app == "target"))
-     and (.ports[]? | (.protocol=="TCP" and (.port==80 or .port=="80")))
-   )')
+# 6) At least one egress rule exists
+EG_LEN="$(echo "$SPEC" | jq '.spec.egress | length')"
+[ "${EG_LEN:-0}" -ge 1 ] \
+  || fail "No egress rules found. Add an egress rule targeting '$NS_TGT'/app=target on TCP/80."
+pass "Egress rules exist"
 
-if [[ -z "$match_rule" ]]; then
-  fail "No egress rule found that targets namespace '$ns_tgt' with pod label app=target on TCP/80"
+# 7) Verify the egress rule targets external-ns + app=target + TCP/80
+#
+# In Kubernetes NetworkPolicy, when namespaceSelector and podSelector appear
+# together in the SAME to[] entry they are stored as sibling keys on that
+# object — NOT as nested items inside an array. So the JSON looks like:
+#   "to": [ { "namespaceSelector": {...}, "podSelector": {...} } ]
+#
+# The jq query below handles BOTH valid forms students may write:
+#   Form A (combined): to[i] has BOTH namespaceSelector AND podSelector
+#   Form B (separate): one to[i] has namespaceSelector, another has podSelector
+#   (Form A is the correct one for "AND" logic; Form B gives "OR" logic)
+
+RULE_OK="$(echo "$SPEC" | jq -r \
+  --arg ns "$NS_TGT" \
+  '# Form A: namespaceSelector + podSelector in the SAME to[] entry (correct AND logic)
+   .spec.egress[] |
+   select(
+     (
+       .to[]? |
+       (.namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == $ns)
+       and
+       (.podSelector.matchLabels.app == "target")
+     )
+     and
+     (
+       .ports[]? |
+       (.protocol == "TCP") and (.port == 80 or .port == "80")
+     )
+   ) | "ok"
+  ' | head -n1)"
+
+[ "$RULE_OK" = "ok" ] \
+  || fail "No valid egress rule found. The rule must:
+  - Target namespace '$NS_TGT' via namespaceSelector (kubernetes.io/metadata.name: $NS_TGT)
+  - Target pods with label app=target via podSelector (in the SAME to[] entry)
+  - Allow TCP port 80
+  Both selectors must be in the same 'to' list entry for AND logic."
+pass "Egress rule correctly targets '$NS_TGT'/app=target on TCP/80"
+
+# 8) Live connectivity test from source-pod to target-svc
+echo ""
+echo "── Live connectivity test ────────────────────────"
+WGET_RESULT="$(kubectl exec "$SRC_POD" -n "$NS_SRC" -- \
+  wget -qO- --timeout=5 http://target-svc.external-ns:80 2>&1 || true)"
+
+if echo "$WGET_RESULT" | grep -qi "html\|nginx\|Welcome"; then
+  pass "Live test: source-pod can reach target-svc on TCP/80"
 else
-  ok "Egress rule correctly targets external-ns/app=target on TCP/80"
+  fail "Live test failed: source-pod cannot reach target-svc.external-ns:80.
+  Check your NetworkPolicy allows egress from app=source to app=target in '$NS_TGT' on TCP/80.
+  Debug: kubectl exec $SRC_POD -n $NS_SRC -- wget -qO- http://target-svc.external-ns:80"
 fi
 
-echo "✅ Verification successful!"
+echo ""
+echo "========================================="
+pass "All checks passed! NetworkPolicy is correctly configured."
+echo "========================================="

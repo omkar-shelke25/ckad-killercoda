@@ -29,7 +29,9 @@ All resources must be created in the **`pluto`** namespace.
 ```
 /opt/course/10/service_test.html
 ```
-> 💡 Tip: create a **separate** client Pod first (without `--rm`), then use `kubectl exec` to run the request and redirect its output. Delete the Pod afterward as its own command. This avoids `kubectl run ... --rm`, which auto-deletes the Pod and can print a `pod "client" deleted` line to stdout right after your command's output — landing inside your redirected file.
+The file must contain **only** the raw nginx HTML response — nothing else added (no kubectl messages, prompts, or other extra output mixed in).
+
+> 💡 Tip: Don't use `kubectl run ... --rm`. When the Pod deletes itself automatically, kubectl can print a line like `pod "client" deleted` right into your saved file, which messes it up. Instead, create the client Pod separately first, then use `kubectl exec` to send the request and save the output. Once you have the file, delete the Pod with its own separate command — that way the deletion message never gets mixed into your saved file.
 
 **4.** Save the nginx access logs from Pod `project-plt-6cc-api` to:
 ```

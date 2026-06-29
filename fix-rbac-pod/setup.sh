@@ -6,7 +6,7 @@ echo "Preparing lab environment..."
 NS="qa-tools"
 DEP="pod-explorer"
 SA="sa-explorer"
-BASE_IMAGE="kubectl:latest"
+BASE_IMAGE="bitnami/kubectl:latest"
 BASE_REPLICAS=1
 
 # Create namespace if it doesn't exist

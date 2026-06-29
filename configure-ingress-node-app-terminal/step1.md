@@ -14,6 +14,8 @@ Note: it can take a couple of minutes for MetalLB to assign an external IP to th
 
 ## Tasks
 
+> Allow 2 minutes after cluster setup before proceeding — the LoadBalancer needs time to initialize.
+
 ### 1. Create the Ingress resource
 
 Create an Ingress named `multi-endpoint-ingress` in the `node-app` namespace with:
@@ -33,6 +35,11 @@ Create an Ingress named `multi-endpoint-ingress` in the `node-app` namespace wit
 - `curl` the `/terminal` endpoint and confirm it returns HTTP 200 with the terminal-style page.
 - `curl` the `/app` endpoint and confirm it returns HTTP 200 with the application dashboard page.
 - Optional: `curl` the root path `/` -- this should return 404, since the app only defines `/terminal` and `/app`. That's expected, not a bug.
+
+```bash
+curl http://node.app.terminal.io/app
+curl http://node.app.terminal.io/terminal
+```
 
 ---
 

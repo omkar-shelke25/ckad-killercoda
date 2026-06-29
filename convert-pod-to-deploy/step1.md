@@ -1,27 +1,50 @@
 # CKAD: Convert Pod → Deployment (namespace: pluto)
 
-In Namespace **`pluto`** there is single Pod named `holy-api`. It has been working okay for a while now but Team Pluto needs it to be more reliable.
+### 📚 Reference Docs
 
-Convert the Pod into a Deployment named **`holy-api`** with **`3` replicas** &  `delete` the single Pod once done. The raw Pod template file is available at **`/opt/course/9/holy-api-pod.yaml`**.
-
-In addition, the new Deployment should set **`allowPrivilegeEscalation: false`** and **`privileged: false`** for the security context on container level.
-
-Please create the Deployment and save its yaml under **`/opt/course/9/holy-api-deployment.yaml`.**
+- [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+- [Security Context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)
+- [Configure Service Accounts](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/)
 
 ---
 
-## Try it yourself first!
+In namespace **`pluto`** there is a single Pod named **`holy-api`**. It has been working fine, but Team Pluto needs it to be more reliable.
 
-<details><summary> ✅ Solution (expand to view)</summary>
-  
+Your tasks:
+
+1. Convert the Pod into a **Deployment** named **`holy-api`** with **3 replicas**.
+2. Add a **container-level** `securityContext` with:
+   - `allowPrivilegeEscalation: false`
+   - `privileged: false`
+3. **Delete** the original Pod after creating the Deployment.
+4. Save the Deployment manifest to **`/opt/course/9/holy-api-deployment.yaml`**.
+
+The raw Pod template is already available at **`/opt/course/9/holy-api-pod.yaml`** — use it as your starting point.
+
+---
+
+## ✅ Verify Your Work
+
 ```bash
-  
-# Start from the raw Pod (already provided):
-cat /opt/course/9/holy-api-pod.yaml
-
-# Create a Deployment YAML from that Pod (edit to fit below spec) and save as:
-touch /opt/course/9/holy-api-deployment.yaml
+kubectl get deploy holy-api -n pluto
+kubectl get pods -n pluto
+kubectl rollout status deploy/holy-api -n pluto
 ```
+
+---
+
+<details>
+<summary>💡 Solution (try it yourself first!)</summary>
+
+**Step 1 — View the existing Pod template**
+
+```bash
+cat /opt/course/9/holy-api-pod.yaml
+```
+
+**Step 2 — Create the Deployment manifest**
+
+Save the following to `/opt/course/9/holy-api-deployment.yaml`:
 
 ```yaml
 apiVersion: apps/v1
@@ -43,24 +66,20 @@ spec:
     spec:
       containers:
       - name: app
-        image: public.ecr.aws/docker/library/busybox:stable
-        command: ["/bin/sh","-c","sleep 1d"]
+        image: busybox:latest
+        command: ["/bin/sh", "-c", "sleep 1d"]
         securityContext:
           allowPrivilegeEscalation: false
           privileged: false
-#Save this file as /opt/course/9/holy-api-deployment.yaml, then:
 ```
+
+**Step 3 — Apply, delete the old Pod, and verify**
 
 ```bash
-kubectl -n pluto apply -f /opt/course/9/holy-api-deployment.yaml
-kubectl -n pluto delete pod holy-api
-kubectl -n pluto rollout status deploy/holy-api --timeout=120s
-kubectl -n pluto get deploy holy-api -o wide
+kubectl apply -f /opt/course/9/holy-api-deployment.yaml
+kubectl delete pod holy-api -n pluto
+kubectl rollout status deploy/holy-api -n pluto
+kubectl get pods -n pluto
 ```
+
 </details>
-
-
-
-
-
-

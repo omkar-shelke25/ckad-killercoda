@@ -31,3 +31,13 @@ Namespace: one-piece
 ```
 
 Great work! You've mastered the fundamentals of Kubernetes RBAC — a critical skill for securing production clusters. 🚀
+
+---
+
+## 🐛 Found an Issue?
+
+This scenario is open source! If something is broken, unclear, or could be improved, please open an issue or submit a PR:
+
+👉 **[github.com/omkar-shelke25/ckad-killercoda](https://github.com/omkar-shelke25/ckad-killercoda/tree/main/monkey.d.luffy-rbac)**
+
+Contributions and feedback are always welcome. 🙌

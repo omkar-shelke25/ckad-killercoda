@@ -1,10 +1,10 @@
 {
-  "title": "CKAD: ClusterIP Service with Port Redirect + Test Artifacts",
-  "description": "Create a Pod and a ClusterIP Service with targetPort redirect, then verify via a temporary client and save artifacts.",
+  "title": "CKAD: ClusterIP Service with Port Redirect",
+  "description": "Create a Pod and ClusterIP Service with a 3333→80 port redirect, verify connectivity from a temporary client, and save HTTP response and access logs to disk.",
   "details": {
     "steps": [
       {
-        "title": "Team Pluto: Internal Service with 3333→80",
+        "title": "Create Pod, Service, and save artifacts",
         "text": "step1.md",
         "verify": "verify.sh"
       }

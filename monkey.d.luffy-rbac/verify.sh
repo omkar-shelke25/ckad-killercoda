@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-#=== Config ==============================================================
+#=== Config ================================================================
 NS="one-piece"
 DEP="monkey-d-luffy"
 MONITOR_DEP="crew-monitor"
@@ -12,159 +12,148 @@ MONITOR_ROLE="navigator-role"
 ROLEBINDING="strawhat-rb"
 MONITOR_RB="navigator-rb"
 
-#=== Helpers ============================================================
-pass(){ echo "✅ $1"; }
-fail(){ echo "❌ $1"; exit 1; }
+#=== Helpers ===============================================================
+pass() { echo "✅ $1"; }
+fail() { echo "❌ $1"; exit 1; }
+need() { command -v "$1" >/dev/null 2>&1 || fail "Required tool '$1' not found in PATH"; }
+jq_match() { jq -e "$1" "${@:2}" >/dev/null; }
 
-need(){
-  command -v "$1" >/dev/null 2>&1 || fail "Required dependency '$1' not found in PATH"
-}
+echo "==========================================="
+echo "Verifying RBAC setup in namespace '$NS'..."
+echo "==========================================="
 
-jq_req(){
-  # Run jq with a filter and args against stdin JSON; returns non-zero on no match
-  local filt="$1"; shift
-  jq -e "$filt" "$@" >/dev/null
-}
-
-echo "Verifying RBAC configuration for deployments in namespace '$NS'..."
-echo ""
-
-#=== Preflight ==========================================================
 need kubectl
 need jq
 
-# 1) Namespace
+# Namespace
 kubectl get namespace "$NS" >/dev/null 2>&1 || fail "Namespace '$NS' not found."
 pass "Namespace '$NS' exists"
 
-#========================
-# Part 1: monkey-d-luffy
-#========================
+# ===========================================================================
 echo ""
-echo "Checking $DEP configuration..."
+echo "── Part 1: $DEP ──────────────────────────────"
 
-# 2) Deployment exists
-kubectl -n "$NS" get deploy "$DEP" >/dev/null 2>&1 || fail "Deployment '$DEP' not found in '$NS'."
+kubectl -n "$NS" get deploy "$DEP" >/dev/null 2>&1 \
+  || fail "Deployment '$DEP' not found in namespace '$NS'."
 pass "Deployment '$DEP' exists"
 
-# 3) ServiceAccount exists
-kubectl -n "$NS" get serviceaccount "$SA" >/dev/null 2>&1 || fail "ServiceAccount '$SA' not found in '$NS'."
+kubectl -n "$NS" get serviceaccount "$SA" >/dev/null 2>&1 \
+  || fail "ServiceAccount '$SA' not found. Did you run: kubectl create serviceaccount $SA -n $NS ?"
 pass "ServiceAccount '$SA' exists"
 
-# 4) Role exists & has correct permissions
-kubectl -n "$NS" get role "$ROLE" >/dev/null 2>&1 || fail "Role '$ROLE' not found in '$NS'."
+kubectl -n "$NS" get role "$ROLE" >/dev/null 2>&1 \
+  || fail "Role '$ROLE' not found. Create it with the correct verbs on apps/deployments."
 ROLE_JSON="$(kubectl -n "$NS" get role "$ROLE" -o json)"
 
-echo "$ROLE_JSON" | jq_req '.rules[] | select((.apiGroups // []) | index("apps"))' \
-  || fail "Role '$ROLE' must include apiGroup 'apps'."
-echo "$ROLE_JSON" | jq_req '.rules[] | select((.resources // []) | index("deployments"))' \
-  || fail "Role '$ROLE' must include resource 'deployments'."
-for v in get list watch; do
-  echo "$ROLE_JSON" | jq_req ".rules[] | select((.verbs // []) | index(\"$v\"))" \
-    || fail "Role '$ROLE' must include verb '$v'."
+jq_match '.rules[] | select((.apiGroups // []) | index("apps"))' <<< "$ROLE_JSON" \
+  || fail "Role '$ROLE' is missing apiGroup 'apps'. Deployments live under the apps API group."
+jq_match '.rules[] | select((.resources // []) | index("deployments"))' <<< "$ROLE_JSON" \
+  || fail "Role '$ROLE' is missing resource 'deployments'."
+for verb in get list watch; do
+  jq_match ".rules[] | select((.verbs // []) | index(\"$verb\"))" <<< "$ROLE_JSON" \
+    || fail "Role '$ROLE' is missing verb '$verb'."
 done
-pass "Role '$ROLE' has get,list,watch on apps/deployments"
+pass "Role '$ROLE' grants get, list, watch on apps/deployments"
 
-# 5) RoleBinding correct
-kubectl -n "$NS" get rolebinding "$ROLEBINDING" >/dev/null 2>&1 || fail "RoleBinding '$ROLEBINDING' not found in '$NS'."
+kubectl -n "$NS" get rolebinding "$ROLEBINDING" >/dev/null 2>&1 \
+  || fail "RoleBinding '$ROLEBINDING' not found."
 RB_JSON="$(kubectl -n "$NS" get rolebinding "$ROLEBINDING" -o json)"
 
-echo "$RB_JSON" | jq_req \
-  '.roleRef.kind=="Role" and .roleRef.apiGroup=="rbac.authorization.k8s.io" and .roleRef.name==$role' \
-  --arg role "$ROLE" \
-  || fail "RoleBinding '$ROLEBINDING' must reference Role '$ROLE' (rbac.authorization.k8s.io)."
+jq_match \
+  '.roleRef | .kind=="Role" and .apiGroup=="rbac.authorization.k8s.io" and .name==$r' \
+  --arg r "$ROLE" <<< "$RB_JSON" \
+  || fail "RoleBinding '$ROLEBINDING' must reference Role '$ROLE' (kind: Role, apiGroup: rbac.authorization.k8s.io)."
 
-echo "$RB_JSON" | jq_req \
-  '.subjects[]? | select(.kind=="ServiceAccount" and .name==$sa and ((.namespace // "")==$ns))' \
-  --arg sa "$SA" --arg ns "$NS" \
+jq_match \
+  '.subjects[]? | select(.kind=="ServiceAccount" and .name==$sa and .namespace==$ns)' \
+  --arg sa "$SA" --arg ns "$NS" <<< "$RB_JSON" \
   || fail "RoleBinding '$ROLEBINDING' must bind ServiceAccount '$SA' in namespace '$NS'."
-pass "RoleBinding '$ROLEBINDING' correctly binds '$ROLE' to '$SA'"
+pass "RoleBinding '$ROLEBINDING' binds '$ROLE' → '$SA'"
 
-# 6) Deployment uses SA
 DEP_SA="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.serviceAccountName}')"
-[[ "$DEP_SA" == "$SA" ]] || fail "Deployment '$DEP' must use ServiceAccount '$SA', found '${DEP_SA:-default}'."
+[[ "$DEP_SA" == "$SA" ]] \
+  || fail "Deployment '$DEP' still uses ServiceAccount '${DEP_SA:-default}'. Run: kubectl set serviceaccount deployment $DEP $SA -n $NS"
 pass "Deployment '$DEP' uses ServiceAccount '$SA'"
 
-# 7) Deployment readiness
-kubectl -n "$NS" rollout status "deploy/$DEP" --timeout=180s >/dev/null 2>&1 || fail "Deployment '$DEP' not ready."
-READY_REPLICAS="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.status.readyReplicas}')"
-DESIRED_REPLICAS="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.replicas}')"
-[[ "${READY_REPLICAS:-0}" == "${DESIRED_REPLICAS:-0}" ]] || fail "Deployment '$DEP' has ${READY_REPLICAS:-0} ready / needs ${DESIRED_REPLICAS:-0}."
-pass "Deployment '$DEP' is ready with ${READY_REPLICAS:-0}/${DESIRED_REPLICAS:-0} replicas"
+kubectl -n "$NS" rollout status "deploy/$DEP" --timeout=180s >/dev/null 2>&1 \
+  || fail "Deployment '$DEP' is not ready (pods may be crashing)."
+READY="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.status.readyReplicas}')"
+DESIRED="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.replicas}')"
+[[ "${READY:-0}" == "${DESIRED:-0}" ]] \
+  || fail "Deployment '$DEP': ${READY:-0}/${DESIRED:-0} replicas ready."
+pass "Deployment '$DEP' is ready (${READY}/${DESIRED} replicas)"
 
-#========================
-# Part 2: crew-monitor
-#========================
+# ===========================================================================
 echo ""
-echo "Checking $MONITOR_DEP configuration..."
+echo "── Part 2: $MONITOR_DEP ────────────────────────────"
 
-# 8) Deployment exists
-kubectl -n "$NS" get deploy "$MONITOR_DEP" >/dev/null 2>&1 || fail "Deployment '$MONITOR_DEP' not found in '$NS'."
+kubectl -n "$NS" get deploy "$MONITOR_DEP" >/dev/null 2>&1 \
+  || fail "Deployment '$MONITOR_DEP' not found in namespace '$NS'."
 pass "Deployment '$MONITOR_DEP' exists"
 
-# 9) ServiceAccount exists
-kubectl -n "$NS" get serviceaccount "$MONITOR_SA" >/dev/null 2>&1 || fail "ServiceAccount '$MONITOR_SA' not found in '$NS'."
+kubectl -n "$NS" get serviceaccount "$MONITOR_SA" >/dev/null 2>&1 \
+  || fail "ServiceAccount '$MONITOR_SA' not found."
 pass "ServiceAccount '$MONITOR_SA' exists"
 
-# 10) Role has correct permissions
-kubectl -n "$NS" get role "$MONITOR_ROLE" >/dev/null 2>&1 || fail "Role '$MONITOR_ROLE' not found in '$NS'."
+kubectl -n "$NS" get role "$MONITOR_ROLE" >/dev/null 2>&1 \
+  || fail "Role '$MONITOR_ROLE' not found."
 MROLE_JSON="$(kubectl -n "$NS" get role "$MONITOR_ROLE" -o json)"
-echo "$MROLE_JSON" | jq_req '.rules[] | select((.apiGroups // []) | index("apps"))' \
-  || fail "Role '$MONITOR_ROLE' must include apiGroup 'apps'."
-echo "$MROLE_JSON" | jq_req '.rules[] | select((.resources // []) | index("deployments"))' \
-  || fail "Role '$MONITOR_ROLE' must include resource 'deployments'."
-for v in get list watch; do
-  echo "$MROLE_JSON" | jq_req ".rules[] | select((.verbs // []) | index(\"$v\"))" \
-    || fail "Role '$MONITOR_ROLE' must include verb '$v'."
+
+jq_match '.rules[] | select((.apiGroups // []) | index("apps"))' <<< "$MROLE_JSON" \
+  || fail "Role '$MONITOR_ROLE' is missing apiGroup 'apps'."
+jq_match '.rules[] | select((.resources // []) | index("deployments"))' <<< "$MROLE_JSON" \
+  || fail "Role '$MONITOR_ROLE' is missing resource 'deployments'."
+for verb in get list watch; do
+  jq_match ".rules[] | select((.verbs // []) | index(\"$verb\"))" <<< "$MROLE_JSON" \
+    || fail "Role '$MONITOR_ROLE' is missing verb '$verb'."
 done
-pass "Role '$MONITOR_ROLE' has get,list,watch on apps/deployments"
+pass "Role '$MONITOR_ROLE' grants get, list, watch on apps/deployments"
 
-# 11) RoleBinding correct
-kubectl -n "$NS" get rolebinding "$MONITOR_RB" >/dev/null 2>&1 || fail "RoleBinding '$MONITOR_RB' not found in '$NS'."
+kubectl -n "$NS" get rolebinding "$MONITOR_RB" >/dev/null 2>&1 \
+  || fail "RoleBinding '$MONITOR_RB' not found."
 MRB_JSON="$(kubectl -n "$NS" get rolebinding "$MONITOR_RB" -o json)"
-echo "$MRB_JSON" | jq_req \
-  '.roleRef.kind=="Role" and .roleRef.apiGroup=="rbac.authorization.k8s.io" and .roleRef.name==$role' \
-  --arg role "$MONITOR_ROLE" \
-  || fail "RoleBinding '$MONITOR_RB' must reference Role '$MONITOR_ROLE' (rbac.authorization.k8s.io)."
 
-echo "$MRB_JSON" | jq_req \
-  '.subjects[]? | select(.kind=="ServiceAccount" and .name==$sa and ((.namespace // "")==$ns))' \
-  --arg sa "$MONITOR_SA" --arg ns "$NS" \
+jq_match \
+  '.roleRef | .kind=="Role" and .apiGroup=="rbac.authorization.k8s.io" and .name==$r' \
+  --arg r "$MONITOR_ROLE" <<< "$MRB_JSON" \
+  || fail "RoleBinding '$MONITOR_RB' must reference Role '$MONITOR_ROLE'."
+
+jq_match \
+  '.subjects[]? | select(.kind=="ServiceAccount" and .name==$sa and .namespace==$ns)' \
+  --arg sa "$MONITOR_SA" --arg ns "$NS" <<< "$MRB_JSON" \
   || fail "RoleBinding '$MONITOR_RB' must bind ServiceAccount '$MONITOR_SA' in namespace '$NS'."
-pass "RoleBinding '$MONITOR_RB' correctly binds '$MONITOR_ROLE' to '$MONITOR_SA'"
+pass "RoleBinding '$MONITOR_RB' binds '$MONITOR_ROLE' → '$MONITOR_SA'"
 
-# 12) Deployment uses SA
 MONITOR_DEP_SA="$(kubectl -n "$NS" get deploy "$MONITOR_DEP" -o jsonpath='{.spec.template.spec.serviceAccountName}')"
-[[ "$MONITOR_DEP_SA" == "$MONITOR_SA" ]] || fail "Deployment '$MONITOR_DEP' must use ServiceAccount '$MONITOR_SA', found '${MONITOR_DEP_SA:-default}'."
+[[ "$MONITOR_DEP_SA" == "$MONITOR_SA" ]] \
+  || fail "Deployment '$MONITOR_DEP' uses ServiceAccount '${MONITOR_DEP_SA:-default}', expected '$MONITOR_SA'."
 pass "Deployment '$MONITOR_DEP' uses ServiceAccount '$MONITOR_SA'"
 
-# 13) Deployment readiness
-kubectl -n "$NS" rollout status "deploy/$MONITOR_DEP" --timeout=180s >/dev/null 2>&1 || fail "Deployment '$MONITOR_DEP' not ready."
+kubectl -n "$NS" rollout status "deploy/$MONITOR_DEP" --timeout=180s >/dev/null 2>&1 \
+  || fail "Deployment '$MONITOR_DEP' is not ready."
 pass "Deployment '$MONITOR_DEP' is ready"
 
-#========================
-# RBAC Effective Test (kubectl auth can-i)
-#========================
+# ===========================================================================
 echo ""
-echo "Testing RBAC permissions (kubectl auth can-i)..."
+echo "── Effective permission test (kubectl auth can-i) ─────────────────"
 
-# thousand-sunny should be allowed to list deployments
-if [[ "$(kubectl auth can-i --as=system:serviceaccount:${NS}:${SA} list deployments -n "$NS")" != "yes" ]]; then
-  fail "ServiceAccount '$SA' is NOT allowed to list deployments in '$NS'. Check Role/RoleBinding."
+if [[ "$(kubectl auth can-i --as="system:serviceaccount:${NS}:${SA}" list deployments -n "$NS")" != "yes" ]]; then
+  fail "ServiceAccount '$SA' is STILL denied from listing deployments. Double-check your Role and RoleBinding."
 fi
 pass "ServiceAccount '$SA' CAN list deployments in '$NS'"
 
-# nami-navigator should be allowed to list deployments
-if [[ "$(kubectl auth can-i --as=system:serviceaccount:${NS}:${MONITOR_SA} list deployments -n "$NS")" != "yes" ]]; then
-  fail "ServiceAccount '$MONITOR_SA' is NOT allowed to list deployments in '$NS'. Check Role/RoleBinding."
+if [[ "$(kubectl auth can-i --as="system:serviceaccount:${NS}:${MONITOR_SA}" list deployments -n "$NS")" != "yes" ]]; then
+  fail "ServiceAccount '$MONITOR_SA' is STILL denied from listing deployments. Double-check your Role and RoleBinding."
 fi
 pass "ServiceAccount '$MONITOR_SA' CAN list deployments in '$NS'"
 
+# ===========================================================================
 echo ""
-echo "=========================================="
-pass "All verification checks passed! RBAC is correctly configured for both deployments."
-echo "=========================================="
+echo "==========================================="
+echo "✅ All checks passed! RBAC is correctly"
+echo "   configured for both deployments."
+echo "==========================================="
 echo ""
-echo "Check recent logs if needed:"
-echo "  kubectl logs deployment/$DEP -n $NS --tail=10"
-echo "  kubectl logs deployment/$MONITOR_DEP -n $NS --tail=10"
+echo "Tip – check live logs:"
+echo "  kubectl logs deployment/$DEP        -n $NS --tail=5"
+echo "  kubectl logs deployment/$MONITOR_DEP -n $NS --tail=5"

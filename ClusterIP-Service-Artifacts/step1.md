@@ -25,7 +25,7 @@ All resources must be created in the **`pluto`** namespace.
 - Protocol: `TCP`
 - Selector must match the Pod label above
 
-**3.** From a temporary client Pod in the `pluto` namespace, make an HTTP request (via `curl` or `wget`) to `http://project-plt-6cc-svc:3333/` and save the response body to:
+**3.** From a temporary `client` Pod in the `pluto` namespace, make an HTTP request (via `curl` or `wget`) to `http://project-plt-6cc-svc:3333/` and save the response body to:
 ```
 /opt/course/10/service_test.html
 ```
@@ -82,7 +82,7 @@ kubectl -n pluto expose pod project-plt-6cc-api \
 
 **Method (recommended) — separate Pod + `exec`**
 
-Create the client Pod on its own first and keep it running (no `--rm`):
+Create the `client` Pod on its own first and keep it running (no `--rm`):
 ```bash
 kubectl -n pluto run client --image=curlimages/curl --restart=Never -- sleep 3600
 kubectl -n pluto wait --for=condition=Ready pod/client --timeout=60s
@@ -104,12 +104,6 @@ Once it looks correct, delete the Pod as its own, separate, unredirected command
 ```bash
 kubectl -n pluto delete pod client
 ```
-
-**One-line version of the same (recommended) method:**
-```bash
-kubectl -n pluto run client --image=busybox:latest --restart=Never -- sleep 3600 && kubectl -n pluto wait --for=condition=Ready pod/client --timeout=60s && kubectl -n pluto exec client -- wget -qO- http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html && kubectl -n pluto delete pod client
-```
-This chains the same four steps with `&&`. The `>` redirect only applies to the `exec` command in the middle, so the pod's "deleted" message still only prints to your terminal — it never touches the file.
 
 **Alternative — one-liner with `--rm`** (faster, but riskier — see warning above)
 
@@ -153,10 +147,6 @@ sed -i '/pod .* deleted/d' /opt/course/10/service_test.html
 After running this, always check the file actually contains the HTML and not just a deletion message:
 ```bash
 cat /opt/course/10/service_test.html
-```
-If it only shows `pod "client" deleted from pluto namespace`, the request itself failed silently — delete the leftover file and switch to the `exec` method above:
-```bash
-rm -f /opt/course/10/service_test.html
 ```
 
 **Step 4 — Save nginx access logs to service_test.log**

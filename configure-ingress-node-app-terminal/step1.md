@@ -161,5 +161,3 @@ curl -i http://node.app.terminal.io/
 
 </details>
 
-
-- `curl http://node.app.terminal.io/app` returns HTTP 200 with the application dashboard page

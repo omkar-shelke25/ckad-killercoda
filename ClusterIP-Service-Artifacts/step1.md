@@ -29,6 +29,7 @@ All resources must be created in the **`pluto`** namespace.
 ```
 /opt/course/10/service_test.html
 ```
+> 💡 Tip: create a **separate** client Pod first (without `--rm`), then use `kubectl exec` to run the request and redirect its output. Delete the Pod afterward as its own command. This avoids `kubectl run ... --rm`, which auto-deletes the Pod and can print a `pod "client" deleted` line to stdout right after your command's output — landing inside your redirected file.
 
 **4.** Save the nginx access logs from Pod `project-plt-6cc-api` to:
 ```
@@ -75,24 +76,38 @@ kubectl -n pluto expose pod project-plt-6cc-api \
 
 **Step 3 — Save the HTTP response to service_test.html**
 
-Option A — using wget with a temporary `--rm` Pod:
+**Option A (recommended) — separate Pod + `exec`**
+
+Create the client Pod on its own first (no `--rm`):
+```bash
+kubectl -n pluto run client --image=curlimages/curl --restart=Never -- sleep 3600
+kubectl -n pluto wait --for=condition=Ready pod/client --timeout=60s
+```
+
+`exec` into it to run the request, redirecting only that command's stdout:
+```bash
+kubectl -n pluto exec client -- curl -s http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html
+```
+(If using a busybox image instead: `kubectl -n pluto exec client -- wget -qO- http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html`)
+
+Delete the Pod as its own, separate, unredirected command — so its "pod deleted" message only prints to your terminal, never into the file:
+```bash
+kubectl -n pluto delete pod client
+```
+
+**Option B — one-liner with `--rm`**
+
 ```bash
 kubectl -n pluto run client --image=busybox:latest --restart=Never --rm -i \
   --command -- wget -qO- http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html
 ```
 
-Option B — using curl with a temporary `--rm` Pod:
+This is shorter, but `--rm` can leak a `pod "client" deleted` line into the file. Check for it afterward and strip it if present:
 ```bash
-kubectl -n pluto run client --image=curlimages/curl --restart=Never --rm -i \
-  --command -- curl -s http://project-plt-6cc-svc:3333 > /opt/course/10/service_test.html
+sed -i '/pod .* deleted/d' /opt/course/10/service_test.html
 ```
 
-> Note: `--rm` Pods sometimes print a `pod "client" deleted` line to stdout after the command finishes, which can land in your redirected file. If that happens, strip it with:
-> ```bash
-> sed -i '/pod .* deleted/d' /opt/course/10/service_test.html
-> ```
-
-Verify it looks correct:
+Either way, verify the file looks correct:
 ```bash
 cat /opt/course/10/service_test.html
 ```

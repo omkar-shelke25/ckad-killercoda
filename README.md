@@ -15,7 +15,7 @@ Every scenario drops you into a real Kubernetes cluster with a broken or incompl
 |---|---|---|---|
 | [monkey.d.luffy-rbac](./monkey.d.luffy-rbac/) | RBAC — ServiceAccount, Role, RoleBinding | ⭐ Beginner | [▶ Start](https://killercoda.com/omkar-shelke25/scenario/monkey.d.luffy-rbac) |
 
-> More scenarios coming soon. See [Contributing](#contributing) if you'd like to add one.
+> More scenarios coming soon. See [Contributing](CONTRIBUTING.md) if you'd like to add one.
 
 ---
 

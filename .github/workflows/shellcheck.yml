@@ -10,6 +10,7 @@ on:
     paths:
       - './RBAC-Secret/**/*.sh'
 
+
 jobs:
   shellcheck:
     name: ShellCheck

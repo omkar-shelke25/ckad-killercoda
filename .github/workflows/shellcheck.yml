@@ -3,12 +3,12 @@ name: Lint Shell Scripts
 on:
   pull_request:
     paths:
-      - 'RBAC-Secret/**/*.sh'
+      - './RBAC-Secret/**/*.sh'
   push:
     branches:
       - main
     paths:
-      - 'RBAC-Secret/**/*.sh'
+      - './RBAC-Secret/**/*.sh'
 
 jobs:
   shellcheck:
@@ -22,5 +22,5 @@ jobs:
 
       - name: Run ShellCheck on RBAC-Secret only
         run: |
-          shellcheck RBAC-Secret/setup.sh
-          shellcheck RBAC-Secret/verify.sh
+          shellcheck ./RBAC-Secret/setup.sh
+          shellcheck ./RBAC-Secret/verify.sh

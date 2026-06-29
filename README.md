@@ -21,21 +21,27 @@ Every scenario drops you into a real Kubernetes cluster with a broken or incompl
 
 ## 🗂️ Repo Structure
 
-```
+```bash
 ckad-killercoda/
-├── monkey.d.luffy-rbac/       # One scenario per folder
-│   ├── index.json             # Killercoda scenario metadata
-│   ├── intro.md               # Intro page shown before start
-│   ├── step1.md               # Task description
-│   ├── finish.md              # Completion page
-│   ├── setup.sh               # Runs automatically to prepare the lab
-│   └── verify.sh              # Runs when the student clicks "Check"
+├── monkey.d.luffy-rbac/            # https://killercoda.com/omkar-shelke25/scenario/monkey.d.luffy-rbac
+│   ├── index.json                  # Killercoda scenario metadata
+│   ├── intro.md                    # Intro page shown before start
+│   ├── step1.md                    # Task description
+│   ├── finish.md                   # Completion page
+│   ├── setup.sh                    # Runs automatically to prepare the lab
+│   └── verify.sh                   # Runs when the student clicks "Check"
+├── .github/
+│   └── workflows/
+│       └── shellcheck.yml          # Auto-lints shell scripts on every PR
+├── .gitignore
 ├── CONTRIBUTING.md
 ├── LICENSE
 └── README.md
 ```
 
-Each scenario folder is self-contained and maps directly to a Killercoda scenario.
+Each scenario folder is self-contained and maps directly to a Killercoda scenario.  
+> 💡 **URL pattern:** `https://killercoda.com/omkar-shelke25/scenario/<folder-name>`
+
 
 ---
 

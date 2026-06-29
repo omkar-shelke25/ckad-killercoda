@@ -1,4 +1,3 @@
-
 name: Lint Shell Scripts
 
 on:
@@ -18,10 +17,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run ShellCheck
-        uses: ludeeus/action-shellcheck@master
-        with:
-          severity: warning
-          additional_files: |
-            RBAC-Secret/setup.sh
-            RBAC-Secret/verify.sh
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: Run ShellCheck on RBAC-Secret only
+        run: |
+          shellcheck RBAC-Secret/setup.sh
+          shellcheck RBAC-Secret/verify.sh

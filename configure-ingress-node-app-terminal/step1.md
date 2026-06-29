@@ -1,62 +1,64 @@
-# 🔧 Create Ingress with Multiple Path Routing
-> Wait for 2 minutes for the LoadBalancer to set up for Ingress.
+# Create an Ingress with Multiple Path Routing
 
-## 📋 Mission Brief
+## Scenario
 
-The Node.js application is running in the `node-app` namespace with two endpoints: `/terminal` and `/app`. Your task is to create an Ingress resource with path-based routing to expose both endpoints via a custom domain.
+A Node.js application is already running in the `node-app` namespace with two endpoints, `/terminal` and `/app`. Your task is to expose both endpoints externally through a single Ingress, using path-based routing on a custom domain, and then verify that both paths actually work.
 
-### 🎯 Current State
-- **Namespace**: `node-app`
-- **Deployment**: `multi-endpoint-app` (1 replica)
-- **Service**: `multi-endpoint-service` (ClusterIP, Port 80 → 3000)
+Note: it can take a couple of minutes for MetalLB to assign an external IP to the Ingress Controller after the environment starts. If a step below isn't working yet, wait and retry before assuming something is broken.
 
-### 📝 Task Requirements
+## Current State
 
-#### Part 1: Create Ingress Resource
+- Namespace: `node-app`
+- Deployment: `multi-endpoint-app` (1 replica)
+- Service: `multi-endpoint-service` (ClusterIP, port 80 -> target port 3000)
+
+## Tasks
+
+### 1. Create the Ingress resource
+
 Create an Ingress named `multi-endpoint-ingress` in the `node-app` namespace with:
-- ✅ **Name**: `multi-endpoint-ingress`
-- ✅ **Namespace**: `node-app`
-- ✅ **IngressClassName**: `nginx`
-- ✅ **Host**: `node.app.terminal.io`
-- ✅ **Path 1**: `/terminal` (Prefix) → `multi-endpoint-service:80`
-- ✅ **Path 2**: `/app` (Prefix) → `multi-endpoint-service:80`
 
-#### Part 2: Configure DNS Resolution
-- ✅ Add DNS entry to `/etc/hosts` for `node.app.terminal.io`
-- ✅ Point to the Ingress Controller's external IP. Ensure that the ingress `multi-endpoint-ingress` has obtained an IP address.
+- IngressClassName: `nginx`
+- Host: `node.app.terminal.io`
+- Path `/terminal` (type `Prefix`) -> `multi-endpoint-service:80`
+- Path `/app` (type `Prefix`) -> `multi-endpoint-service:80`
 
-#### Part 3: Verify Access
-- ✅ Use `curl` to test `/terminal` endpoint
-- ✅ Use `curl` to test `/app` endpoint
-- ✅ Confirm both endpoints respond correctly
+### 2. Configure DNS resolution
 
-> curl http://node.app.terminal.io/
+- Add an entry to `/etc/hosts` mapping `node.app.terminal.io` to the Ingress Controller's external IP. You can find this IP on the `ingress-nginx-controller` Service in the `ingress-nginx` namespace (it's assigned by MetalLB).
+- Confirm that the Ingress resource itself (`multi-endpoint-ingress`) has also picked up this same IP under its own status. The nginx Ingress Controller publishes its address back onto every Ingress it manages, so this should match the controller's IP once it's ready.
+
+### 3. Verify access
+
+- `curl` the `/terminal` endpoint and confirm it returns HTTP 200 with the terminal-style page.
+- `curl` the `/app` endpoint and confirm it returns HTTP 200 with the application dashboard page.
+- Optional: `curl` the root path `/` -- this should return 404, since the app only defines `/terminal` and `/app`. That's expected, not a bug.
 
 ---
 
-## 💡 Try It Yourself First!
+## Solution
 
-<details><summary>📋 Complete Solution (Click to expand)</summary>
+<details><summary>Click to expand</summary>
 
-### Step 1: Get Ingress Controller IP
-
-First, find the external IP of the NGINX Ingress Controller:
+### Step 1 -- Find the Ingress Controller's external IP
 
 ```bash
 kubectl get service -n ingress-nginx ingress-nginx-controller
 ```
 
-Store the EXTERNAL-IP (should be from MetalLB pool: 192.168.1.240-250):
+Save it to a variable for later use:
 
 ```bash
 INGRESS_IP=$(kubectl get service -n ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-echo "Ingress Controller IP: $INGRESS_IP"
+echo "$INGRESS_IP"
 ```
 
-### Step 2: Create the Ingress Resource
+This should be an address from the MetalLB pool (`192.168.1.240`-`192.168.1.250`). If it's empty, MetalLB likely hasn't finished assigning an address yet -- wait a bit and try again.
+
+### Step 2 -- Create the Ingress
 
 ```bash
-cat <<EOF | kubectl apply -f -
+cat <<INGRESS_YAML | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -82,139 +84,82 @@ spec:
             name: multi-endpoint-service
             port:
               number: 80
-EOF
+INGRESS_YAML
 ```
 
-### Step 3: Configure DNS in /etc/hosts
-
-Add the DNS entry to your hosts file:
+Confirm the Ingress itself has picked up an address (this should match `$INGRESS_IP`):
 
 ```bash
-# Get the Ingress IP
-INGRESS_IP=$(kubectl get service -n ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+kubectl -n node-app get ingress multi-endpoint-ingress -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+echo
+```
 
-# Add to /etc/hosts
+If this prints nothing, give it a few seconds -- the controller needs a moment to publish the address back onto the Ingress object -- then check again.
+
+### Step 3 -- Add the DNS entry
+
+```bash
 echo "$INGRESS_IP node.app.terminal.io" | sudo tee -a /etc/hosts
 ```
 
-**OR** manually edit the file:
+Or edit the file directly:
 
 ```bash
 sudo nano /etc/hosts
 ```
 
-Add this line:
+and add:
+
 ```
 <INGRESS_IP>  node.app.terminal.io
 ```
 
-### Step 4: Verify the Ingress Configuration
-
-Check that the Ingress was created successfully:
+### Step 4 -- Sanity-check the Ingress configuration
 
 ```bash
-# View Ingress resource
 kubectl -n node-app get ingress multi-endpoint-ingress
-
-# Describe Ingress for details
 kubectl -n node-app describe ingress multi-endpoint-ingress
-
-# Check Ingress rules
-kubectl -n node-app get ingress multi-endpoint-ingress -o yaml
 ```
 
-You should see output showing:
-- Host: `node.app.terminal.io`
-- Two paths: `/terminal` and `/app`
-- Backend: `multi-endpoint-service:80`
+You should see the host `node.app.terminal.io`, both paths (`/terminal`, `/app`), and `multi-endpoint-service:80` as the backend for each.
 
-### Step 5: Test Both Endpoints Using curl
-
-#### Test /terminal endpoint:
+### Step 5 -- Test both endpoints
 
 ```bash
-# Basic curl test
 curl http://node.app.terminal.io/terminal
-
-# Verbose test to see headers
-curl -v http://node.app.terminal.io/terminal
-
-# Alternative: Test with Host header
-INGRESS_IP=$(kubectl get service -n ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-curl -H "Host: node.app.terminal.io" http://$INGRESS_IP/terminal
-```
-
-**Expected output**: HTML page with terminal-style interface showing:
-- "$ Terminal Endpoint"
-- Pod hostname
-- Status: Running
-- Timestamp
-
-#### Test /app endpoint:
-
-```bash
-# Basic curl test
 curl http://node.app.terminal.io/app
-
-# Verbose test
-curl -v http://node.app.terminal.io/app
-
-# Alternative: Test with Host header
-curl -H "Host: node.app.terminal.io" http://$INGRESS_IP/app
 ```
 
-**Expected output**: HTML page with application dashboard showing:
-- "Application Dashboard"
-- Pod Name
-- Status: Active
-- Version: 1.0.0
+Expected for `/terminal`: an HTML page containing "Terminal Endpoint", the pod hostname, status, and a timestamp.
 
-### Step 6: Additional Verification
+Expected for `/app`: an HTML page containing "Application Dashboard", the pod name, status, and version.
+
+If `curl` can't resolve the hostname, double-check `/etc/hosts`. If it resolves but times out or connection is refused, double-check the Ingress Controller's external IP and that the Ingress has a status address (Step 2).
+
+You can also bypass DNS and hit the controller IP directly with an explicit `Host` header, which is useful for isolating DNS issues from Ingress/routing issues:
 
 ```bash
-# Check service endpoints
+curl -H "Host: node.app.terminal.io" "http://$INGRESS_IP/terminal"
+curl -H "Host: node.app.terminal.io" "http://$INGRESS_IP/app"
+```
+
+### Step 6 -- Optional checks
+
+```bash
+# Confirm the service has a healthy endpoint
 kubectl -n node-app get endpoints multi-endpoint-service
 
-# View pod logs
+# Check the app's logs
 kubectl -n node-app logs -l app=multi-endpoint
 
-# Check Ingress Controller logs (if issues)
+# Check the Ingress Controller's logs if something looks wrong
 kubectl -n ingress-nginx logs -l app.kubernetes.io/component=controller --tail=50
 
-# Test accessing root path (should return 404)
-curl http://node.app.terminal.io/
+# Root path should return 404 -- this is expected
+curl -i http://node.app.terminal.io/
 ```
-
-### Step 7: Test Both Endpoints in Browser (Optional)
-
-If you have a browser available:
-
-```bash
-# Get the Ingress IP
-INGRESS_IP=$(kubectl get service -n ingress-nginx ingress-nginx-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-echo "Access URLs:"
-echo "  Terminal: http://node.app.terminal.io/terminal"
-echo "  App:      http://node.app.terminal.io/app"
-```
-
----
-
-### ✅ Success Criteria
-
-After completion, you should have:
-
-1. **Ingress resource `multi-endpoint-ingress` created** in `node-app` namespace
-2. **IngressClassName set to `nginx`**
-3. **Host configured as `node.app.terminal.io`**
-4. **Two path rules configured**:
-   - `/terminal` → `multi-endpoint-service:80`
-   - `/app` → `multi-endpoint-service:80`
-5. **PathType set to `Prefix` for both paths**
-6. **DNS entry added to `/etc/hosts`**
-7. **Successful curl response for `/terminal`** showing terminal interface
-8. **Successful curl response for `/app`** showing application dashboard
 
 </details>
 
 
-
+- `curl http://node.app.terminal.io/app` returns HTTP 200 with the application dashboard page

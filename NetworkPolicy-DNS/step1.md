@@ -24,24 +24,14 @@ Create a NetworkPolicy named **`deny-all-except-dns`** in namespace `netpol-demo
 
 ---
 
-## Quick Reference: How `policyTypes` and rules interact
-
-| `policyTypes` includes | Rules defined | Result |
-|---|---|---|
-| Not listed | — | Traffic in that direction is fully **allowed** |
-| Listed | No rules (`[]` or omitted) | Traffic in that direction is fully **denied** |
-| Listed | Rules present | Only matching traffic is **allowed**, rest denied |
-
-So: list both `Ingress` and `Egress`, leave `ingress` empty to deny it completely, and give `egress` exactly one rule for UDP/53.
-
----
-
 ## Solution
 
-Try it yourself first.
+Try it yourself first, then check the solution if needed:
 
 <details>
 <summary>Click to view Solution</summary>
+
+### Step 1: Write the NetworkPolicy
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -50,24 +40,58 @@ metadata:
   name: deny-all-except-dns
   namespace: netpol-demo2
 spec:
+  # Selects the Pod(s) this policy applies TO.
   podSelector:
     matchLabels:
       app: isolated
+
+  # We're controlling both inbound and outbound traffic for this Pod.
   policyTypes:
   - Ingress
   - Egress
-  ingress: []   # no rules = all ingress denied
+
+  # Listed in policyTypes but no rules underneath = everything in
+  # this direction is denied. This is what makes ingress fully blocked.
+  ingress: []
+
+  # Listed in policyTypes WITH one rule = only traffic matching that
+  # rule is allowed, everything else is denied.
   egress:
   - ports:
     - protocol: UDP
-      port: 53  # only DNS allowed out
+      port: 53   # DNS lookups only — no 'to:' means any destination
 ```
 
-Apply it:
+> **Why `ingress: []` and not just omitting `ingress` entirely?**
+> Both behave the same way once `Ingress` is in `policyTypes` — an empty list and an omitted key both mean "no rules," so all ingress is denied either way. Writing `ingress: []` explicitly just makes the intent clear to anyone reading the policy later.
+
+> **Why no `to:` under the egress rule?**
+> Omitting `to:` means the rule applies to traffic going to *any* destination, restricted only by the `ports:` filter. Since we only care about restricting the port (UDP/53), not the destination, this correctly allows DNS lookups to reach the cluster's DNS service without needing to know its Pod IP or labels.
+
+### Step 2: Apply it
 
 ```bash
 kubectl apply -f deny-all-except-dns.yaml
+```
+
+### Step 3: Inspect it
+
+```bash
 kubectl -n netpol-demo2 describe networkpolicy deny-all-except-dns
 ```
+
+You should see:
+- **Allowing ingress traffic:** none (no rules listed)
+- **Allowing egress traffic:** one rule, UDP port 53, to any destination
+
+### Step 4: Test it
+
+DNS should still resolve from inside the Pod:
+
+```bash
+kubectl -n netpol-demo2 exec isolated -- nslookup kubernetes.default
+```
+
+This should succeed. Any other outbound connection (e.g. to another Pod or external host) or any inbound connection to `isolated` should now fail or time out, confirming the lockdown is working as intended.
 
 </details>

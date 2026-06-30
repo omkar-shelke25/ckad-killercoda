@@ -1,11 +1,10 @@
 #!/bin/bash
-
 set -e
 
-# Create the target namespace
+echo "Creating namespace and isolated Pod..."
+
 kubectl create namespace netpol-demo2 --dry-run=client -o yaml | kubectl apply -f -
 
-# Create the isolated Pod with a clear identifying label
 kubectl apply -f - <<'EOF'
 apiVersion: v1
 kind: Pod
@@ -21,7 +20,8 @@ spec:
     command: ["sleep", "28800"]
 EOF
 
-# Wait for readiness (best-effort)
 kubectl wait --for=condition=Ready pod/isolated -n netpol-demo2 --timeout=120s || true
 
-echo "Setup complete! Pod 'isolated' is created in the netpol-demo2 namespace."
+echo ""
+echo "Setup complete! Pod 'isolated' is running in namespace 'netpol-demo2'."
+echo "Your task: create a NetworkPolicy named 'deny-all-except-dns' to lock it down."

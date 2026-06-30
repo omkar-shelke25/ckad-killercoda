@@ -33,16 +33,21 @@ Create a NetworkPolicy named **`np-redis`** in namespace `jupiter` that:
 
 ## ✅ Expected Result
 
+> ⚠️ **Use `nc -zv`, not `/dev/tcp`, to test connectivity.**
+> The Pods in this scenario run BusyBox, whose default shell (`ash`) does **not** support `/dev/tcp` redirection — that's a bash-only feature. Trying it will fail with `can't create /dev/tcp/...: nonexistent directory` even when your NetworkPolicy is correct. BusyBox does include `nc` (netcat), so use that instead.
+
 ```bash
 APP1_POD=$(kubectl -n jupiter get pods -l app=app1 -o jsonpath='{.items[0].metadata.name}')
 TEST_POD=$(kubectl -n jupiter get pods -l app=test-pod -o jsonpath='{.items[0].metadata.name}')
 
-# Should succeed
-kubectl -n jupiter exec "$APP1_POD" -- timeout 5 sh -c 'echo > /dev/tcp/redis/6379' && echo "ALLOWED"
+# Should succeed — app1 is allowed
+kubectl -n jupiter exec "$APP1_POD" -- nc -zv -w 5 redis 6379
 
-# Should fail / time out
-kubectl -n jupiter exec "$TEST_POD" -- timeout 5 sh -c 'echo > /dev/tcp/redis/6379' && echo "ALLOWED" || echo "BLOCKED"
+# Should fail / time out — test-pod is blocked
+kubectl -n jupiter exec "$TEST_POD" -- nc -zv -w 5 redis 6379
 ```
+
+`nc -z` = scan-only mode (just checks if the port is open, sends no data). `-w 5` = 5 second timeout so a blocked connection fails fast instead of hanging.
 
 ---
 
@@ -58,14 +63,21 @@ metadata:
   name: np-redis
   namespace: jupiter
 spec:
+  # Selects the Pods this policy applies TO — here, the Redis pods.
   podSelector:
     matchLabels:
       app: redis
+
+  # We're controlling both inbound (who can reach redis) and
+  # outbound (what redis can reach, i.e. DNS) traffic.
   policyTypes:
   - Ingress
   - Egress
+
   ingress:
   - from:
+    # Two SEPARATE podSelector entries = OR logic.
+    # "Allow traffic from (app=app1) OR (app=app2)"
     - podSelector:
         matchLabels:
           app: app1
@@ -75,7 +87,10 @@ spec:
     ports:
     - protocol: TCP
       port: 6379
+
   egress:
+  # No 'to' field means "to anywhere" — but only on these ports.
+  # This is what allows DNS lookups to the cluster's DNS service.
   - ports:
     - protocol: UDP
       port: 53
@@ -93,6 +108,8 @@ metadata:
   namespace: jupiter
 spec:
   podSelector:
+    # matchExpressions form of "app=redis" — functionally identical
+    # to matchLabels: {app: redis}, just more verbose syntax.
     matchExpressions:
     - key: app
       operator: In
@@ -123,13 +140,29 @@ spec:
       port: 53
 ```
 
-> ⚠️ Note: `app1` and `app2` are listed as **separate** `podSelector` entries inside `from`. This gives OR logic — traffic from either label is allowed. If you put both labels in a single `matchLabels` map, Kubernetes would require a Pod to have **both** labels simultaneously, which no Pod here has.
+> ⚠️ **Why two separate `podSelector` entries, not one combined `matchLabels`?**
+> `app1` and `app2` are listed as **separate** entries inside `from`. This gives OR logic — traffic from either label is allowed. If you instead put both labels into a single `matchLabels` map like `{app: app1, app: app2}` (which isn't even valid YAML for a map — duplicate keys), or tried `matchLabels: {app: app1}` combined with some other condition expecting `app2` too, Kubernetes would require a single Pod to carry **both** labels simultaneously — which no Pod in this scenario has. Each app1/app2 Pod only has ONE `app` label value.
 
-Apply and verify:
+**Apply and inspect:**
 
 ```bash
 kubectl apply -f np-redis.yaml
 kubectl -n jupiter describe networkpolicy np-redis
+```
+
+**Test with nc (not /dev/tcp — see warning above):**
+
+```bash
+APP1_POD=$(kubectl -n jupiter get pods -l app=app1 -o jsonpath='{.items[0].metadata.name}')
+APP2_POD=$(kubectl -n jupiter get pods -l app=app2 -o jsonpath='{.items[0].metadata.name}')
+TEST_POD=$(kubectl -n jupiter get pods -l app=test-pod -o jsonpath='{.items[0].metadata.name}')
+
+# Both should succeed
+kubectl -n jupiter exec "$APP1_POD" -- nc -zv -w 5 redis 6379
+kubectl -n jupiter exec "$APP2_POD" -- nc -zv -w 5 redis 6379
+
+# Should fail / time out
+kubectl -n jupiter exec "$TEST_POD" -- nc -zv -w 5 redis 6379
 ```
 
 </details>

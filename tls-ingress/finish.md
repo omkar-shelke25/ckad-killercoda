@@ -76,4 +76,4 @@ Pods: register-service
 
 This scenario is open source! If something is broken or unclear, please open an issue or PR:
 
-👉 **[github.com/omkar-shelke25/ckad-killercoda](https://github.com/omkar-shelke25/ckad-killercoda/tree/main/Ingress-TLS)**
+👉 **[github.com/omkar-shelke25/ckad-killercoda](https://github.com/omkar-shelke25/ckad-killercoda/tree/main/tls-ingress)**

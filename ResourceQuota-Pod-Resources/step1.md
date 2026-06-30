@@ -19,7 +19,7 @@
 
 3. Create a Deployment named **`web-server`** in `production-apps` with:
    - **3 replicas**
-   - the **`nginx`** image
+   - the **`nginx:alpine`** image
    - Pod template label **`app: web-server`** (the verifier selects pods using this label — it must match exactly)
 
 4. Configure the container's resources:
@@ -50,15 +50,15 @@ cat <<'EOF' | kubectl apply -f -
 apiVersion: v1
 kind: ResourceQuota
 metadata:
-  name: app-quota
+  name: app-quota              # name the verifier looks for
   namespace: production-apps
 spec:
   hard:
-    pods: "4"
-    requests.cpu: "2000m"
-    requests.memory: "4Gi"
-    limits.cpu: "4000m"
-    limits.memory: "8Gi"
+    pods: "4"                  # max 4 pods total in this namespace
+    requests.cpu: "2000m"      # sum of all pod CPU requests can't exceed 2 cores
+    requests.memory: "4Gi"     # sum of all pod memory requests can't exceed 4Gi
+    limits.cpu: "4000m"        # sum of all pod CPU limits can't exceed 4 cores
+    limits.memory: "8Gi"       # sum of all pod memory limits can't exceed 8Gi
 EOF
 ```
 
@@ -71,26 +71,26 @@ cat <<'EOF' | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web-server
+  name: web-server                 # name the verifier looks for
   namespace: production-apps
 spec:
-  replicas: 3
+  replicas: 3                      # must match exactly — quota allows up to 4
   selector:
     matchLabels:
-      app: web-server
+      app: web-server              # must match template.metadata.labels below
   template:
     metadata:
       labels:
-        app: web-server
+        app: web-server            # verifier finds pods using this label
     spec:
       containers:
       - name: nginx
-        image: nginx:1.25.3
+        image: nginx:alpine        # smaller image, faster pull, same nginx
         resources:
-          requests:
+          requests:                # what the scheduler reserves per pod
             cpu: "200m"
             memory: "256Mi"
-          limits:
+          limits:                  # hard cap enforced by the kubelet
             cpu: "500m"
             memory: "512Mi"
 EOF

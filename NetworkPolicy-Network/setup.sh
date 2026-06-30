@@ -1,12 +1,10 @@
 #!/bin/bash
-set -euo pipefail
 
-echo "🚀 Preparing jupiter namespace with deployments..."
+echo "Preparing jupiter namespace with deployments..."
 
 NS="jupiter"
-kubectl get ns $NS >/dev/null 2>&1 || kubectl create ns $NS
+kubectl get ns "$NS" >/dev/null 2>&1 || kubectl create ns "$NS"
 
-# Create app1 deployment and service
 cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment
@@ -27,7 +25,7 @@ spec:
     spec:
       containers:
       - name: app1
-        image: busybox
+        image: busybox:1.36
         command: ["sh", "-c", "sleep 3600"]
 ---
 apiVersion: v1
@@ -61,7 +59,7 @@ spec:
     spec:
       containers:
       - name: app2
-        image: busybox
+        image: busybox:1.36
         command: ["sh", "-c", "sleep 3600"]
 ---
 apiVersion: v1
@@ -130,21 +128,24 @@ spec:
     spec:
       containers:
       - name: test-pod
-        image: busybox
+        image: busybox:1.36
         command: ["sh", "-c", "sleep 3600"]
 EOF
 
-# Wait for pods to be ready
-echo "⏳ Waiting for deployments to be ready..."
-kubectl -n $NS rollout status deployment/app1 --timeout=60s
-kubectl -n $NS rollout status deployment/app2 --timeout=60s
-kubectl -n $NS rollout status deployment/redis --timeout=60s
-kubectl -n $NS rollout status deployment/test-pod --timeout=60s
+echo "Waiting for deployments to be ready..."
+kubectl -n "$NS" rollout status deployment/app1     --timeout=90s || true
+kubectl -n "$NS" rollout status deployment/app2     --timeout=90s || true
+kubectl -n "$NS" rollout status deployment/redis    --timeout=90s || true
+kubectl -n "$NS" rollout status deployment/test-pod --timeout=90s || true
 
-echo "✅ Environment ready. Create a NetworkPolicy named 'np-redis' to restrict Redis access."
 echo ""
-echo "📋 Current deployments in namespace $NS:"
-kubectl -n $NS get deployments
+echo "======================================"
+echo "Setup complete!"
+echo "Namespace: $NS"
 echo ""
-echo "📋 Current services in namespace $NS:"
-kubectl -n $NS get services
+kubectl -n "$NS" get deployments
+echo ""
+kubectl -n "$NS" get services
+echo ""
+echo "Your task: Create a NetworkPolicy named 'np-redis' to restrict Redis access."
+echo "======================================"

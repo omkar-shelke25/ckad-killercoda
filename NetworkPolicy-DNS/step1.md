@@ -89,7 +89,7 @@ You should see:
 DNS should still resolve from inside the Pod:
 
 ```bash
-kubectl -n netpol-demo2 exec isolated -- nslookup kubernetes.default
+kubectl -n netpol-demo2 exec isolated -- nslookup kubernetes.default.svc.cluster.local
 ```
 
 This should succeed. Any other outbound connection (e.g. to another Pod or external host) or any inbound connection to `isolated` should now fail or time out, confirming the lockdown is working as intended.

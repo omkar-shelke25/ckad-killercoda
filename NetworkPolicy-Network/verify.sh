@@ -26,8 +26,6 @@ pass "NetworkPolicy '$NP' exists"
 JSON="$(kubectl -n "$NS" get networkpolicy "$NP" -o json)"
 
 # 3) podSelector targets app=redis
-#    Accept EITHER matchLabels OR matchExpressions form — both are valid
-#    Kubernetes syntax and a student may correctly use either one.
 SEL_OK="$(echo "$JSON" | jq -r '
   (.spec.podSelector.matchLabels.app == "redis")
   or
@@ -57,7 +55,7 @@ INGRESS_6379="$(echo "$JSON" | jq '
   || fail "No ingress rule allows TCP port 6379."
 pass "Ingress allows TCP port 6379"
 
-# 6) Ingress 'from' includes app1 AND app2 — checks BOTH matchLabels and matchExpressions
+# 6) Ingress 'from' includes app1 AND app2
 FROM_HAS_APP1="$(echo "$JSON" | jq -r '
   [.spec.ingress[]?.from[]?.podSelector |
     select(
@@ -102,27 +100,56 @@ pass "Egress allows DNS (UDP/53 and TCP/53)"
 # ============================================================================
 # 8) Live connectivity test
 #
-# IMPORTANT: we use `nc -zv` here, NOT `/dev/tcp`.
-# /dev/tcp is a bash-only feature. The Pods in this scenario run on the
-# busybox image, whose default shell is NOT bash — it's the BusyBox `sh`
-# (ash), which does NOT support /dev/tcp redirection at all. Attempting
-# it fails immediately with "can't create /dev/tcp/...: nonexistent
-# directory" regardless of whether the NetworkPolicy is correct.
+# Speed notes vs. the original:
+#   - Timeout dropped from 5s -> 2s. 2s is plenty for an in-cluster TCP
+#     check; the blocked case (test-pod) used to eat the full 5s timeout
+#     every single run just to confirm it's blocked.
+#   - The two `kubectl exec` checks now run in PARALLEL (background jobs +
+#     `wait`) instead of sequentially, so you pay the cost once instead
+#     of twice.
 #
-# `nc` (netcat) IS built into the BusyBox image used for app1/app2/test-pod,
-# so it works reliably here. `-z` = zero-I/O scan mode (just test if the
-# port is open, don't send data). `-w 5` = 5 second timeout so a blocked
-# connection fails fast instead of hanging.
+# We still use `nc -zv` (not /dev/tcp) since the busybox image's `sh`
+# (ash) doesn't support /dev/tcp redirection — nc is the reliable option
+# here.
 # ============================================================================
 
 echo ""
-echo "── Live connectivity test (using nc -zv) ─────────"
+echo "── Live connectivity test (using nc -zv, parallel, 2s timeout) ─────────"
 
 APP1_POD="$(kubectl -n "$NS" get pods -l app=app1 -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
 TEST_POD="$(kubectl -n "$NS" get pods -l app=test-pod -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
 
+APP1_RESULT_FILE="$(mktemp)"
+TEST_RESULT_FILE="$(mktemp)"
+trap 'rm -f "$APP1_RESULT_FILE" "$TEST_RESULT_FILE"' EXIT
+
 if [ -n "$APP1_POD" ]; then
-  if kubectl -n "$NS" exec "$APP1_POD" -- nc -zv -w 5 redis 6379 >/dev/null 2>&1; then
+  (
+    if kubectl -n "$NS" exec "$APP1_POD" -- nc -zv -w 2 redis 6379 >/dev/null 2>&1; then
+      echo "ok" > "$APP1_RESULT_FILE"
+    else
+      echo "fail" > "$APP1_RESULT_FILE"
+    fi
+  ) &
+  APP1_PID=$!
+fi
+
+if [ -n "$TEST_POD" ]; then
+  (
+    if kubectl -n "$NS" exec "$TEST_POD" -- nc -zv -w 2 redis 6379 >/dev/null 2>&1; then
+      echo "ok" > "$TEST_RESULT_FILE"
+    else
+      echo "fail" > "$TEST_RESULT_FILE"
+    fi
+  ) &
+  TEST_PID=$!
+fi
+
+[ -n "${APP1_PID:-}" ] && wait "$APP1_PID"
+[ -n "${TEST_PID:-}" ] && wait "$TEST_PID"
+
+if [ -n "$APP1_POD" ]; then
+  if [ "$(cat "$APP1_RESULT_FILE" 2>/dev/null)" = "ok" ]; then
     pass "Live test: app1 CAN reach redis:6379 (expected — allowed by policy)"
   else
     fail "Live test: app1 cannot reach redis:6379. Check your ingress rule allows app=app1 on TCP/6379."
@@ -132,7 +159,7 @@ else
 fi
 
 if [ -n "$TEST_POD" ]; then
-  if kubectl -n "$NS" exec "$TEST_POD" -- nc -zv -w 5 redis 6379 >/dev/null 2>&1; then
+  if [ "$(cat "$TEST_RESULT_FILE" 2>/dev/null)" = "ok" ]; then
     fail "Live test: test-pod CAN reach redis:6379 — this should be BLOCKED by the policy."
   else
     pass "Live test: test-pod is correctly BLOCKED from redis:6379 (expected — denied by policy)"

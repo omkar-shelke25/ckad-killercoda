@@ -1,48 +1,57 @@
-# 🔐 CKAD: NetworkPolicy - Restrict Redis Access
+# CKAD: NetworkPolicy — Restrict Redis Access
 
-In namespace **`jupiter`** 🪐, you'll find three Deployments named **`app1`**, **`app2`**, and **`redis`**.
-All Deployments are exposed inside the cluster using Services.
-
-Create a **NetworkPolicy** named **`np-redis`** which restricts **incoming connections** to Deployment **`redis`** so that:
-
-* ✅ Only Pods from Deployment **`app1`** and **`app2`** can connect to Deployment **`redis`** on **TCP port `6379`**.
-* ❌ No other Pods in the namespace should be able to connect to Deployment **`redis`**.
-* 🌐 Pods in Deployment **`redis`** should still be able to perform DNS lookups (`UDP`/`TCP` `53`).
-
-### 🧪 Test Requirements:
-* `kubectl exec -it <app1-pod> -- nc -zv redis 6379` (should succeed ✅)
-* `kubectl exec -it <app2-pod> -- nc -zv redis 6379` (should succeed ✅)  
-* `kubectl exec -it <test-pod-pod> -- nc -zv redis 6379` (should fail ❌)
-
-
-
-## 💪 Try it yourself first!
-
-<details><summary> 🎯 Solution (expand to view)</summary>
-
-
-
-### 🔍 Step 1: Analyze the existing resources
-
-First, examine the deployments and their labels:
-```bash
-kubectl -n jupiter get deployments --show-labels
-kubectl -n jupiter get pods --show-labels
-```
-
-You'll see that each deployment creates pods with labels like `app=app1`, `app=app2`, and `app=redis`.
+### 📚 Reference Docs
+- [Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
+- [NetworkPolicy — ingress rules](https://kubernetes.io/docs/concepts/services-networking/network-policies/#ingress)
+- [LabelSelector — matchLabels vs matchExpressions](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors)
 
 ---
 
-### 📝 Step 2: Create the NetworkPolicy
+## 🧩 Scenario
 
-Create a NetworkPolicy that:
-- 🎯 Targets pods with `app=redis` 
-- ⬇️ Allows ingress from pods with `app=app1` and `app=app2` on port 6379
-- ⬆️ Allows egress for DNS (UDP/TCP port 53)
+In namespace **`jupiter`** there are three Deployments: **`app1`**, **`app2`**, and **`redis`**. All are exposed inside the cluster via Services.
+
+Redis currently accepts connections from any Pod in the namespace. Your job is to lock it down so that only `app1` and `app2` can reach it.
+
+---
+
+## 📋 Tasks
+
+Create a NetworkPolicy named **`np-redis`** in namespace `jupiter` that:
+
+**1.** Targets Pods with label `app=redis`
+
+**2.** Allows **ingress** only from Pods labeled `app=app1` or `app=app2`, on **TCP port 6379**
+
+**3.** Blocks ingress from any other Pod (e.g. `test-pod`)
+
+**4.** Allows **egress** for DNS lookups (`UDP/53` and `TCP/53`) so Redis Pods can still resolve cluster DNS
+
+> 💡 You can express the `podSelector` using either `matchLabels` or `matchExpressions` — both are valid Kubernetes syntax and both are accepted by verification.
+
+---
+
+## ✅ Expected Result
 
 ```bash
-cat <<EOF | kubectl apply -f -
+APP1_POD=$(kubectl -n jupiter get pods -l app=app1 -o jsonpath='{.items[0].metadata.name}')
+TEST_POD=$(kubectl -n jupiter get pods -l app=test-pod -o jsonpath='{.items[0].metadata.name}')
+
+# Should succeed
+kubectl -n jupiter exec "$APP1_POD" -- timeout 5 sh -c 'echo > /dev/tcp/redis/6379' && echo "ALLOWED"
+
+# Should fail / time out
+kubectl -n jupiter exec "$TEST_POD" -- timeout 5 sh -c 'echo > /dev/tcp/redis/6379' && echo "ALLOWED" || echo "BLOCKED"
+```
+
+---
+
+<details>
+<summary>💡 Solution (try it yourself first!)</summary>
+
+**Using matchLabels (simplest form):**
+
+```yaml
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -72,60 +81,55 @@ spec:
       port: 53
     - protocol: TCP
       port: 53
-EOF
 ```
 
----
+**Equivalent using matchExpressions:**
 
-### 🔍 Step 3: Verify the NetworkPolicy
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: np-redis
+  namespace: jupiter
+spec:
+  podSelector:
+    matchExpressions:
+    - key: app
+      operator: In
+      values: ["redis"]
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values: ["app1"]
+    - podSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values: ["app2"]
+    ports:
+    - protocol: TCP
+      port: 6379
+  egress:
+  - ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+```
 
-Check that the NetworkPolicy was created correctly:
+> ⚠️ Note: `app1` and `app2` are listed as **separate** `podSelector` entries inside `from`. This gives OR logic — traffic from either label is allowed. If you put both labels in a single `matchLabels` map, Kubernetes would require a Pod to have **both** labels simultaneously, which no Pod here has.
+
+Apply and verify:
+
 ```bash
-kubectl -n jupiter get networkpolicy
+kubectl apply -f np-redis.yaml
 kubectl -n jupiter describe networkpolicy np-redis
 ```
-
----
-
-### 🧪 Step 4: Test the connectivity
-
-Get the pod names first:
-```bash
-kubectl -n jupiter get pods
-```
-
-Test that app1 and app2 can connect to redis:
-```bash
-# Get pod names (replace with actual names)
-APP1_POD=$(kubectl -n jupiter get pods -l app=app1 -o jsonpath='{.items[0].metadata.name}')
-APP2_POD=$(kubectl -n jupiter get pods -l app=app2 -o jsonpath='{.items[0].metadata.name}')
-TEST_POD=$(kubectl -n jupiter get pods -l app=test-pod -o jsonpath='{.items[0].metadata.name}')
-
-# These should succeed ✅
-kubectl -n jupiter exec -it $APP1_POD -- nc -zv redis 6379
-kubectl -n jupiter exec -it $APP2_POD -- nc -zv redis 6379
-
-# This should fail ❌ (timeout or connection refused)
-kubectl -n jupiter exec -it $TEST_POD -- nc -zv redis 6379
-```
-
----
-
-### 🌐 Step 5: Test DNS functionality
-
-Verify that redis pods can still perform DNS lookups:
-```bash
-REDIS_POD=$(kubectl -n jupiter get pods -l app=redis -o jsonpath='{.items[0].metadata.name}')
-kubectl -n jupiter exec -it $REDIS_POD -- nslookup kubernetes.default
-```
-
----
-
-🎉 **Final result:**
-
-* ✅ Only app1 and app2 pods can connect to redis on port 6379
-* ❌ test-pod cannot connect to redis  
-* 🌐 Redis pods can still perform DNS lookups
-* 🔐 The NetworkPolicy `np-redis` successfully restricts incoming connections while maintaining essential functionality
 
 </details>

@@ -1,14 +1,8 @@
-# 🎉 Mission Complete - Hero Portal Secured!
+# Completed
 
----
-## 💬 Have a doubt?
+You configured the Hero Registration Portal Ingress with TLS termination and path-based routing.
 
-🔗 **Discord Link:**
-[https://killercoda.com/discord](https://killercoda.com/discord)
-
----
-
-### Your Ingress Configuration
+## Your Ingress Configuration
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -42,49 +36,44 @@ spec:
               number: 80
 ```
 
-## 📊 Traffic Flow
+## Traffic Flow
 
 ```
-HTTPS Request: https://heroes.ua-academy.com/register
-       ↓
-[Ingress Controller]
-       ↓
-[TLS Termination: ua-heroes-tls]
-       ↓
-[Ingress: hero-reg-ingress]
-       ↓
-[Path Routing: /register]
-       ↓
-[Service: register-service:80]
-       ↓
-[Pods: register-service]
+HTTPS request: https://heroes.ua-academy.com/register
+       │
+       ▼
+Ingress Controller (NGINX)
+       │
+       ▼
+TLS termination (secret: ua-heroes-tls)
+       │
+       ▼
+Ingress: hero-reg-ingress
+       │
+       ▼
+Path match: /register
+       │
+       ▼
+Service: register-service:80
+       │
+       ▼
+Pods: register-service
 ```
 
-## 🔒 TLS Configuration
+## Key Concepts
 
-**What TLS Does:**
-- Encrypts traffic between client and Ingress
-- Protects hero data in transit
-- Provides HTTPS access
-- Uses certificate from secret
+**Ingress resource** — defines routing rules for external HTTP/HTTPS traffic into the cluster.
 
-**TLS Termination:**
-- Ingress decrypts HTTPS traffic
-- Forwards HTTP to backend services
-- Services don't need TLS certificates
+**TLS termination** — the Ingress Controller decrypts HTTPS at the edge using the cert/key in the TLS secret, then forwards plain HTTP to backend Services. This means backend Services don't need their own certificates.
 
-## 🎓 Key Concepts
+**Path-based routing** — a single host can route to multiple backend Services based on the URL path, using `pathType: Prefix` to match a path and everything under it.
 
-### Ingress Resource
-Entry point for external traffic with routing rules
+**`ingressClassName`** — tells Kubernetes which Ingress Controller should handle this resource. Without it (or with the wrong value), the controller won't act on it even if everything else is correct.
 
-### TLS Secret
-Contains certificate and private key for HTTPS
+---
 
-### Path-Based Routing
-Routes requests based on URL paths
+## 🐛 Found an Issue?
 
-### Service Backend
-Target service for routed traffic
+This scenario is open source! If something is broken or unclear, please open an issue or PR:
 
-Congratulations! You've successfully configured the U.A. High School Hero Registration Portal with TLS! 🦸
+👉 **[github.com/omkar-shelke25/ckad-killercoda](https://github.com/omkar-shelke25/ckad-killercoda/tree/main/Ingress-TLS)**

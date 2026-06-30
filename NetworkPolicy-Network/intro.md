@@ -1,5 +1,5 @@
-# 🔐 CKAD: NetworkPolicy - Restrict Redis Access
+# CKAD: NetworkPolicy — Restrict Redis Access
 
-In this scenario, you'll work with NetworkPolicies to control network traffic between Pods.
+Practice writing a NetworkPolicy to control which Pods can connect to a Redis Deployment, while preserving DNS resolution.
 
-Click **Start Scenario** to begin! 🚀
+Click **Start Scenario** to begin.

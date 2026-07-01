@@ -10,6 +10,7 @@ EXPECT_PORT="80"
 EXPECT_NODEPORT="32100"
 EXPECT_IMAGE="public.ecr.aws/nginx/nginx:latest"
 EXPECT_INIT_IMAGE="public.ecr.aws/docker/library/busybox:latest"
+ROLLOUT_TIMEOUT="60s"   # was 120s — 1 replica of nginx doesn't need 2 minutes
 
 pass(){ echo "✅ $1"; }
 fail(){ echo "❌ $1"; exit 1; }
@@ -17,40 +18,36 @@ fail(){ echo "❌ $1"; exit 1; }
 # 1) Namespace exists
 kubectl get namespace "$NS" >/dev/null 2>&1 || fail "Namespace '$NS' not found."
 
-# 2) ConfigMap exists and has index.html (case-insensitive title check)
-kubectl -n "$NS" get configmap "$CM" >/dev/null 2>&1 || fail "ConfigMap '$CM' not found in namespace '$NS'."
-CM_HTML="$(kubectl -n "$NS" get configmap "$CM" -o jsonpath='{.data.index\.html}' || true)"
+# 2) ConfigMap exists and has index.html — ONE call instead of two
+CM_JSON="$(kubectl -n "$NS" get configmap "$CM" -o json 2>/dev/null)" \
+  || fail "ConfigMap '$CM' not found in namespace '$NS'."
+CM_HTML="$(echo "$CM_JSON" | jq -r '.data["index.html"] // empty')"
 [[ -n "${CM_HTML}" ]] || fail "ConfigMap '$CM' has no 'index.html' key."
 echo "$CM_HTML" | grep -qi "One Piece Terminal - Straw Hat Pirates Database" \
   || fail "ConfigMap '$CM' index.html missing expected title text."
 pass "ConfigMap '$CM' contains index.html with expected title."
 
-# 3) Deployment exists
-kubectl -n "$NS" get deploy "$DEP" >/dev/null 2>&1 || fail "Deployment '$DEP' not found in namespace '$NS'."
+# 3-7) Deployment: fetch the full object ONCE, then derive everything with jq.
+#      (was ~9 separate kubectl calls — now just this one)
+DEP_JSON="$(kubectl -n "$NS" get deploy "$DEP" -o json 2>/dev/null)" \
+  || fail "Deployment '$DEP' not found in namespace '$NS'."
 
-# 4) Replica count
-REPLICAS="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.replicas}')"
+REPLICAS="$(echo "$DEP_JSON" | jq -r '.spec.replicas')"
 [[ "$REPLICAS" == "$EXPECT_REPLICAS" ]] || fail "Expected replicas=$EXPECT_REPLICAS but found '${REPLICAS:-<none>}'."
 
-# 5) Main container name and image
-CONTAINER_NAME="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].name}')"
+CONTAINER_NAME="$(echo "$DEP_JSON" | jq -r '.spec.template.spec.containers[0].name')"
 [[ "$CONTAINER_NAME" == "strawhat-nginx" ]] || fail "Expected container name 'strawhat-nginx' but found '$CONTAINER_NAME'."
 
-IMG="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.containers[0].image}')"
+IMG="$(echo "$DEP_JSON" | jq -r '.spec.template.spec.containers[0].image')"
 [[ "$IMG" == "$EXPECT_IMAGE" ]] || fail "Expected image '$EXPECT_IMAGE' but found '$IMG'."
 pass "Deployment '$DEP' has correct replicas, container name, and image."
 
-# 6) InitContainer name and image
-INIT_NAME="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.initContainers[0].name}')"
-[[ "$INIT_NAME" == "init-copy" ]] || fail "Expected initContainer name 'init-copy' but found '$INIT_NAME'."
+INIT_NAME="$(echo "$DEP_JSON" | jq -r '.spec.template.spec.initContainers[0].name // empty')"
+[[ "$INIT_NAME" == "init-copy" ]] || fail "Expected initContainer name 'init-copy' but found '${INIT_NAME:-<none>}'."
 
-INIT_IMG="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.spec.template.spec.initContainers[0].image}')"
-[[ "$INIT_IMG" == "$EXPECT_INIT_IMAGE" ]] || fail "Expected initContainer image '$EXPECT_INIT_IMAGE' but found '$INIT_IMG'."
+INIT_IMG="$(echo "$DEP_JSON" | jq -r '.spec.template.spec.initContainers[0].image // empty')"
+[[ "$INIT_IMG" == "$EXPECT_INIT_IMAGE" ]] || fail "Expected initContainer image '$EXPECT_INIT_IMAGE' but found '${INIT_IMG:-<none>}'."
 pass "InitContainer '$INIT_NAME' configured correctly."
-
-# 7) Volumes: a ConfigMap-backed volume and an emptyDir volume must both exist,
-#    and must be wired up correctly between the InitContainer and main container.
-DEP_JSON="$(kubectl -n "$NS" get deploy "$DEP" -o json)"
 
 CM_VOL_NAME="$(echo "$DEP_JSON" | jq -r --arg cm "$CM" \
   '.spec.template.spec.volumes[]? | select(.configMap.name == $cm) | .name' | head -n1)"
@@ -61,8 +58,6 @@ EMPTYDIR_VOL_NAME="$(echo "$DEP_JSON" | jq -r \
 [[ -n "$EMPTYDIR_VOL_NAME" ]] || fail "No emptyDir volume found in Deployment '$DEP' (needed to share the copied file with the main container)."
 pass "Deployment defines a ConfigMap volume ('$CM_VOL_NAME') and an emptyDir volume ('$EMPTYDIR_VOL_NAME')."
 
-# InitContainer must mount both the ConfigMap volume (to read the source file)
-# and the emptyDir volume at /usr/share/nginx/html (to write the copy destination).
 INIT_MOUNTS_CM="$(echo "$DEP_JSON" | jq -r --arg v "$CM_VOL_NAME" \
   '.spec.template.spec.initContainers[0].volumeMounts[]? | select(.name == $v) | .name')"
 [[ -n "$INIT_MOUNTS_CM" ]] || fail "InitContainer '$INIT_NAME' does not mount the ConfigMap volume '$CM_VOL_NAME'."
@@ -72,8 +67,6 @@ INIT_HTML_MOUNT="$(echo "$DEP_JSON" | jq -r --arg v "$EMPTYDIR_VOL_NAME" \
 [[ "$INIT_HTML_MOUNT" == "/usr/share/nginx/html" ]] \
   || fail "InitContainer '$INIT_NAME' must mount the emptyDir volume at /usr/share/nginx/html (found '${INIT_HTML_MOUNT:-<not mounted>}')."
 
-# Main container must mount the SAME emptyDir volume at the same path — this is
-# what actually shares the copied file after the InitContainer terminates.
 MAIN_HTML_MOUNT="$(echo "$DEP_JSON" | jq -r --arg v "$EMPTYDIR_VOL_NAME" \
   '.spec.template.spec.containers[0].volumeMounts[]? | select(.name == $v) | .mountPath')"
 [[ "$MAIN_HTML_MOUNT" == "/usr/share/nginx/html" ]] \
@@ -81,37 +74,56 @@ MAIN_HTML_MOUNT="$(echo "$DEP_JSON" | jq -r --arg v "$EMPTYDIR_VOL_NAME" \
 
 pass "emptyDir volume is correctly shared between InitContainer and main container at /usr/share/nginx/html."
 
-# 8) Deployment becomes ready
-kubectl -n "$NS" rollout status "deploy/$DEP" --timeout=120s >/dev/null 2>&1 \
+# 8) Deployment becomes ready (this is a real wait — can't be skipped, but timeout is trimmed)
+kubectl -n "$NS" rollout status "deploy/$DEP" --timeout="$ROLLOUT_TIMEOUT" >/dev/null 2>&1 \
   || fail "Deployment '$DEP' did not become Ready in time."
 
 READY="$(kubectl -n "$NS" get deploy "$DEP" -o jsonpath='{.status.readyReplicas}')"
 [[ "$READY" == "$EXPECT_REPLICAS" ]] || fail "Expected $EXPECT_REPLICAS ready replicas but found '${READY:-0}'."
 pass "Deployment '$DEP' is ready ($READY/$EXPECT_REPLICAS)."
 
-# 9) Service exists and is NodePort
-kubectl -n "$NS" get service "$SVC" >/dev/null 2>&1 || fail "Service '$SVC' not found in namespace '$NS'."
+# 9-12) Service: fetch ONCE, derive everything with jq (was 5 separate kubectl calls)
+SVC_JSON="$(kubectl -n "$NS" get service "$SVC" -o json 2>/dev/null)" \
+  || fail "Service '$SVC' not found in namespace '$NS'."
 
-SVC_TYPE="$(kubectl -n "$NS" get service "$SVC" -o jsonpath='{.spec.type}')"
+SVC_TYPE="$(echo "$SVC_JSON" | jq -r '.spec.type')"
 [[ "$SVC_TYPE" == "NodePort" ]] || fail "Expected service type 'NodePort' but found '$SVC_TYPE'."
 
-# 10) Service port
-SVC_PORT="$(kubectl -n "$NS" get service "$SVC" -o jsonpath='{.spec.ports[0].port}')"
+SVC_PORT="$(echo "$SVC_JSON" | jq -r '.spec.ports[0].port')"
 [[ "$SVC_PORT" == "$EXPECT_PORT" ]] || fail "Expected service port=$EXPECT_PORT but found '${SVC_PORT:-<none>}'."
 
-# 11) NodePort
-NODEPORT="$(kubectl -n "$NS" get service "$SVC" -o jsonpath='{.spec.ports[0].nodePort}')"
+NODEPORT="$(echo "$SVC_JSON" | jq -r '.spec.ports[0].nodePort')"
 [[ "$NODEPORT" == "$EXPECT_NODEPORT" ]] || fail "Expected NodePort=$EXPECT_NODEPORT but found '${NODEPORT:-<none>}'."
 
-# 12) Service selector
-SELECTOR="$(kubectl -n "$NS" get service "$SVC" -o jsonpath='{.spec.selector.app}')"
+SELECTOR="$(echo "$SVC_JSON" | jq -r '.spec.selector.app // empty')"
 [[ "$SELECTOR" == "strawhat" ]] || fail "Expected service selector 'app=strawhat' but found 'app=${SELECTOR:-<none>}'."
 pass "Service '$SVC' is NodePort, port $SVC_PORT, nodePort $NODEPORT, selector app=strawhat."
 
-# 13) Content is actually being served (case-insensitive title + a known crew member)
-sleep 5
-RESPONSE="$(curl -s --max-time 5 localhost:$EXPECT_NODEPORT || true)"
+# 13) Content is actually being served.
+# CHANGED: the old script did a blind `sleep 5` then a single curl attempt — that's
+# both slower than necessary when the Service is already up (always pays the 5s tax)
+# AND flaky when it's not (a single shot right after rollout can hit the Service
+# before kube-proxy/iptables rules have propagated, giving a false failure).
+# curl's own retry flags fix both: it returns the instant the endpoint answers,
+# and it keeps retrying (specifically on connection-refused) if it's not ready yet.
+# -w appends the HTTP status code after the body so we can assert on it too —
+# a 4xx/5xx page can still have a non-empty body, so the old "just check
+# non-empty" logic would have silently passed on a broken response.
+CURL_OUT="$(curl -s \
+  --max-time 5 \
+  --retry 10 \
+  --retry-delay 1 \
+  --retry-connrefused \
+  -w '\nHTTPSTATUS:%{http_code}' \
+  "http://localhost:$EXPECT_NODEPORT" || true)"
+
+HTTP_STATUS="$(echo "$CURL_OUT" | grep -o 'HTTPSTATUS:[0-9]*$' | cut -d: -f2)"
+RESPONSE="$(echo "$CURL_OUT" | sed 's/HTTPSTATUS:[0-9]*$//')"
+
 [[ -n "$RESPONSE" ]] || fail "No HTTP response from localhost:$EXPECT_NODEPORT. Are you running this on a cluster node?"
+[[ "$HTTP_STATUS" == "200" ]] || fail "Expected HTTP status 200 but got '${HTTP_STATUS:-<none>}'."
+pass "Service responded with HTTP 200."
+
 echo "$RESPONSE" | grep -qi "One Piece Terminal - Straw Hat Pirates Database" \
   || fail "Service content check failed: page title not found in HTTP response."
 echo "$RESPONSE" | grep -q "MONKEY D\. LUFFY" \

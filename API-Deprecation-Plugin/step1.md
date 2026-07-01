@@ -10,27 +10,31 @@
 
 ## Context
 
-Your cluster runs Kubernetes v1.34. A manifest at `/ancient-tiger/app.yaml` was written for an older release, before `apps/v1beta1` was removed in v1.16. It won't apply as-is — the API version doesn't exist anymore, and it also uses a field from that old spec that apps/v1 no longer has.
+Your cluster runs Kubernetes v1.36. A manifest at `/ancient-tiger/app.yaml` was written for an older release, before `apps/v1beta1` was removed in v1.16. It won't apply as-is — the API version doesn't exist anymore, and it also uses a field from that old spec that apps/v1 no longer has.
 
 ## Task
 
-1. **Inspect** `/ancient-tiger/app.yaml` and identify what's deprecated.
+1. **Install** the `kubectl-convert` plugin (see below) if it isn't already available — verification checks for it.
 
-2. **Fix it** so it's compatible with apps/v1, then **save the fixed manifest back to the same path**, overwriting the original file.
-   - Install and use the `kubectl-convert` plugin rather than hand-editing — it updates the `apiVersion`, adds the `selector` field apps/v1 requires, and strips out fields that no longer exist (like `rollbackTo`), all in one step.
+2. **Inspect** `/ancient-tiger/app.yaml` and identify what's deprecated.
+
+3. **Fix it** so it's compatible with apps/v1, then **save the fixed manifest back to the same path**, overwriting the original file.
+   - Use `kubectl-convert` rather than hand-editing — it updates the `apiVersion`, adds the `selector` field apps/v1 requires, and strips out fields that no longer exist (like `rollbackTo`), all in one step.
    - > **This part matters for verification**: applying a separately-converted copy isn't enough. Verification checks the file at `/ancient-tiger/app.yaml` itself, so make sure that file is the one you overwrite.
 
-3. **Deploy** the fixed manifest into the **viper** namespace (the original manifest points at `anaconda` — you'll need to change that too).
+4. **Deploy** the fixed manifest into the **viper** namespace (the original manifest points at `anaconda` — you'll need to change that too).
 
-4. **Confirm** all 3 Pods are running in `viper`.
+5. **Confirm** all 3 Pods are running in `viper`.
 
 ---
 
 ## Installing kubectl-convert (Linux)
 
-Follow the official docs: [Install kubectl on Linux](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
+`kubectl-convert` isn't preinstalled in most exam environments — you'll need to install it yourself if it's missing. Verification checks for it, so do this first if `kubectl convert --help` doesn't work.
 
-> `kubectl-convert` isn't preinstalled in most exam environments. If you're practicing for the CKAD exam, get comfortable installing it from scratch — you may need to.
+Full official reference: [Install kubectl on Linux](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
+
+> In the CKAD exam, you may face tasks involving deprecated API versions. `kubectl-convert` is the fastest way to fix them, but you may need to install it yourself first — practice this step, not just the conversion itself.
 
 ---
 
@@ -40,6 +44,23 @@ Try it yourself first, then check the solution if needed:
 
 <details>
 <summary>Click to view Solution</summary>
+
+### Step 0: Install kubectl-convert (if it's not already there)
+
+```bash
+# Check first — it may already be installed
+kubectl convert --help
+```
+
+If that errors out, install it:
+
+```bash
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl-convert"
+sudo install -o root -g root -m 0755 kubectl-convert /usr/local/bin/kubectl-convert
+kubectl convert --help
+```
+
+> Verification's very first check is whether `kubectl-convert` is installed — do this before anything else so you're not troubleshooting a missing plugin later.
 
 ### Step 1: Inspect the manifest
 

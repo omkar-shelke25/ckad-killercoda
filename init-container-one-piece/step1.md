@@ -49,9 +49,10 @@ Try it yourself first, then check the solution if needed:
 kubectl create configmap strawhat-cm \
   --from-file=/one-piece/index.html \
   -n one-piece
+# --from-file uses the file's basename as the data key,
+# so this ConfigMap ends up with key "index.html" — exactly
+# what the InitContainer's volume mount expects to find.
 ```
-
-> `--from-file` uses the file's basename as the data key, so this produces a ConfigMap with key `index.html` — exactly what the InitContainer will look for.
 
 ### Step 2: Create the Deployment with the InitContainer
 
@@ -60,26 +61,26 @@ cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: strawhat-deploy
+  name: strawhat-deploy          # name the verifier looks for
   namespace: one-piece
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: strawhat
+      app: strawhat              # must match template.metadata.labels below
   template:
     metadata:
       labels:
-        app: strawhat
+        app: strawhat            # Service selector will target this label
     spec:
       initContainers:
-      - name: init-copy
+      - name: init-copy                                    # runs first, to completion, before any container starts
         image: public.ecr.aws/docker/library/busybox:latest
-        command: ['sh', '-c', 'cp /config/index.html /usr/share/nginx/html/']
+        command: ['sh', '-c', 'cp /config/index.html /usr/share/nginx/html/']  # copies the file from the ConfigMap mount to the shared volume
         volumeMounts:
-        - name: config-volume
+        - name: config-volume       # the ConfigMap, mounted read-only here so the command above can read from it
           mountPath: /config
-        - name: html-volume
+        - name: html-volume         # the shared emptyDir, mounted here so the command above can write into it
           mountPath: /usr/share/nginx/html
       containers:
       - name: strawhat-nginx
@@ -87,13 +88,13 @@ spec:
         ports:
         - containerPort: 80
         volumeMounts:
-        - name: html-volume
+        - name: html-volume         # same volume as the InitContainer — nginx serves whatever was copied here
           mountPath: /usr/share/nginx/html
       volumes:
-      - name: config-volume
+      - name: config-volume         # declares the volume: backed by the ConfigMap's data
         configMap:
           name: strawhat-cm
-      - name: html-volume
+      - name: html-volume           # declares the volume: an empty folder that both containers can share
         emptyDir: {}
 EOF
 ```
@@ -109,16 +110,16 @@ cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Service
 metadata:
-  name: strawhat-svc
+  name: strawhat-svc          # name the verifier looks for
   namespace: one-piece
 spec:
-  type: NodePort
+  type: NodePort               # exposes the Service on a static port on every node
   selector:
-    app: strawhat
+    app: strawhat              # routes traffic to any Pod with this label — matches the Deployment's Pod template
   ports:
-  - port: 80
-    targetPort: 80
-    nodePort: 32100
+  - port: 80                   # port other things inside the cluster would use to reach this Service
+    targetPort: 80              # port the container actually listens on
+    nodePort: 32100             # port exposed externally on the node itself
 EOF
 ```
 

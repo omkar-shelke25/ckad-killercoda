@@ -22,15 +22,15 @@ You're preparing the e-commerce platform for a major product launch. The current
 
 #### Part 1: Scale and Label the Deployment
 Modify the existing deployment `ecommerce-frontend-deployment` to:
-- ✅ **Scale to 5 replicas** for high availability
-- ✅ **Add label `role: webfrontend`** to the pod template metadata
+- **Scale to 5 replicas** for high availability
+- **Add label `role: webfrontend`** to the pod template metadata
 
 #### Part 2: Create NodePort Service
 Create a new service `ecommerce-frontend-service` that:
-- ✅ **Exposes on TCP port 8000**
-- ✅ **Maps to pods** with the deployment's selector labels
-- ✅ **Uses NodePort type** for external access
-- ✅ **Named**: `ecommerce-frontend-service`
+-  **Exposes on TCP port 8000**
+- **Maps to pods** with the deployment's selector labels
+- **Uses NodePort type** for external access
+- **Named**: `ecommerce-frontend-service`
 
 ---
 

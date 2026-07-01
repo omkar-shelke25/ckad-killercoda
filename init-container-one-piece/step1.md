@@ -18,15 +18,15 @@ Mounting the ConfigMap directly into `/usr/share/nginx/html` would wipe out anyt
 
 ## Task
 
-1.  **Create** ConfigMap `strawhat-cm` from `/one-piece/index.html`.
+1. **ConfigMap** `strawhat-cm` — created from `/one-piece/index.html`
 
 2. **Deployment** `strawhat-deploy`:
    - Replicas: `1`, selector: `app=strawhat`
    - Container `strawhat-nginx`: image `public.ecr.aws/nginx/nginx:latest`, port `80`
    - InitContainer `init-copy`: image `public.ecr.aws/docker/library/busybox:latest` — copies `index.html` into `/usr/share/nginx/html/` before the main container starts
-   - Volumes:
-     - A ConfigMap-backed volume, mounted into the InitContainer (so it can read `index.html`)
-     - An `emptyDir` volume, mounted into **both** the InitContainer and the main container at `/usr/share/nginx/html` (this is what carries the copied file across)
+   - Volumes: you need two.
+     1. A volume backed by the ConfigMap `strawhat-cm`, mounted only into the InitContainer, so it can read `index.html`.
+     2. An `emptyDir` volume, mounted into **both** containers at `/usr/share/nginx/html`. The InitContainer writes the copied file here; the main container reads from that same path once it starts.
 
 3. **Service** `strawhat-svc`: type `NodePort`, port `80`, nodePort `32100`, selector `app=strawhat`
 

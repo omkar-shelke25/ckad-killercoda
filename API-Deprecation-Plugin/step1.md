@@ -45,10 +45,10 @@ Try it yourself first, then check the solution if needed:
 <details>
 <summary>Click to view Solution</summary>
 
-### Step 0: Install kubectl-convert (if it's not already there)
+### Step 0: Install kubectl-convert 
 
 ```bash
-# Check first — it may already be installed
+# Check first
 kubectl convert --help
 ```
 

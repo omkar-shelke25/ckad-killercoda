@@ -1,6 +1,6 @@
 {
   "title": "CKAD: Fix API Deprecation using `kubectl convert` and Deployment",
-  "description": "Fix deprecated API versions in a manifest and deploy to Kubernetes v1.33",
+  "description": "Fix deprecated API versions in a manifest and deploy to Kubernetes v1.36",
   "details": {
     "steps": [
       {

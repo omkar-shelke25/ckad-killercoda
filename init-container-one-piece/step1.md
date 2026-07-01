@@ -18,7 +18,7 @@ Mounting the ConfigMap directly into `/usr/share/nginx/html` would wipe out anyt
 
 ## Task
 
-1. **ConfigMap** `strawhat-cm` — created from `/one-piece/index.html`
+1. **ConfigMap** `strawhat-cm` should be created from the source file `/one-piece/index.html`.
 
 2. **Deployment** `strawhat-deploy`:
    - Replicas: `1`, selector: `app=strawhat`

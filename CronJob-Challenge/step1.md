@@ -1,6 +1,11 @@
-# CronJob Challenge
+# CKA: CronJob Challenge
 
-## 🔹 Question (Weightage: 4)
+**Official Kubernetes Documentation**:
+- [CronJobs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)
+- [Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/job/)
+- [Pod Restart Policy](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy)
+
+## Question
 
 In the `batch` namespace, create a **CronJob** named `task-cron` with the following requirements:
 
@@ -16,6 +21,7 @@ In the `batch` namespace, create a **CronJob** named `task-cron` with the follow
 * Each Job run must complete **4 successful Pods**
 * At most **2 Pods** should run in parallel
 * Completed Jobs should be **automatically deleted 120 seconds** after finishing
+* The Pod **restartPolicy must be set to `Never`**
 
 ---
 

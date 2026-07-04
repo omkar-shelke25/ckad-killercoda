@@ -4,8 +4,8 @@ set -euo pipefail
 NS="batch"
 NAME="task-cron"
 
-pass() { echo "✅ $1"; }
-fail() { echo "❌ $1"; exit 1; }
+pass() { echo "PASS: $1"; }
+fail() { echo "FAIL: $1"; exit 1; }
 
 # 1) Namespace exists
 kubectl get ns "${NS}" >/dev/null 2>&1 || fail "Namespace '${NS}' not found."
@@ -54,17 +54,15 @@ IMAGE="$(jp '{.spec.jobTemplate.spec.template.spec.containers[0].image}')"
 pass "container image=busybox"
 
 # 6) Command check
-CMD="$(kubectl get cronjob "${NAME}" -n "${NS}" \
-  -o jsonpath='{.spec.jobTemplate.spec.template.spec.containers[0].command[*]}')"
+CMD="$(kubectl get cronjob "${NAME}" -n "${NS}"   -o jsonpath='{.spec.jobTemplate.spec.template.spec.containers[0].command[*]}')"
 
 CMD="$(echo "${CMD}" | tr -s ' ')"
 
-echo "${CMD}" | grep -qi "echo Processing" \
-  || fail "command must include: echo Processing"
+echo "${CMD}" | grep -qi "echo Processing"   || fail "command must include: echo Processing"
 
-echo "${CMD}" | grep -qi "sleep 30" \
-  || fail "command must include: sleep 30"
+echo "${CMD}" | grep -qi "sleep 30"   || fail "command must include: sleep 30"
 
 pass "command includes 'echo Processing' and 'sleep 30'."
 
-echo "✅ Verification successful! CronJob '${NAME}' in namespace '${NS}' is correctly configured."
+echo ""
+echo "Verification successful! CronJob '${NAME}' in namespace '${NS}' is correctly configured."

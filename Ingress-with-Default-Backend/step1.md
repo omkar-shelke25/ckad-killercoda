@@ -10,7 +10,7 @@ Product wants **`main.example.com`** to serve the main site, but any **unknown h
 - Rule: **host** `main.example.com` → **`main-site-svc:80`**
 - **Default backend** (catch-all): **`error-page-svc:80`**
 
-
+> No Ingress Controller is available for this challenge.
 
 ---
 

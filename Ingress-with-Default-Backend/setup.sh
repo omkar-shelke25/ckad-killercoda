@@ -1,100 +1,137 @@
 #!/bin/bash
-# Verification script for Ingress 'site-ingress' with default backend
-set -uo pipefail
 
-NS="main"
-ING="site-ingress"
-HOST="main.example.com"
-ICLASS="nginx"
-ANN_KEY="nginx.ingress.kubernetes.io/rewrite-target"
-ANN_VAL="/"
+echo "Preparing the lab environment..."
 
-pass() { echo "PASS: $1"; exit 0; }
-fail() { echo "FAIL: $1"; exit 1; }
-ok()   { echo "  ok: $1"; }
+# ── 1. Install nginx Ingress Controller (baremetal / NodePort) ────────────────
+echo "Installing nginx Ingress Controller..."
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.1/deploy/static/provider/baremetal/deploy.yaml >/dev/null 2>&1
 
-# -- Prerequisites --
-kubectl get ns "$NS" >/dev/null 2>&1 \
-  || fail "Namespace '$NS' not found"
-ok "Namespace '$NS' exists"
+echo "Waiting for Ingress Controller to be ready (up to 3 minutes)..."
+kubectl wait --namespace ingress-nginx \
+  --for=condition=ready pod \
+  --selector=app.kubernetes.io/component=controller \
+  --timeout=180s >/dev/null 2>&1 \
+  || echo "Warning: controller not ready within timeout — continuing anyway"
 
-kubectl -n "$NS" get svc main-site-svc >/dev/null 2>&1 \
-  || fail "Service 'main-site-svc' not found in '$NS'"
-ok "Service 'main-site-svc' exists"
+sleep 5
 
-kubectl -n "$NS" get svc error-page-svc >/dev/null 2>&1 \
-  || fail "Service 'error-page-svc' not found in '$NS'"
-ok "Service 'error-page-svc' exists"
+# ── 2. Create namespace (idempotent) ─────────────────────────────────────────
+kubectl create namespace main --dry-run=client -o yaml | kubectl apply -f - >/dev/null 2>&1
 
-# -- Ingress exists --
-kubectl -n "$NS" get ingress "$ING" >/dev/null 2>&1 \
-  || fail "Ingress '$ING' not found in namespace '$NS' — make sure the name is exactly 'site-ingress'"
-ok "Ingress '$ING' exists"
+# ── 3. Deploy main-site backend ───────────────────────────────────────────────
+kubectl apply -f - >/dev/null 2>&1 <<'EOF'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: main-site
+  namespace: main
+  labels:
+    app: main-site
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: main-site
+  template:
+    metadata:
+      labels:
+        app: main-site
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            echo 'main-site: Welcome to the Main Site' > /usr/share/nginx/html/index.html
+            exec nginx -g 'daemon off;'
+        ports:
+        - containerPort: 80
+EOF
 
-INGRESS_JSON=$(kubectl -n "$NS" get ingress "$ING" -o json)
+kubectl apply -f - >/dev/null 2>&1 <<'EOF'
+apiVersion: v1
+kind: Service
+metadata:
+  name: main-site-svc
+  namespace: main
+spec:
+  selector:
+    app: main-site
+  ports:
+  - port: 80
+    targetPort: 80
+EOF
 
-# -- ingressClassName: nginx --
-CLASS=$(echo "$INGRESS_JSON" | jq -r '.spec.ingressClassName // empty')
-[[ "$CLASS" == "$ICLASS" ]] \
-  || fail "ingressClassName must be 'nginx' (found: '${CLASS:-<none>}')"
-ok "ingressClassName: nginx"
+# ── 4. Deploy error-page backend ──────────────────────────────────────────────
+kubectl apply -f - >/dev/null 2>&1 <<'EOF'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: error-page-app
+  namespace: main
+  labels:
+    app: error-page
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: error-page
+  template:
+    metadata:
+      labels:
+        app: error-page
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            echo 'error-page: Custom 404 Page Not Found' > /usr/share/nginx/html/index.html
+            exec nginx -g 'daemon off;'
+        ports:
+        - containerPort: 80
+EOF
 
-# -- Annotation: nginx.ingress.kubernetes.io/rewrite-target = "/" --
-ANN=$(echo "$INGRESS_JSON" | jq -r --arg k "$ANN_KEY" '.metadata.annotations[$k] // empty')
-[[ "$ANN" == "$ANN_VAL" ]] \
-  || fail "Annotation '$ANN_KEY' must be '/' (found: '${ANN:-<none>}')"
-ok "Annotation rewrite-target: /"
+kubectl apply -f - >/dev/null 2>&1 <<'EOF'
+apiVersion: v1
+kind: Service
+metadata:
+  name: error-page-svc
+  namespace: main
+spec:
+  selector:
+    app: error-page
+  ports:
+  - port: 80
+    targetPort: 80
+EOF
 
-# -- Host rule: main.example.com → main-site-svc:80 at path / --
-HOST_RULE=$(echo "$INGRESS_JSON" | jq -r --arg host "$HOST" '
-  .spec.rules[]? | select(.host == $host) | .http.paths[]?
-  | select(.path == "/") | "\(.backend.service.name):\(.backend.service.port.number)"
-' | head -n1)
-[[ "$HOST_RULE" == "main-site-svc:80" ]] \
-  || fail "Host rule for '$HOST' must route path '/' to 'main-site-svc:80' (found: '${HOST_RULE:-<none>}')"
-ok "Host rule: $HOST / -> main-site-svc:80"
+# ── 5. Wait for backend pods ──────────────────────────────────────────────────
+kubectl -n main rollout status deployment/main-site      --timeout=120s 2>/dev/null || true
+kubectl -n main rollout status deployment/error-page-app --timeout=120s 2>/dev/null || true
 
-# -- Default backend: error-page-svc:80 --
-# nginx Ingress Controller v1.8.x has a catch-all '_' server block that intercepts
-# unmatched hosts before spec.defaultBackend is consulted, so functional curl tests
-# against the controller NodePort are not a reliable signal. The authoritative check
-# is the Ingress spec itself — if the field is set, the controller acknowledges it
-# (visible in 'kubectl describe ingress' under "Default backend:").
-DEF_SVC=$(echo "$INGRESS_JSON"  | jq -r '.spec.defaultBackend.service.name // empty')
-DEF_PORT=$(echo "$INGRESS_JSON" | jq -r '.spec.defaultBackend.service.port.number // empty')
-[[ "$DEF_SVC" == "error-page-svc" ]] \
-  || fail "defaultBackend service must be 'error-page-svc' (found: '${DEF_SVC:-<none>}')"
-[[ "$DEF_PORT" == "80" ]] \
-  || fail "defaultBackend service port must be 80 (found: '${DEF_PORT:-<none>}')"
-ok "Default backend: error-page-svc:80"
-
-# -- Functional check --
-# Read the NodePort live from the Service — never cache it.
+# ── 6. Detect NodePort and configure /etc/hosts ───────────────────────────────
 NODE_IP=$(kubectl get nodes \
-  -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}' 2>/dev/null)
+  -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}')
 
 HTTP_PORT=$(kubectl -n ingress-nginx get svc ingress-nginx-controller \
-  -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}' 2>/dev/null)
+  -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}')
 
-[[ -n "$NODE_IP" ]] \
-  || fail "Could not detect node IP"
-[[ -n "$HTTP_PORT" ]] \
-  || fail "Could not detect Ingress Controller NodePort — is ingress-nginx installed?"
-ok "Ingress Controller: $NODE_IP:$HTTP_PORT"
+grep -qF "main.example.com" /etc/hosts \
+  || echo "$NODE_IP  main.example.com" >> /etc/hosts
 
-# Allow the controller a moment to sync the newly created Ingress
-sleep 4
+echo "$HTTP_PORT" > /tmp/ingress_http_port.txt
 
-# Test: main.example.com should route to main-site-svc
-MAIN_RESP=""
-for attempt in 1 2 3; do
-  MAIN_RESP=$(curl -s --max-time 8 -H "Host: main.example.com" \
-    "http://$NODE_IP:$HTTP_PORT/" 2>/dev/null || true)
-  echo "$MAIN_RESP" | grep -qi "main-site" && break
-  [[ $attempt -lt 3 ]] && sleep 6
-done
-echo "$MAIN_RESP" | grep -qi "main-site" \
-  || fail "main.example.com did not route to main-site-svc (response: '${MAIN_RESP:0:150}')"
-ok "main.example.com routes to main-site-svc"
-
-pass "Ingress 'site-ingress' is correctly configured: nginx class, rewrite annotation, host rule for main.example.com, and default backend error-page-svc"
+echo ""
+echo "Lab ready. Namespace 'main' contains:"
+echo "  Deployment 'main-site'      -> Service 'main-site-svc'  (port 80)"
+echo "  Deployment 'error-page-app' -> Service 'error-page-svc' (port 80)"
+echo ""
+echo "Nginx Ingress Controller NodePort (HTTP): $HTTP_PORT"
+echo "  main.example.com -> $NODE_IP  (added to /etc/hosts)"
+echo ""
+echo "After creating the Ingress, test with:"
+echo "  curl http://main.example.com:$HTTP_PORT/"
+echo "  curl -H 'Host: other.example.com' http://main.example.com:$HTTP_PORT/"

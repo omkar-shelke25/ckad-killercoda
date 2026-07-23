@@ -27,11 +27,8 @@ Create an Ingress named **`site-ingress`** in namespace `main` that:
 3. Routes host **`main.example.com`**, path **`/`**, to **`main-site-svc:80`** (`pathType: Prefix`)
 4. Sets **`error-page-svc:80`** as the **default backend** (`spec.defaultBackend`) — the fallback for any request that does not match a defined rule
 
-> The Ingress name and namespace must match exactly — verification checks for `site-ingress` in `main`.
+> `spec.defaultBackend` is a Kubernetes Ingress field, not an nginx-specific annotation. It tells the controller which service to use as the fallback. Verification confirms this field is set correctly in the Ingress spec.
 
-::remark-box{kind="info"}
-`spec.defaultBackend` is a Kubernetes Ingress field, not an nginx-specific annotation. It tells the controller which service to use as the fallback. Verification confirms this field is set correctly in the Ingress spec.
-::
 
 ---
 

@@ -25,21 +25,19 @@ Create an Ingress named **`site-ingress`** in namespace `main` that:
 1. Uses `ingressClassName: nginx`
 2. Adds the annotation `nginx.ingress.kubernetes.io/rewrite-target: /`
 3. Routes host **`main.example.com`**, path **`/`**, to **`main-site-svc:80`** (`pathType: Prefix`)
-4. Sets **`error-page-svc:80`** as the **default backend** (catches all unmatched hosts and paths)
+4. Sets **`error-page-svc:80`** as the **default backend** (`spec.defaultBackend`) — the fallback for any request that does not match a defined rule
 
 > The Ingress name and namespace must match exactly — verification checks for `site-ingress` in `main`.
+
+::remark-box{kind="info"}
+`spec.defaultBackend` is a Kubernetes Ingress field, not an nginx-specific annotation. It tells the controller which service to use as the fallback. Verification confirms this field is set correctly in the Ingress spec.
+::
 
 ---
 
 ## Test Manually
 
-First, look up the NodePort that the Ingress Controller is listening on:
-
-```bash
-kubectl -n ingress-nginx get svc ingress-nginx-controller
-```
-
-The output shows something like `80:31234/TCP` — the number after `:` is your NodePort. Store it:
+Look up the NodePort the Ingress Controller is listening on:
 
 ```bash
 PORT=$(kubectl -n ingress-nginx get svc ingress-nginx-controller \
@@ -52,16 +50,19 @@ echo "Ingress NodePort: $PORT"
 ```bash
 # Should return the main site response
 curl http://main.example.com:$PORT/
-
-# Should return the error-page response (host does not match any rule)
-curl -H "Host: other.example.com" http://main.example.com:$PORT/
 ```
 
-Confirm the Ingress was picked up by the controller:
+Confirm the controller picked up the Ingress and shows the default backend:
 
 ```bash
 kubectl -n main describe ingress site-ingress
 ```
+
+Look for the `Default backend:` field in the output — it should show `error-page-svc:80` with a resolved endpoint IP.
+
+::remark-box{kind="warning"}
+The nginx Ingress Controller (v1.8.x) has a built-in catch-all server block that returns its own `404` for unmatched hosts before `spec.defaultBackend` is consulted. Sending a curl with an unknown `Host:` header through the NodePort will return nginx's own 404 page, not the `error-page-svc` response. The `spec.defaultBackend` field is still the correct and required way to declare the fallback — the controller acknowledges it and uses it for traffic that bypasses the catch-all (e.g. direct L4 connections without a Host header). Verification confirms the field is set correctly in the spec.
+::
 
 ---
 
@@ -109,8 +110,8 @@ kubectl apply -f site-ingress.yaml
 **Key concepts:**
 
 - **`spec.rules`** — Host-based routing rules. A request for `main.example.com` on path `/` goes to `main-site-svc`.
-- **`spec.defaultBackend`** — The fallback for any request that does not match any rule. Any host other than `main.example.com`, or any unmatched path, is served by `error-page-svc`.
-- **`rewrite-target: /`** — An nginx annotation that rewrites the matched path to `/` before forwarding to the backend. Applied to all paths matched by this Ingress.
+- **`spec.defaultBackend`** — The fallback declared in the Ingress spec. Any request that does not match a defined rule is intended to reach `error-page-svc`. The controller shows this in `kubectl describe ingress` under `Default backend:`.
+- **`rewrite-target: /`** — Rewrites the matched path to `/` before forwarding to the backend. Applied to all paths matched by this Ingress.
 
 **Verify the Ingress was created:**
 

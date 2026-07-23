@@ -50,6 +50,9 @@ echo "Ingress NodePort: $PORT"
 ```bash
 # Should return the main site response
 curl http://main.example.com:$PORT/
+
+# Should return the error-page response — path /notfound has no rule on main.example.com
+curl -H "Host: main.example.com" http://main.example.com:$PORT/notfound
 ```
 
 Confirm the controller picked up the Ingress and shows the default backend:

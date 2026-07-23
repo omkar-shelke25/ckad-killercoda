@@ -14,4 +14,11 @@
 - Combining a pod-targeted rule with an open DNS rule in the same policy
 - Understanding why DNS needs a separate egress rule with no `to:` restriction
 
+## 🐛 Found an Issue?
+
+This scenario is open source! If something is broken or unclear, please open an issue or PR:
+
+👉 **[github.com/omkar-shelke25/ckad-killercoda](https://github.com/omkar-shelke25/ckad-killercoda/tree/main/Egress-np-with-dns-allowance)**
+
+
 Well done — you've restricted frontend egress to exactly what is needed, without breaking DNS.

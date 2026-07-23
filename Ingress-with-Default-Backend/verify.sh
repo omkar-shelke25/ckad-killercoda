@@ -55,7 +55,7 @@ HOST_RULE=$(echo "$INGRESS_JSON" | jq -r --arg host "$HOST" '
 ok "Host rule: $HOST / -> main-site-svc:80"
 
 # -- Default backend: error-page-svc:80 --
-DEF_SVC=$(echo "$INGRESS_JSON" | jq -r '.spec.defaultBackend.service.name // empty')
+DEF_SVC=$(echo "$INGRESS_JSON"  | jq -r '.spec.defaultBackend.service.name // empty')
 DEF_PORT=$(echo "$INGRESS_JSON" | jq -r '.spec.defaultBackend.service.port.number // empty')
 [[ "$DEF_SVC" == "error-page-svc" ]] \
   || fail "defaultBackend service must be 'error-page-svc' (found: '${DEF_SVC:-<none>}')"
@@ -64,22 +64,25 @@ DEF_PORT=$(echo "$INGRESS_JSON" | jq -r '.spec.defaultBackend.service.port.numbe
 ok "Default backend: error-page-svc:80"
 
 # -- Functional checks --
-NODE_IP=$(kubectl get nodes \
-  -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}' 2>/dev/null)
-HTTP_PORT=$(kubectl -n ingress-nginx get svc ingress-nginx-controller \
-  -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}' 2>/dev/null)
+# The controller runs with hostNetwork=true, so it binds port 80 on its host node.
+# We retrieve the node IP from the controller pod's status.hostIP.
+CTRL_IP=$(kubectl -n ingress-nginx get pod \
+  -l app.kubernetes.io/component=controller \
+  -o jsonpath='{.items[0].status.hostIP}' 2>/dev/null \
+  || kubectl get nodes \
+       -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}')
 
-[[ -n "$NODE_IP" && -n "$HTTP_PORT" ]] \
-  || fail "Could not detect nginx Ingress Controller NodePort — is it installed?"
-ok "Ingress Controller at $NODE_IP:$HTTP_PORT"
+[[ -n "$CTRL_IP" ]] \
+  || fail "Could not determine Ingress Controller node IP — is ingress-nginx installed?"
+ok "Ingress Controller node IP: $CTRL_IP (hostNetwork, port 80)"
 
-# Give the controller time to sync the newly created Ingress
+# Allow the controller a moment to pick up the newly created Ingress
 sleep 4
 
-# Test 1: main.example.com should route to main-site-svc
+# Test 1: main.example.com should route to main-site-svc (port 80, no NodePort)
 MAIN_RESP=""
 for attempt in 1 2 3; do
-  MAIN_RESP=$(curl -s --max-time 8 -H "Host: main.example.com" "http://$NODE_IP:$HTTP_PORT/" 2>/dev/null || true)
+  MAIN_RESP=$(curl -s --max-time 8 -H "Host: main.example.com" "http://$CTRL_IP/" 2>/dev/null || true)
   echo "$MAIN_RESP" | grep -qi "main-site" && break
   [[ $attempt -lt 3 ]] && sleep 6
 done
@@ -90,7 +93,7 @@ ok "main.example.com routes to main-site-svc"
 # Test 2: unknown host should fall through to error-page-svc (default backend)
 DEF_RESP=""
 for attempt in 1 2 3; do
-  DEF_RESP=$(curl -s --max-time 8 -H "Host: unknown.example.com" "http://$NODE_IP:$HTTP_PORT/" 2>/dev/null || true)
+  DEF_RESP=$(curl -s --max-time 8 -H "Host: unknown.example.com" "http://$CTRL_IP/" 2>/dev/null || true)
   echo "$DEF_RESP" | grep -qi "error-page" && break
   [[ $attempt -lt 3 ]] && sleep 6
 done

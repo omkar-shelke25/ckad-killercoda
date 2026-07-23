@@ -27,6 +27,9 @@ Create an Ingress named **`site-ingress`** in namespace `main` that:
 3. Routes host **`main.example.com`**, path **`/`**, to **`main-site-svc:80`** (`pathType: Prefix`)
 4. Sets **`error-page-svc:80`** as the **default backend** (`spec.defaultBackend`) — the fallback for any request that does not match a defined rule
 
+> The Ingress name and namespace must match exactly — verification checks for `site-ingress` in `main`.
+
+
 > `spec.defaultBackend` is a Kubernetes Ingress field, not an nginx-specific annotation. It tells the controller which service to use as the fallback. Verification confirms this field is set correctly in the Ingress spec.
 
 
@@ -57,9 +60,9 @@ kubectl -n main describe ingress site-ingress
 
 Look for the `Default backend:` field in the output — it should show `error-page-svc:80` with a resolved endpoint IP.
 
-::remark-box{kind="warning"}
-The nginx Ingress Controller (v1.8.x) has a built-in catch-all server block that returns its own `404` for unmatched hosts before `spec.defaultBackend` is consulted. Sending a curl with an unknown `Host:` header through the NodePort will return nginx's own 404 page, not the `error-page-svc` response. The `spec.defaultBackend` field is still the correct and required way to declare the fallback — the controller acknowledges it and uses it for traffic that bypasses the catch-all (e.g. direct L4 connections without a Host header). Verification confirms the field is set correctly in the spec.
-::
+
+> The nginx Ingress Controller (v1.8.x) has a built-in catch-all server block that returns its own `404` for unmatched hosts before `spec.defaultBackend` is consulted. Sending a curl with an unknown `Host:` header through the NodePort will return nginx's own 404 page, not the `error-page-svc` response. The `spec.defaultBackend` field is still the correct and required way to declare the fallback — the controller acknowledges it and uses it for traffic that bypasses the catch-all (e.g. direct L4 connections without a Host header). Verification confirms the field is set correctly in the spec.
+
 
 ---
 

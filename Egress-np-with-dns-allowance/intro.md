@@ -1,8 +1,7 @@
-# 🧩 CKAD Scenario: NetworkPolicy (Egress) with DNS Exception
+**CKAD: Egress NetworkPolicy with DNS Exception**
 
-In this scenario, you will create an **egress NetworkPolicy** that controls outgoing traffic from specific Pods while allowing DNS resolution.
+Your security team requires that `frontend` Pods in the `venus` namespace can only reach the `api` service on port 2222. All other outbound traffic must be blocked, including access to the internet.
 
-Click **Start Scenario** to begin the exercise.
+DNS resolution must still work so Pods can look up cluster service names.
 
-
-
+Click **Start Scenario** to begin!
